@@ -8,4 +8,4 @@ Greywater is a hack-and-slash RPG set in a dystopian Steampunk world, for PC and
 
 This project is built in Java on top of the LibGDX framework.
 
-Please see the [getting started documentation](), then pick and issue and set to it!
+Please see the [getting started documentation](https://github.com/TeamSweepy/Greywater/wiki), then pick and issue and set to it!
