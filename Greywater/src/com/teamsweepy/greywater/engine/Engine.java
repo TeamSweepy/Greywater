@@ -9,18 +9,15 @@
 
 package com.teamsweepy.greywater.engine;
 
+import com.teamsweepy.greywater.ui.GameScreen;
 import com.teamsweepy.greywater.ui.MainMenuScreen;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 
 public class Engine extends Game {
 
@@ -42,6 +39,7 @@ public class Engine extends Game {
 
 	private OrthographicCamera camera;
 	public SpriteBatch batch;
+	private InputHandler inputHandler;
 
 	/**
 	 * Initialize core assets, automatically called by LibGDX
@@ -52,7 +50,11 @@ public class Engine extends Game {
 		camera.setToOrtho(false, NATIVE_WIDTH, NATIVE_HEIGHT);
 		batch = new SpriteBatch();
 		Texture.setEnforcePotImages(false); //binary texture sizes are for the 80's
+		inputHandler = new InputHandler();
+		Gdx.input.setInputProcessor(inputHandler);
+
 		this.setScreen(new MainMenuScreen(this));
+
 	}
 
 	/**
@@ -88,6 +90,11 @@ public class Engine extends Game {
 
 		super.render();
 		frameCount++;
+		
+		if(inputHandler.testbool)
+			this.setScreen(new GameScreen(this));
+		else
+			this.setScreen(new MainMenuScreen(this));
 
 
 		//if the frame is taking too long, update without rendering
@@ -102,9 +109,7 @@ public class Engine extends Game {
 
 	}
 
-	public void tick(float deltaTime) {
-
-	}
+	public void tick(float deltaTime) {}
 
 	@Override
 	public void resize(int width, int height) {}

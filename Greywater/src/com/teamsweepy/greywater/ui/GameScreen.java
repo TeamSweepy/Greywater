@@ -1,10 +1,11 @@
 /**
- * Used to control logic and rendering for the main game menu.
+ * Used to control logic and rendering for the game.
  * 
  * Copyright Team Sweepy - Jeremy Barnes 2014 All use outside of the Greywater Project is not permitted unless express permission is
  * granted. Email TeamSweepy@gmail.com to discuss usage.
  * 
  */
+
 package com.teamsweepy.greywater.ui;
 
 import com.teamsweepy.greywater.engine.Engine;
@@ -16,13 +17,13 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 
-public class MainMenuScreen implements Screen {
-
+public class GameScreen implements Screen {
+	
 	private Engine engine;
 	private Texture texture;
 	private Sprite sprite;
 
-	public MainMenuScreen(Engine eng) {
+	public GameScreen(Engine eng) {
 		engine = eng;
 
 		texture = new Texture(Gdx.files.internal("data/tavish_stand_south.png"));
@@ -30,43 +31,42 @@ public class MainMenuScreen implements Screen {
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	}
 
+
 	@Override
 	public void render(float delta) {
-		engine.batch.begin(); //begin rendering
+		engine.batch.begin();//start render
 		
+		engine.batch.draw(texture, 100, 100);
+			
+		engine.batch.end();//end render
+	
 		
-		engine.batch.draw(sprite, 0, 0);
-		
-		
-		engine.batch.end();//end rendering
-
-
 	}
 
+	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-
+		
 	}
-
-
+	
 	/* **************** PROBABLY USELESS METHODS ********************* */
 	
 	@Override
@@ -75,5 +75,5 @@ public class MainMenuScreen implements Screen {
 	@Override
 	public void dispose() {}
 	
-	
+
 }

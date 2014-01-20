@@ -11,8 +11,9 @@ public class MainActivity extends AndroidApplication {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
+        cfg.useAccelerometer = false;//save power
+        cfg.useCompass = false; //unnecessary
         cfg.useGL20 = false;
         
         initialize(new Engine(), cfg);
