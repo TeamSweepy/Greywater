@@ -8,7 +8,8 @@
  * 
  * 
  * 
- * *********** IMPORTANT ************************ The graphics component (sprite) is an isometric image, it is a skewed square, rotated 45
+ * *********** IMPORTANT ************************ 
+ * The graphics component (sprite) is an isometric image, it is a skewed square, rotated 45
  * degrees. An iso-tile has width:height of 2:1, giving it the illusion of depth. Unfortunately, that makes programming super hard, and I am
  * lazy. Far more powerful and understandable is to represent the tiles as square in memory, as if the game were a top-down 2D style game.
  * This means that all objects are squares or rectangles, which makes the math easy and render sorting easier. The 2D is represented through
@@ -35,12 +36,13 @@ import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.entities.components.Tangible;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.awt.geom.Point2D;
 
 
-public abstract class Entity {
+public abstract class Entity extends MapObject {
 
 	/* *** All entities have a physics component for collisions and position, and a graphics component to render on screen *** */
 	protected Tangible physicsComponent; // hitbox

@@ -14,6 +14,7 @@ import com.teamsweepy.greywater.ui.MainMenuScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -36,10 +37,11 @@ public class Engine extends Game {
 	private short tickCount = 0;
 	private short skipCount = 0;
 
-
-	private OrthographicCamera camera;
+	//other stuff, will be sorted when there's more
+	public OrthographicCamera camera;
 	public SpriteBatch batch;
 	private InputHandler inputHandler;
+	private GameScreen gs;
 
 	/**
 	 * Initialize core assets, automatically called by LibGDX
@@ -48,13 +50,15 @@ public class Engine extends Game {
 	public void create() {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, NATIVE_WIDTH, NATIVE_HEIGHT);
+
 		batch = new SpriteBatch();
 		Texture.setEnforcePotImages(false); //binary texture sizes are for the 80's
+
 		inputHandler = new InputHandler();
 		Gdx.input.setInputProcessor(inputHandler);
 
+		AssetLoader.init();
 		this.setScreen(new MainMenuScreen(this));
-
 	}
 
 	/**
@@ -85,17 +89,11 @@ public class Engine extends Game {
 		Gdx.gl.glClearColor(0, 0, 0, 1); //black background
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		tick(deltaTime);
+		tick(deltaTime); //tick all subcomponents
 		tickCount++;
 
-		super.render();
+		super.render(); //calls the current screen render method
 		frameCount++;
-		
-		if(inputHandler.testbool)
-			this.setScreen(new GameScreen(this));
-		else
-			this.setScreen(new MainMenuScreen(this));
-
 
 		//if the frame is taking too long, update without rendering
 		while ((excessTime > ANIMATION_PERIOD_NANOSEC) && (skipCount < MAX_FRAME_SKIPS)) {
@@ -105,7 +103,8 @@ public class Engine extends Game {
 			tickCount++;
 		}
 
-		if (secondsElapsed > 10.0) printStats();
+		if (secondsElapsed > 10.0) 
+			printStats();
 
 	}
 

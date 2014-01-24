@@ -14,6 +14,7 @@
 
 package com.teamsweepy.greywater.entities.components;
 
+import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Engine;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

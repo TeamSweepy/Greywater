@@ -8,22 +8,17 @@
 
 package com.teamsweepy.greywater.engine;
 
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputProcessor;
 
 
-public class InputHandler implements InputProcessor{
+public class InputHandler implements InputProcessor {
 
-	boolean testbool = false;
-	
 	@Override
 	/**
 	 * Indicates when a key is pressed.
 	 * @see com.badlogic.gdx.Input.Keys
 	 */
 	public boolean keyDown(int keycode) {
-		testbool = !testbool;
 		return false;
 	}
 
