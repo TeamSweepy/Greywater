@@ -20,6 +20,9 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.utils.Disposable;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -33,8 +36,6 @@ public class AssetLoader {
 	private final static String ASSET_FOLDER = "data/";
 	
 	private static AssetManager assetManager;
-	private static ArrayList<String> processList; //list of things to process and place into createdAssetMap
-	private static HashMap<String, Object> createdAssetMap;
 
 
 	/**
@@ -42,26 +43,18 @@ public class AssetLoader {
 	 */
 	public static void init() {
 		assetManager = new AssetManager();
-		processList = new ArrayList<String>();
-		createdAssetMap = new HashMap<String, Object>();
 		parseINI("Assets.ini"); //load common assets such as the HUD and menu
 	}
 
 	/**
-	 * Loads all files listed in the given ini file. Note that files are expect to be of the format:
-	 * LOAD; Filepath; Type
-	 * or
-	 * Type; Filepath; Assetname
-	 * 
-	 * Loaded assets directly from file are of the first format (Textures, sounds, etc)
-	 * Composite assets that are composed of multiple load assets (such as Animations that use multiple textureregions) are the seconds format.
+	 * Loads all files listed in the given ini file. Note that files are expect to be of the format: LOAD; Filepath; Type
 	 * 
 	 * @param iniName
 	 */
 	public static void parseINI(String iniName) {
 		try {
 			FileHandle setFile = Gdx.files.internal(ASSET_FOLDER + iniName);
-			BufferedReader br = setFile.reader(64);// new BufferedReader(setReader);
+			BufferedReader br = setFile.reader(64);
 
 			while (br.ready()) {
 				String currentLine = br.readLine();
@@ -74,13 +67,12 @@ public class AssetLoader {
 
 				if (action.equalsIgnoreCase("LOAD")) {
 					assetManager.load(fileName, getAssetType(type));
-				} else {
-					processList.add(currentLine); //process "composite" assets later
-				}
+				} else
+					System.out.println("Invalid file in " + iniName + " - " + currentLine);
 			}
 
 			br.close();
-			
+
 		} catch (FileNotFoundException ex) {
 			System.out.println("Critical File Missing from Assets.ini. " + ex.getMessage());
 			System.exit(1);
@@ -99,11 +91,7 @@ public class AssetLoader {
 	 */
 	public static float tick() {
 		assetManager.update();
-		float prog = assetManager.getProgress();
-		if (prog >= 1 && processList.size() > 0) {
-			processAll(); //set up composite assets when all "primitive" assets are loaded
-		}
-		return prog;
+		return assetManager.getProgress();
 	}
 
 	/**
@@ -113,33 +101,7 @@ public class AssetLoader {
 	 * @return The asset requested or null
 	 */
 	public static Object getAsset(Class<?> type, String name) {
-		if (type.equals(Animation.class)) {
-			return createdAssetMap.get(name);
-		} else {
 			return assetManager.get(name, type);
-
-		}
-	}
-
-	/**
-	 * Process "created assets" that are composed of other assets loaded by the AssetManager. These are things like Animations which are
-	 * composed of multiple Textures or TextureRegions
-	 */
-	private static void processAll() {
-		for (String str : processList) {
-			
-			//parse out sections of semicolon delimited list
-			String action = str.substring(0, str.indexOf(";")).trim();
-			String fileName = str.substring(str.indexOf(";") + 1, str.lastIndexOf(";")).trim();
-			String assetName = str.substring(str.lastIndexOf(";") + 1).trim();
-
-			if (action.equalsIgnoreCase("Animation")) { //currently only composite asset is animations
-				TextureAtlas atlas = assetManager.get(ASSET_FOLDER + fileName, TextureAtlas.class);
-				Animation anim = new Animation(1f, atlas.findRegions(assetName), Animation.LOOP);
-				createdAssetMap.put(assetName, anim);
-			}
-		}
-		processList.clear(); //when all are processed, clear the list
 	}
 
 
@@ -157,8 +119,30 @@ public class AssetLoader {
 		if (type.equalsIgnoreCase("Music")) return Music.class;
 		if (type.equalsIgnoreCase("Sound")) return Sound.class;
 		if (type.equalsIgnoreCase("ParticleEffect")) return ParticleEffect.class;
+		if (type.equalsIgnoreCase("TiledMap")) return TiledMap.class;
 
 		throw new Exception("Invalid Class Specified in AssetLoader! Invalid type - " + type);
+	}
+
+	/**
+	 * Remove all assets that the manager has
+	 */
+	public static void disposeAll() {
+		assetManager.dispose();
+	}
+
+	/**
+	 * Remove a specific asset
+	 * 
+	 * @param name - the filename or assetname of the asset
+	 * @param type - the class of the asset
+	 */
+	public static void dispose(String name, Class<?> type) {
+		try {
+			((Disposable) assetManager.get(name, type)).dispose();
+		} catch (Exception e) {
+			System.out.println("No such asset exists to dispose " + type.getName() + " " + name + " ... " + e.getMessage());
+		}
 	}
 
 }
