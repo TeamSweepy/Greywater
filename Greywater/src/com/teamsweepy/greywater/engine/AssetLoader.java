@@ -100,8 +100,10 @@ public class AssetLoader {
 	 * @param name - name of the asset to get
 	 * @return The asset requested or null
 	 */
-	public static Object getAsset(Class<?> type, String name) {
-			return assetManager.get(name, type);
+	public static <T> T getAsset(Class<?> type, String name){
+		
+		T asset = (T) assetManager.get(ASSET_FOLDER + name, type);
+		return  asset;
 	}
 
 
