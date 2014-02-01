@@ -9,15 +9,17 @@
 
 package com.teamsweepy.greywater.engine;
 
+import com.teamsweepy.greywater.entities.components.Sprite;
+import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.ui.GameScreen;
 import com.teamsweepy.greywater.ui.MainMenuScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Engine extends Game {
@@ -38,19 +40,23 @@ public class Engine extends Game {
 	private short skipCount = 0;
 
 	//other stuff, will be sorted when there's more
-	public OrthographicCamera camera;
 	public SpriteBatch batch;
 	private InputHandler inputHandler;
 	private GameScreen gs;
+	
+	
+	
+	//testvar
+	private Sprite a;
+	Level l;
 
 	/**
 	 * Initialize core assets, automatically called by LibGDX
 	 */
 	@Override
 	public void create() {
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, NATIVE_WIDTH, NATIVE_HEIGHT);
-
+		Camera.init(NATIVE_WIDTH, NATIVE_HEIGHT);
+		
 		batch = new SpriteBatch();
 		Texture.setEnforcePotImages(false); //binary texture sizes are for the 80's
 
@@ -59,6 +65,7 @@ public class Engine extends Game {
 
 		AssetLoader.init();
 		this.setScreen(new MainMenuScreen(this));
+		l = new Level(this);
 	}
 
 	/**
@@ -67,6 +74,7 @@ public class Engine extends Game {
 	@Override
 	public void dispose() {
 		batch.dispose();
+		AssetLoader.disposeAll();
 	}
 
 	/**
@@ -75,17 +83,25 @@ public class Engine extends Game {
 	 */
 	@Override
 	public void render() {
+		if (AssetLoader.tick() >= 1f && a == null) {
+			System.out.println("Loaderup");
+			a = new Sprite("Tavish", "ATTACK_SOUTH");
+			a.setImage(.3f, "AtTacK_SOUTHEAST", Sprite.LOOP_PINGPONG);
+
+		}
+
+
 		deltaTime = Gdx.graphics.getDeltaTime();
 		secondsElapsed += deltaTime;
 		excessTime += deltaTime * 1000000000 - ANIMATION_PERIOD_NANOSEC; //nano second accuracy!
 		skipCount = 0;
 
-		camera.update();
-		camera.apply(Gdx.gl10);
+	//	Camera.update();
+	//	Camera.apply(Gdx.gl10);
 
 		//scale from 1600x900 to whatever user screen is set to and clear graphics
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		batch.setProjectionMatrix(camera.combined);
+	//	batch.setProjectionMatrix(Camera.getProjectionMatrix());
 		Gdx.gl.glClearColor(0, 0, 0, 1); //black background
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
@@ -94,6 +110,15 @@ public class Engine extends Game {
 
 		super.render(); //calls the current screen render method
 		frameCount++;
+		
+		l.render();
+		
+		if (a != null) {
+			a.tick(deltaTime);
+			batch.begin();
+			a.render(batch, 400, 400);
+			batch.end();
+		}
 
 		//if the frame is taking too long, update without rendering
 		while ((excessTime > ANIMATION_PERIOD_NANOSEC) && (skipCount < MAX_FRAME_SKIPS)) {
@@ -103,8 +128,7 @@ public class Engine extends Game {
 			tickCount++;
 		}
 
-		if (secondsElapsed > 10.0) 
-			printStats();
+		if (secondsElapsed > 10.0) printStats();
 
 	}
 

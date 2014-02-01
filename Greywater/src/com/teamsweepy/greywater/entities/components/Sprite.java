@@ -29,13 +29,15 @@ import com.badlogic.gdx.utils.Array;
 
 public class Sprite {
 
-	//animation styles
+	/* ************************ ANIMATION STYLES ********************* */
 	public static final int FORWARD = 0;
 	public static final int REVERSED = 1;
 	public static final int LOOP = 2;
 	public static final int LOOP_REVERSED = 3;
 	public static final int LOOP_PINGPONG = 4;
 	public static final int STILL_IMAGE = 5;
+
+	//not used externally, used for internal record keeping
 	private static final int HALTED_PLAYING = 6; //for an ended animation
 	private static boolean Ping = true;//used to indicated direction of a ping ponging loop animation
 
@@ -45,15 +47,13 @@ public class Sprite {
 	private int playMode;
 
 	// time keepers
-	private int cycleLengthMillis;
+	private int frameDurationMillis;
 	private int totalAnimTimeMillis;
 	private int sequenceDurationMillis;
-	private int animPeriodMillis;
 
-	// series length and position trackers (not time, image-count)
+	// series length and position trackers (not time, but image-count)
 	private int seriesPosition;
 	private int seriesLength;
-
 
 	//image references
 	private AtlasRegion[] animation;
@@ -67,7 +67,6 @@ public class Sprite {
 	 * @param imgName - default image to start with. (Such as _Stand_South)
 	 */
 	public Sprite(String name, String imgName) {
-		animPeriodMillis = (Engine.ANIMATION_PERIOD_NANOSEC / 1000000);
 		this.name = name;
 		currentImageName = imgName;
 		setImage(.5f, imgName, STILL_IMAGE); //arbitrary default
@@ -91,13 +90,13 @@ public class Sprite {
 	/**
 	 * Updates the image if it is animated, assumed to be called once every anim-period.
 	 */
-	public void tick(float elapsedTime) {
+	public void tick(float elapsedTimeSeconds) {
 		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING) return; //no need to tick static images
 
-		totalAnimTimeMillis += elapsedTime;
+		totalAnimTimeMillis += elapsedTimeSeconds * 1000;//seconds -> millis
 
 		if (playMode == FORWARD || playMode == LOOP) {
-			seriesPosition = (totalAnimTimeMillis / cycleLengthMillis);
+			seriesPosition = (totalAnimTimeMillis / frameDurationMillis);
 
 			if (seriesPosition > seriesLength - 1) {//if we've gone past the last image in series
 				if (playMode == LOOP) {
@@ -111,7 +110,7 @@ public class Sprite {
 		}//end forward/loop
 
 		if (playMode == REVERSED || playMode == LOOP_REVERSED) {
-			seriesPosition = (seriesLength - (totalAnimTimeMillis / cycleLengthMillis));
+			seriesPosition = (seriesLength - (totalAnimTimeMillis / frameDurationMillis));
 
 			if (seriesPosition < 0) { //if we've gone past the last image in series
 				if (playMode == LOOP_REVERSED)
@@ -125,10 +124,10 @@ public class Sprite {
 
 		if (playMode == LOOP_PINGPONG) {
 			if (Ping) //ping indicates forward playing
-				seriesPosition = (totalAnimTimeMillis / cycleLengthMillis);
+				seriesPosition = (totalAnimTimeMillis / frameDurationMillis);
 			else
 				// !Ping (pong) indicates reverse playing
-				seriesPosition = seriesLength - 1 - (totalAnimTimeMillis / cycleLengthMillis);
+				seriesPosition = seriesLength - 1 - (totalAnimTimeMillis / frameDurationMillis);
 
 			//if past either end of the loop
 			if (seriesPosition > seriesLength - 1) {
@@ -169,20 +168,21 @@ public class Sprite {
 	 */
 	public void setImage(float durationSeconds, String ident, int playMode) {
 		this.playMode = playMode;
-		if (currentImageName.equals(name + ident)) return;
+		if (currentImageName.equalsIgnoreCase(name + "_" + ident)) return;
 
 		Ping = true;
-		currentImageName = name + ident;
+		currentImageName = name + "_" + ident;
+		currentImageName = currentImageName.toUpperCase();
 		totalAnimTimeMillis = 0;
 		sequenceDurationMillis = (int) (durationSeconds * 1000); //1000 millisec in 1 sec
 
 		//load image from the assetloader/textureatlas, get approriate texture region
 		TextureAtlas ta = ((TextureAtlas) AssetLoader.getAsset(TextureAtlas.class, name + ".atlas"));
-		Array<AtlasRegion> ar = ta.findRegions(name.toUpperCase() + ident);
+		Array<AtlasRegion> ar = ta.findRegions(currentImageName);
 		animation = ar.toArray(AtlasRegion.class);
 		seriesLength = animation.length;
-		cycleLengthMillis = sequenceDurationMillis / seriesLength;
-
+		frameDurationMillis = sequenceDurationMillis / seriesLength;
+		System.out.println(seriesLength + "  " + playMode);
 		if (playMode == STILL_IMAGE) {
 			sprite = animation[0];
 			return; //no further processing needed on static images
