@@ -9,18 +9,18 @@
 
 package com.teamsweepy.greywater.engine;
 
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.teamsweepy.greywater.engine.input.InputGame;
+import com.teamsweepy.greywater.engine.input.InputHandler;
 import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.ui.GameScreen;
 import com.teamsweepy.greywater.ui.MainMenuScreen;
-
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Engine extends Game {
 
@@ -29,7 +29,7 @@ public class Engine extends Game {
 	public static final short NATIVE_HEIGHT = 900;
 	public static final double NATIVE_ASPECT_RATIO = 16.0 / 9.0;
 	public static final int ANIMATION_PERIOD_NANOSEC = 16666666; // 60 FPS
-	public static final byte MAX_FRAME_SKIPS = 40; //not more than 40 frames can be skipped due to lag.
+	public static final byte MAX_FRAME_SKIPS = 40; // not more than 40 frames can be skipped due to lag.
 
 	/* ********************* STATISTICS AND TIMEKEEPING VARIABLES ************************ */
 	private double secondsElapsed = 0.0;
@@ -39,14 +39,13 @@ public class Engine extends Game {
 	private short tickCount = 0;
 	private short skipCount = 0;
 
-	//other stuff, will be sorted when there's more
+	// other stuff, will be sorted when there's more
 	public SpriteBatch batch;
-	private InputHandler inputHandler;
+	private InputHandler inputHandlerGUI;
+	private InputGame inputHandlerGame;
 	private GameScreen gs;
-	
-	
-	
-	//testvar
+
+	// testvar
 	private Sprite a;
 	Level l;
 
@@ -56,16 +55,28 @@ public class Engine extends Game {
 	@Override
 	public void create() {
 		Camera.init(NATIVE_WIDTH, NATIVE_HEIGHT);
-		
-		batch = new SpriteBatch();
-		Texture.setEnforcePotImages(false); //binary texture sizes are for the 80's
 
-		inputHandler = new InputHandler();
-		Gdx.input.setInputProcessor(inputHandler);
+		batch = new SpriteBatch();
+		Texture.setEnforcePotImages(false); // binary texture sizes are for the 80's
+
+		initInput();
 
 		AssetLoader.init();
 		this.setScreen(new MainMenuScreen(this));
 		l = new Level(this);
+	}
+
+	/**
+	 * Initilize input as a multiplex. Multiple listeners are added (one for GUI and one for the gameView)
+	 */
+	private void initInput() {
+		InputMultiplexer multiplexer = new InputMultiplexer();
+		inputHandlerGUI = new InputGame();
+		inputHandlerGame = new InputGame();
+		// The event first goes to the GUI input and if needed to the Game input
+		multiplexer.addProcessor(inputHandlerGUI);
+		multiplexer.addProcessor(inputHandlerGame);
+		Gdx.input.setInputProcessor(multiplexer);
 	}
 
 	/**
@@ -78,8 +89,8 @@ public class Engine extends Game {
 	}
 
 	/**
-	 * Render is called 60 times per second by LibGDX. Render should call our own Render method that can be skipped if the system is lagging
-	 * and it should also call the physics/logic update method, and never skip
+	 * Render is called 60 times per second by LibGDX. Render should call our own Render method that can be skipped if the system is lagging and it should also call the physics/logic update method,
+	 * and never skip
 	 */
 	@Override
 	public void render() {
@@ -90,29 +101,28 @@ public class Engine extends Game {
 
 		}
 
-
 		deltaTime = Gdx.graphics.getDeltaTime();
 		secondsElapsed += deltaTime;
-		excessTime += deltaTime * 1000000000 - ANIMATION_PERIOD_NANOSEC; //nano second accuracy!
+		excessTime += deltaTime * 1000000000 - ANIMATION_PERIOD_NANOSEC; // nano second accuracy!
 		skipCount = 0;
 
-	//	Camera.update();
-	//	Camera.apply(Gdx.gl10);
+		// Camera.update();
+		// Camera.apply(Gdx.gl10);
 
-		//scale from 1600x900 to whatever user screen is set to and clear graphics
+		// scale from 1600x900 to whatever user screen is set to and clear graphics
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-	//	batch.setProjectionMatrix(Camera.getProjectionMatrix());
-		Gdx.gl.glClearColor(0, 0, 0, 1); //black background
+		// batch.setProjectionMatrix(Camera.getProjectionMatrix());
+		Gdx.gl.glClearColor(0, 0, 0, 1); // black background
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		tick(deltaTime); //tick all subcomponents
+		tick(deltaTime); // tick all subcomponents
 		tickCount++;
 
-		super.render(); //calls the current screen render method
+		super.render(); // calls the current screen render method
 		frameCount++;
-		
+
 		l.render();
-		
+
 		if (a != null) {
 			a.tick(deltaTime);
 			batch.begin();
@@ -120,7 +130,7 @@ public class Engine extends Game {
 			batch.end();
 		}
 
-		//if the frame is taking too long, update without rendering
+		// if the frame is taking too long, update without rendering
 		while ((excessTime > ANIMATION_PERIOD_NANOSEC) && (skipCount < MAX_FRAME_SKIPS)) {
 			skipCount++;
 			excessTime -= ANIMATION_PERIOD_NANOSEC;
@@ -132,16 +142,20 @@ public class Engine extends Game {
 
 	}
 
-	public void tick(float deltaTime) {}
+	public void tick(float deltaTime) {
+	}
 
 	@Override
-	public void resize(int width, int height) {}
+	public void resize(int width, int height) {
+	}
 
 	@Override
-	public void pause() {}
+	public void pause() {
+	}
 
 	@Override
-	public void resume() {}
+	public void resume() {
+	}
 
 	/**
 	 * Print Frames per second and Updates per second data and reset their counters.

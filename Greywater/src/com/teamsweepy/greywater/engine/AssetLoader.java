@@ -10,40 +10,35 @@
 
 package com.teamsweepy.greywater.engine;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.Disposable;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 public class AssetLoader {
 
-	//wanted to name it assMan, didn't, because I'm a grown up
+	// wanted to name it assMan, didn't, because I'm a grown up
 	private final static String ASSET_FOLDER = "data/";
-	
-	private static AssetManager assetManager;
 
+	private static AssetManager assetManager;
 
 	/**
 	 * Must be called before any other methods, initializes the asset manager component
 	 */
 	public static void init() {
 		assetManager = new AssetManager();
-		parseINI("Assets.ini"); //load common assets such as the HUD and menu
+		parseINI("Assets.ini"); // load common assets such as the HUD and menu
 	}
 
 	/**
@@ -67,8 +62,7 @@ public class AssetLoader {
 
 				if (action.equalsIgnoreCase("LOAD")) {
 					assetManager.load(fileName, getAssetType(type));
-				} else
-					System.out.println("Invalid file in " + iniName + " - " + currentLine);
+				} else System.out.println("Invalid file in " + iniName + " - " + currentLine);
 			}
 
 			br.close();
@@ -87,6 +81,7 @@ public class AssetLoader {
 
 	/**
 	 * Update loaders, create assets if loaders have completed.
+	 * 
 	 * @return percent complete as float.
 	 */
 	public static float tick() {
@@ -96,23 +91,27 @@ public class AssetLoader {
 
 	/**
 	 * Getter for assets for use in game.
-	 * @param type - class of the asset type
-	 * @param name - name of the asset to get
+	 * 
+	 * @param type
+	 *            - class of the asset type
+	 * @param name
+	 *            - name of the asset to get
 	 * @return The asset requested or null
 	 */
-	public static <T> T getAsset(Class<?> type, String name){
-		
-		T asset = (T) assetManager.get(ASSET_FOLDER + name, type);
-		return  asset;
-	}
+	public static <T> T getAsset(Class<?> type, String name) {
 
+		T asset = (T) assetManager.get(ASSET_FOLDER + name, type);
+		return asset;
+	}
 
 	/**
 	 * Used to parse the type from INI files from a string into a proper type object.
 	 * 
-	 * @param type - name of the type as string from INI
+	 * @param type
+	 *            - name of the type as string from INI
 	 * @return - type object
-	 * @throws Exception - errors on no such type. Spelling counts!
+	 * @throws Exception
+	 *             - errors on no such type. Spelling counts!
 	 */
 	private static Class<?> getAssetType(String type) throws Exception {
 		if (type.equalsIgnoreCase("Texture")) return Texture.class;
@@ -136,8 +135,10 @@ public class AssetLoader {
 	/**
 	 * Remove a specific asset
 	 * 
-	 * @param name - the filename or assetname of the asset
-	 * @param type - the class of the asset
+	 * @param name
+	 *            - the filename or assetname of the asset
+	 * @param type
+	 *            - the class of the asset
 	 */
 	public static void dispose(String name, Class<?> type) {
 		try {

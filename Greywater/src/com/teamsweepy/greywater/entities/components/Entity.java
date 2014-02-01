@@ -31,13 +31,13 @@
 
 package com.teamsweepy.greywater.entities.components;
 
-import com.teamsweepy.greywater.engine.Camera;
+import java.awt.geom.Point2D;
+
+import javax.swing.Box;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-
-import java.awt.geom.Point2D;
-
+import com.teamsweepy.greywater.engine.Camera;
 
 public abstract class Entity {
 
@@ -55,10 +55,12 @@ public abstract class Entity {
 
 	/**
 	 * Draws the current sprite for this entity.
-	 * @param g - Graphics object
+	 * 
+	 * @param g
+	 *            - Graphics object
 	 */
 	public void render(SpriteBatch g) {
-		graphicsComponent.render(g, Math.round(getX() - Camera.xOffset), Math.round(getY() - Camera.yOffset));//TODO replace with isometric transforms
+		graphicsComponent.render(g, Math.round(getX() - Camera.xOffset), Math.round(getY() - Camera.yOffset));// TODO replace with isometric transforms
 	}
 
 	/**
@@ -93,6 +95,6 @@ public abstract class Entity {
 	public double getDepth() {
 		float x = physicsComponent.getHitBox().width * .5f + getX();
 		float y = physicsComponent.getHitBox().height * .5f + getY();
-		return (x + y) * .866; //.866 is cos of 30 degrees, which is the isometric transform
+		return (x + y) * .866; // .866 is cos of 30 degrees, which is the isometric transform
 	}
 }
