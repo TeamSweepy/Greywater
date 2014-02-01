@@ -44,6 +44,14 @@ public abstract class Entity {
 	/* *** All entities have a physics component for collisions and position, and a graphics component to render on screen *** */
 	protected Tangible physicsComponent; // hitbox
 	protected Sprite graphicsComponent; // sprite
+    protected Camera mainCamera;
+
+    public Entity()
+    {
+        mainCamera = Camera.getDefault();
+    }
+
+
 
 	/**
 	 * Ticks components (graphics and physics)
@@ -58,7 +66,7 @@ public abstract class Entity {
 	 * @param g - Graphics object
 	 */
 	public void render(SpriteBatch g) {
-		graphicsComponent.render(g, Math.round(getX() - Camera.xOffset), Math.round(getY() - Camera.yOffset));//TODO replace with isometric transforms
+		graphicsComponent.render(g, getX() - mainCamera.xOffset, getY() - mainCamera.yOffset);//TODO replace with isometric transforms
 	}
 
 	/**
