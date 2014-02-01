@@ -44,9 +44,8 @@ public class Engine extends Game {
 	private InputHandler inputHandler;
 	private GameScreen gs;
 	
-	
-	
 	//testvar
+    // FEEDBACK: Please use some names longer than one character
 	private Sprite a;
 	Level l;
 
@@ -55,8 +54,8 @@ public class Engine extends Game {
 	 */
 	@Override
 	public void create() {
-		Camera.init(NATIVE_WIDTH, NATIVE_HEIGHT);
-		
+        Camera.getDefault().setViewPort(NATIVE_WIDTH, NATIVE_HEIGHT);
+
 		batch = new SpriteBatch();
 		Texture.setEnforcePotImages(false); //binary texture sizes are for the 80's
 
@@ -65,7 +64,7 @@ public class Engine extends Game {
 
 		AssetLoader.init();
 		this.setScreen(new MainMenuScreen(this));
-		l = new Level(this);
+		l = new Level();
 	}
 
 	/**
@@ -111,7 +110,7 @@ public class Engine extends Game {
 		super.render(); //calls the current screen render method
 		frameCount++;
 		
-		l.render();
+		l.render(batch);
 		
 		if (a != null) {
 			a.tick(deltaTime);

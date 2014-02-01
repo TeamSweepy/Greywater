@@ -80,7 +80,7 @@ public class Sprite {
 	 * @param x - x co-ordinate to render at
 	 * @param y - y co-ordinate to render at
 	 */
-	public void render(SpriteBatch g, int x, int y) {
+	public void render(SpriteBatch g, float x, float y) {
 		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING)
 			g.draw(sprite, x, y);
 		else
