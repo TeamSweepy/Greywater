@@ -1,9 +1,7 @@
-
 package com.teamsweepy.greywater.entities;
 
 import com.teamsweepy.greywater.entities.components.Entity;
 import com.teamsweepy.greywater.entities.components.Sprite;
-
 
 public abstract class Mob extends Entity {
 
@@ -29,18 +27,18 @@ public abstract class Mob extends Entity {
 		} else {
 			super.tick(deltaTime);
 
-			if (attacking)
-				graphicsComponent.setImage(.25f, "Attack_" + currentDirection, Sprite.FORWARD); //TODO if multiple attacks clicked, pingpong
+			if (attacking) graphicsComponent.setImage(.25f, "Attack_" + currentDirection, Sprite.FORWARD); // TODO if multiple attacks clicked, pingpong
 			else if (physicsComponent.isMoving()) {
 				graphicsComponent.setImage(walkCycleDuration, "Walk_" + currentDirection, Sprite.LOOP);
-			} else
-				graphicsComponent.setImage(1f, "Stand_" + currentDirection, Sprite.STILL_IMAGE);
+			} else graphicsComponent.setImage(1f, "Stand_" + currentDirection, Sprite.STILL_IMAGE);
 		}
 	}
 
 	/**
 	 * Change the Mob's HP by the given amount.
-	 * @param damage - how much to change mob HP by
+	 * 
+	 * @param damage
+	 *            - how much to change mob HP by
 	 */
 	public void changeHP(int damage) {
 		HP -= damage;
@@ -61,7 +59,5 @@ public abstract class Mob extends Entity {
 	protected abstract void getInput();
 
 	protected abstract void attack(Mob enemy);
-
-
 
 }

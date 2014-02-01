@@ -12,22 +12,19 @@ import com.teamsweepy.greywater.engine.Engine;
 
 import com.badlogic.gdx.Screen;
 
-
 public class GameScreen implements Screen {
 
 	private Engine engine;
-
 
 	public GameScreen(Engine eng) {
 		engine = eng;
 	}
 
-
 	@Override
 	public void render(float delta) {
-		engine.batch.begin();//start render
+		engine.batch.begin();// start render
 
-		engine.batch.end();//end render
+		engine.batch.end();// end render
 	}
 
 	@Override
@@ -57,10 +54,11 @@ public class GameScreen implements Screen {
 	/* **************** PROBABLY USELESS METHODS ********************* */
 
 	@Override
-	public void resize(int width, int height) {}
+	public void resize(int width, int height) {
+	}
 
 	@Override
-	public void dispose() {}
-
+	public void dispose() {
+	}
 
 }

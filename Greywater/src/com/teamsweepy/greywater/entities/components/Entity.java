@@ -45,15 +45,6 @@ public abstract class Entity {
 	protected Tangible physicsComponent; // hitbox
 	protected Sprite graphicsComponent; // sprite
 
-    // Protected or private?
-    protected Camera mainCamera;
-
-    // Initialize
-    public Entity()
-    {
-        mainCamera = Camera.getDefault();
-    }
-
 	/**
 	 * Ticks components (graphics and physics)
 	 */
@@ -67,8 +58,7 @@ public abstract class Entity {
 	 * @param g - Graphics object
 	 */
 	public void render(SpriteBatch g) {
-//		graphicsComponent.render(g, Math.round(getX() - Camera.xOffset), Math.round(getY() - Camera.yOffset));//TODO replace with isometric transforms
-		graphicsComponent.render(g, getX() - mainCamera.xOffset, getY() - mainCamera.yOffset);//TODO replace with isometric transforms
+		graphicsComponent.render(g, Math.round(getX() - Camera.xOffset), Math.round(getY() - Camera.yOffset));//TODO replace with isometric transforms
 	}
 
 	/**
