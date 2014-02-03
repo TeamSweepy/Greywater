@@ -2,9 +2,11 @@
  * Used to hold data about an Entity's hitbox, including position, speed, and accessor methods. In reality, this class is the Entity. The
  * Entity interacts with the world entirely through this class because it is the 2D representation.
  * 
- * *********** IMPORTANT ************************ The graphics component (sprite) is the isometric image that is rendered to the screen, but
- * isometric math is unnecessarily intense, and wasteful to do when cheaper, more effective methods are available. To that end, the world is
- * ACTUALLY a top down rectangular world, and is merely represented isometrically.
+ * *********** IMPORTANT ************************
+ * 
+ * The graphics component (sprite) is the isometric image that is rendered to the screen, but isometric math is unnecessarily intense, and
+ * wasteful to do when cheaper, more effective methods are available. To that end, the world is ACTUALLY a top down rectangular world, and
+ * is merely represented isometrically.
  * 
  * This class is the 2D physics component (hitbox) and the iso aspect is the graphics component. This class controls the speed, movement,
  * location, and collision of the object as if it were top-down, and then that data is taken by the entity class and math'd into isometric
@@ -14,6 +16,8 @@
  * 
  * Copyright Team Sweepy - Jeremy Barnes 2014 All use outside of the Greywater Project is not permitted unless express permission is
  * granted. Email TeamSweepy@gmail.com to discuss usage.
+ * 
+ * @author Barnes
  */
 
 package com.teamsweepy.greywater.entities.components;
@@ -22,7 +26,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 import java.awt.geom.Point2D;
 
-public class Tangible {
+public class Hitbox {
 
 	/* ************* POSITIONAL VARIABLES ************** */
 	public Point2D destination;
@@ -41,7 +45,7 @@ public class Tangible {
 	 * @param hitWidth- width of the hitBox
 	 * @param hitHeight- height of hitBox
 	 */
-	public Tangible(float x, float y, int hitWidth, int hitHeight, float spd) {
+	public Hitbox(float x, float y, int hitWidth, int hitHeight, float spd) {
 		destination = new Point2D.Float(x, y);
 		this.speed = spd;
 		hitBox = new Rectangle(x, y, hitWidth, hitHeight);

@@ -42,7 +42,7 @@ import java.awt.geom.Point2D;
 public abstract class Entity {
 
 	/* *** All entities have a physics component for collisions and position, and a graphics component to render on screen *** */
-	protected Tangible physicsComponent; // hitbox
+	protected Hitbox physicsComponent; // hitbox
 	protected Sprite graphicsComponent; // sprite
     protected Camera mainCamera;
 
@@ -72,7 +72,7 @@ public abstract class Entity {
 	/**
 	 * @return the physicsComponent for filthy outsiders
 	 */
-	public Tangible getPhysics() {
+	public Hitbox getPhysics() {
 		return physicsComponent;
 	}
 

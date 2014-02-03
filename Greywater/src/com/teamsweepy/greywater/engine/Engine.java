@@ -5,11 +5,12 @@
  * Copyright Team Sweepy - Jeremy Barnes 2014 All use outside of the Greywater Project is not permitted unless express permission is
  * granted. Email TeamSweepy@gmail.com to discuss usage.
  * 
+ * @author Barnes
+ * 
  */
 
 package com.teamsweepy.greywater.engine;
 
-import com.badlogic.gdx.InputMultiplexer;
 import com.teamsweepy.greywater.engine.input.InputGame;
 import com.teamsweepy.greywater.engine.input.InputHandler;
 import com.teamsweepy.greywater.entities.components.Sprite;
@@ -19,10 +20,9 @@ import com.teamsweepy.greywater.ui.MainMenuScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Engine extends Game {
@@ -44,13 +44,13 @@ public class Engine extends Game {
 
 	//other stuff, will be sorted when there's more
 	public SpriteBatch batch;
-    private InputHandler inputHandlerGUI;
-    private InputGame inputHandlerGame;
-    private GameScreen gs;
-	
-	
+	private InputHandler inputHandlerGUI;
+	private InputGame inputHandlerGame;
+	private GameScreen gs;
 
-    // FEEDBACK: Even for test variables, use some names that are longer then 1 character
+
+
+	// FEEDBACK: Even for test variables, use some names that are longer then 1 character
 	//testvar
 	private Sprite a;
 	Level l;
@@ -60,7 +60,7 @@ public class Engine extends Game {
 	 */
 	@Override
 	public void create() {
-        Camera.getDefault().setViewPort(NATIVE_WIDTH, NATIVE_HEIGHT);
+		Camera.getDefault().setViewPort(NATIVE_WIDTH, NATIVE_HEIGHT);
 		
 		batch = new SpriteBatch();
 		Texture.setEnforcePotImages(false); //binary texture sizes are for the 80's
@@ -72,18 +72,18 @@ public class Engine extends Game {
 		l = new Level();
 	}
 
-    /**
-     * Initilize input as a multiplex. Multiple listeners are added (one for GUI and one for the gameView)
-     */
-    private void initInput() {
-        InputMultiplexer multiplexer = new InputMultiplexer();
-        inputHandlerGUI = new InputGame();
-        inputHandlerGame = new InputGame();
-        // The event first goes to the GUI input and if needed to the Game input
-        multiplexer.addProcessor(inputHandlerGUI);
-        multiplexer.addProcessor(inputHandlerGame);
-        Gdx.input.setInputProcessor(multiplexer);
-    }
+	/**
+	 * Initilize input as a multiplex. Multiple listeners are added (one for GUI and one for the gameView)
+	 */
+	private void initInput() {
+		InputMultiplexer multiplexer = new InputMultiplexer();
+		inputHandlerGUI = new InputGame();
+		inputHandlerGame = new InputGame();
+		// The event first goes to the GUI input and if needed to the Game input
+		multiplexer.addProcessor(inputHandlerGUI);
+		multiplexer.addProcessor(inputHandlerGame);
+		Gdx.input.setInputProcessor(multiplexer);
+	}
 
 	/**
 	 * Dispose of unmanaged assets such as the spritebatch and all textures
@@ -104,21 +104,17 @@ public class Engine extends Game {
 			System.out.println("Loaderup");
 			a = new Sprite("Tavish", "ATTACK_SOUTH");
 			a.setImage(.3f, "AtTacK_SOUTHEAST", Sprite.LOOP_PINGPONG);
-
 		}
-
 
 		deltaTime = Gdx.graphics.getDeltaTime();
 		secondsElapsed += deltaTime;
 		excessTime += deltaTime * 1000000000 - ANIMATION_PERIOD_NANOSEC; //nano second accuracy!
 		skipCount = 0;
 
-	//	Camera.update();
-	//	Camera.apply(Gdx.gl10);
-
+	
 		//scale from 1600x900 to whatever user screen is set to and clear graphics
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-	//	batch.setProjectionMatrix(Camera.getProjectionMatrix());
+		//	batch.setProjectionMatrix(Camera.getProjectionMatrix());
 		Gdx.gl.glClearColor(0, 0, 0, 1); //black background
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
@@ -127,9 +123,9 @@ public class Engine extends Game {
 
 		super.render(); //calls the current screen render method
 		frameCount++;
-		
+
 		l.render(batch);
-		
+
 		if (a != null) {
 			a.tick(deltaTime);
 			batch.begin();
