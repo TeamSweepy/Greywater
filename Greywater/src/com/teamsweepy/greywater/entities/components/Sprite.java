@@ -19,6 +19,7 @@ package com.teamsweepy.greywater.entities.components;
 
 import com.teamsweepy.greywater.engine.AssetLoader;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -42,8 +43,8 @@ public class Sprite {
 	private static boolean Ping = true;//used to indicated direction of a ping ponging loop animation
 
 	//image identifiers
-	private String name;
-	private String currentImageName;
+	private String name; //used to indicate Atlas Name or single image name (filename)
+	private String currentImageName; //used to indicate the name from within an atlas
 	private int playMode;
 
 	// time keepers
@@ -61,16 +62,26 @@ public class Sprite {
 
 
 	/**
-	 * Constructor for sprites.
+	 * Constructor for sprite that rely on TextureAtlases
 	 * 
-	 * @param name - The name of the character/entity (Such as Tavish)
-	 * @param imgName - default image to start with. (Such as _Stand_South)
+	 * @param name - The name of the character/entity (Such as Tavish) This should match the name of their .atlas file!
+	 * @param imgName - image to start with (Such as Stand_South). It will be added to the name to find the image - Tavish + Stand_South
 	 */
 	public Sprite(String name, String imgName) {
 		this.name = name;
 		currentImageName = imgName;
-		setImage(.5f, imgName, STILL_IMAGE); //arbitrary default
+		setImage(.5f, imgName, STILL_IMAGE, TextureAtlas.class); //arbitrary default
+	}
 
+	/**
+	 * Constructor for sprites that use single, unatlased textures.
+	 * 
+	 * @param imageName - the name of the image to use, such as "HUD-1600" (no file extension needed, it had better be PNG)
+	 */
+	public Sprite(String imageName) {
+		this.name = imageName;
+		currentImageName = "";
+		setImage(0, name, STILL_IMAGE, Texture.class); //arbitrary default
 	}
 
 	/**
@@ -158,15 +169,32 @@ public class Sprite {
 	public String getCurrentImageName() {
 		return currentImageName;
 	}
-
+	
 	/**
 	 * Sets sprites image/animation
 	 * 
-	 * @param duration_seconds - length of time to loop in seconds
-	 * @param ident - Images are loaded as name+ident (Tavish + _Walk_North)
+	 * @param duration_seconds - length of time to loop/play in seconds
+	 * @param ident - Images are loaded as name+ident (Tavish + Walk_North)
 	 * @param playMode - how the images should play. Static enum ints of this class.
 	 */
-	public void setImage(float durationSeconds, String ident, int playMode) {
+	public void setImage(float durationSeconds, String ident, int playMode){
+		setImage(durationSeconds, ident, playMode, TextureAtlas.class); //arbitrary default
+	}
+	
+	/**
+	 * Sets a sprite to a single still image.
+	 * Image name should be the filename without extension. Case sensitive.
+	 */
+	public void setImage(String imageName){
+		this.name = imageName;
+		currentImageName = "";
+		setImage(0, name, STILL_IMAGE, Texture.class); //arbitrary default
+	}
+
+	/**
+	 * Actually handles the logic of setting up the sprite image.
+	 */
+	private void setImage(float durationSeconds, String ident, int playMode, Class<?> classType) {
 		this.playMode = playMode;
 		if (currentImageName.equalsIgnoreCase(name + "_" + ident)) return;
 
@@ -176,16 +204,22 @@ public class Sprite {
 		totalAnimTimeMillis = 0;
 		sequenceDurationMillis = (int) (durationSeconds * 1000); //1000 millisec in 1 sec
 
-		//load image from the assetloader/textureatlas, get approriate texture region
-		TextureAtlas ta = ((TextureAtlas) AssetLoader.getAsset(TextureAtlas.class, name + ".atlas"));
-		Array<AtlasRegion> ar = ta.findRegions(currentImageName);
-		animation = ar.toArray(AtlasRegion.class);
-		seriesLength = animation.length;
-		frameDurationMillis = sequenceDurationMillis / seriesLength;
-		System.out.println(seriesLength + "  " + playMode);
-		if (playMode == STILL_IMAGE) {
-			sprite = animation[0];
-			return; //no further processing needed on static images
+		if (classType == TextureAtlas.class) {
+			//load image from the assetloader/textureatlas, get approriate texture region
+			TextureAtlas ta = ((TextureAtlas) AssetLoader.getAsset(TextureAtlas.class, name + ".atlas"));
+			Array<AtlasRegion> ar = ta.findRegions(currentImageName);
+			animation = ar.toArray(AtlasRegion.class);
+			
+			seriesLength = animation.length;
+			frameDurationMillis = sequenceDurationMillis / seriesLength;
+			System.out.println(seriesLength + "  " + playMode);
+			if (playMode == STILL_IMAGE) {
+				sprite = animation[0];
+				return; //no further processing needed on static images
+			}
+		} else if (classType == Texture.class) {
+			sprite = new TextureRegion((Texture) AssetLoader.getAsset(Texture.class, name + ".png"));
+			
 		}
 
 		if (playMode != LOOP_REVERSED && playMode != REVERSED)

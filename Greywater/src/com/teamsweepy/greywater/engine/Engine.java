@@ -50,10 +50,9 @@ public class Engine extends Game {
 
 
 
-	// FEEDBACK: Even for test variables, use some names that are longer then 1 character
 	//testvar
-	private Sprite a;
-	Level l;
+	private Sprite aTestSprite;
+	Level levelForTesting;
 
 	/**
 	 * Initialize core assets, automatically called by LibGDX
@@ -69,7 +68,7 @@ public class Engine extends Game {
 
 		AssetLoader.init();
 		this.setScreen(new MainMenuScreen(this));
-		l = new Level();
+		levelForTesting = new Level();
 	}
 
 	/**
@@ -100,10 +99,14 @@ public class Engine extends Game {
 	 */
 	@Override
 	public void render() {
-		if (AssetLoader.tick() >= 1f && a == null) {
+		
+		//SIMPLE IMAGE TEST TODO REMOVE
+		if (AssetLoader.tick() >= 1f && aTestSprite == null) {
 			System.out.println("Loaderup");
-			a = new Sprite("Tavish", "ATTACK_SOUTH");
-			a.setImage(.3f, "AtTacK_SOUTHEAST", Sprite.LOOP_PINGPONG);
+//			a = new Sprite("Tavish", "ATTACK_SOUTH");
+//			a.setImage(.3f, "AtTacK_SOUTHEAST", Sprite.LOOP_PINGPONG);
+			aTestSprite = new Sprite("HUD-1600");
+			
 		}
 
 		deltaTime = Gdx.graphics.getDeltaTime();
@@ -120,7 +123,6 @@ public class Engine extends Game {
 		Gdx.gl.glClearColor(0, 0, 0, 1); //black background
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		Camera.getDefault().move(1, 1);
 
 
 		tick(deltaTime); //tick all subcomponents
@@ -128,12 +130,12 @@ public class Engine extends Game {
 		super.render(); //calls the current screen render method
 		frameCount++;
 
-		l.render(batch);
+		levelForTesting.render(batch);
 
-		if (a != null) {
-			a.tick(deltaTime);
+		if (aTestSprite != null) {
+			aTestSprite.tick(deltaTime);
 			batch.begin();
-			a.render(batch, 400, 400);
+			aTestSprite.render(batch, 400, 400);
 			batch.end();
 		}
 

@@ -8,12 +8,14 @@
  * 
  * 
  * 
- * *********** IMPORTANT ************************ The graphics component (sprite) is an isometric image, it is a skewed square, rotated 45
- * degrees. An iso-tile has width:height of 2:1, giving it the illusion of depth. Unfortunately, that makes programming super hard, and I am
- * lazy. Far more powerful and understandable is to represent the tiles as square in memory, as if the game were a top-down 2D style game.
- * This means that all objects are squares or rectangles, which makes the math easy and render sorting easier. The 2D is represented through
- * the physics component (hitbox) and the iso aspect is the graphics component. The middleman, which holds these two, is the Entity (or
- * subclass thereof, such as this Tile) which makes them play nice, see below.
+ * *********** IMPORTANT ************************
+ * 
+ * The graphics component (sprite) is an isometric image, it is a skewed square, rotated 45 degrees. An iso-tile has width:height of 2:1,
+ * giving it the illusion of depth. Unfortunately, that makes programming super hard, and I am lazy. Far more powerful and understandable is
+ * to represent the tiles as square in memory, as if the game were a top-down 2D style game. This means that all objects are squares or
+ * rectangles, which makes the math easy and render sorting easier. The 2D is represented through the physics component (hitbox) and the iso
+ * aspect is the graphics component. The middleman, which holds these two, is the Entity (or subclass thereof, such as this Tile) which
+ * makes them play nice, see below.
  * 
  * Only when an item is being rendered is it treated as isometric - the square co-ordinates are run through the math method - getIsoCoords()
  * and converted from boring 2D to exciting, sexy isometric co-ordinates. Because all images undergo the same transformation, the isometric

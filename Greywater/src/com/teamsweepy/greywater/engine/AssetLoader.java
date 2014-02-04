@@ -99,7 +99,6 @@ public class AssetLoader {
 	 * @return The asset requested or null
 	 */
 	public static <T> T getAsset(Class<?> type, String name) {
-
 		T asset = (T) assetManager.get(ASSET_FOLDER + name, type);
 		return asset;
 	}

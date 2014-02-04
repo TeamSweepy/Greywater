@@ -11,7 +11,6 @@ package com.teamsweepy.greywater.engine;
 
 import com.teamsweepy.math.Point2F;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
@@ -47,10 +46,10 @@ public class Camera {
 	public void move(float x, float y) {
 		xOffset -= x; //subtract so that if the coordinate is positive, the camera moves up/right
 		yOffset -= y;
-//		camera.translate(x, y);
-//		camera.update();
-//		camera.apply(Gdx.gl10);
-		
+		//		camera.translate(x, y);
+		//		camera.update();
+		//		camera.apply(Gdx.gl10);
+
 	}
 
 	public void update() {
