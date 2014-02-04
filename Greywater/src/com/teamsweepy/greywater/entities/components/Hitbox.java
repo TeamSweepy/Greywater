@@ -22,14 +22,15 @@
 
 package com.teamsweepy.greywater.entities.components;
 
+import com.teamsweepy.math.Point2F;
+
 import com.badlogic.gdx.math.Rectangle;
 
-import java.awt.geom.Point2D;
 
 public class Hitbox {
 
 	/* ************* POSITIONAL VARIABLES ************** */
-	public Point2D destination;
+	public Point2F destination;
 	private float speed = 0f; //per second
 	private float xDelta = 0f;
 	private float yDelta = 0f;
@@ -46,7 +47,7 @@ public class Hitbox {
 	 * @param hitHeight- height of hitBox
 	 */
 	public Hitbox(float x, float y, int hitWidth, int hitHeight, float spd) {
-		destination = new Point2D.Float(x, y);
+		destination = new Point2F(x, y);
 		this.speed = spd;
 		hitBox = new Rectangle(x, y, hitWidth, hitHeight);
 

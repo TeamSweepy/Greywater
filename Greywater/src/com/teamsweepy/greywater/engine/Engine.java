@@ -61,7 +61,7 @@ public class Engine extends Game {
 	@Override
 	public void create() {
 		Camera.getDefault().setViewPort(NATIVE_WIDTH, NATIVE_HEIGHT);
-		
+
 		batch = new SpriteBatch();
 		Texture.setEnforcePotImages(false); //binary texture sizes are for the 80's
 
@@ -111,16 +111,20 @@ public class Engine extends Game {
 		excessTime += deltaTime * 1000000000 - ANIMATION_PERIOD_NANOSEC; //nano second accuracy!
 		skipCount = 0;
 
-	
 		//scale from 1600x900 to whatever user screen is set to and clear graphics
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		//	batch.setProjectionMatrix(Camera.getProjectionMatrix());
+		Gdx.gl.glViewport((int) Camera.getDefault().xOffset, (int) Camera.getDefault().yOffset, Gdx.graphics.getWidth(),
+			Gdx.graphics.getHeight());
+		//this replaces the camera.translate function that doesn't work. 		
+		//batch.setProjectionMatrix(batch.getProjectionMatrix().translate(-Camera.getDefault().xOffset, -Camera.getDefault().yOffset, 0));
+		//TODO make it so that there is a zero-out function for offsets as well
 		Gdx.gl.glClearColor(0, 0, 0, 1); //black background
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
+		Camera.getDefault().move(1, 1);
+
+
 		tick(deltaTime); //tick all subcomponents
 		tickCount++;
-
 		super.render(); //calls the current screen render method
 		frameCount++;
 

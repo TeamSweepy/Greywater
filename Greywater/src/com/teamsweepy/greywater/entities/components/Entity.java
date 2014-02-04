@@ -32,11 +32,10 @@
 package com.teamsweepy.greywater.entities.components;
 
 import com.teamsweepy.greywater.engine.Camera;
+import com.teamsweepy.math.Point2F;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-
-import java.awt.geom.Point2D;
 
 
 public abstract class Entity {
@@ -44,12 +43,11 @@ public abstract class Entity {
 	/* *** All entities have a physics component for collisions and position, and a graphics component to render on screen *** */
 	protected Hitbox physicsComponent; // hitbox
 	protected Sprite graphicsComponent; // sprite
-    protected Camera mainCamera;
+	protected Camera mainCamera;
 
-    public Entity()
-    {
-        mainCamera = Camera.getDefault();
-    }
+	public Entity() {
+		mainCamera = Camera.getDefault();
+	}
 
 
 
@@ -91,8 +89,9 @@ public abstract class Entity {
 		return physicsComponent.getHitBox().y;
 	}
 
-	public Point2D getLocation() {
-		return new Point2D.Float(getX(), getY());
+	public Point2F getLocation() {
+		return new Point2F(getX(), getY());
+
 	}
 
 	/**
