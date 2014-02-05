@@ -53,6 +53,7 @@ public class Engine extends Game {
 	//testvar
 	private Sprite aTestSprite;
 	Level levelForTesting;
+	int i = 0;
 
 	/**
 	 * Initialize core assets, automatically called by LibGDX
@@ -105,7 +106,7 @@ public class Engine extends Game {
 			System.out.println("Loaderup");
 //			a = new Sprite("Tavish", "ATTACK_SOUTH");
 //			a.setImage(.3f, "AtTacK_SOUTHEAST", Sprite.LOOP_PINGPONG);
-			aTestSprite = new Sprite("HUD-1600");
+			aTestSprite = new Sprite("health-dial-rotate0001");
 			
 		}
 
@@ -135,7 +136,9 @@ public class Engine extends Game {
 		if (aTestSprite != null) {
 			aTestSprite.tick(deltaTime);
 			batch.begin();
-			aTestSprite.render(batch, 400, 400);
+			i++;
+			aTestSprite.renderRotated(batch, 400, 400, i);
+//			aTestSprite.render(batch, 400, 400);
 			batch.end();
 		}
 

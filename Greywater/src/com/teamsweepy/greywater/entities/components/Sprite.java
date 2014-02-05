@@ -99,6 +99,23 @@ public class Sprite {
 	}
 
 	/**
+	 * Draw an image rotated around the center of the image.
+	 * 
+	 * @param g - graphics object for rendering
+	 * @param x - x co-ordinate to render at
+	 * @param y - y co-ordinate to render at
+	 * @param rotationDegCCW - degrees to rotate the image. To go clockwise, use a negative value.
+	 */
+	public void renderRotated(SpriteBatch g, float x, float y, float rotationDegCCW) {
+		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING)
+			g.draw(sprite, x, y, sprite.getRegionWidth() / 2, sprite.getRegionHeight() / 2, sprite.getRegionWidth(),
+				sprite.getRegionHeight(), 1, 1, rotationDegCCW);
+		else
+			g.draw(animation[seriesPosition], x, y, sprite.getRegionWidth() / 2, sprite.getRegionHeight() / 2, sprite.getRegionWidth(),
+				sprite.getRegionHeight(), 1, 1, rotationDegCCW);
+	}
+
+	/**
 	 * Updates the image if it is animated, assumed to be called once every anim-period.
 	 */
 	public void tick(float elapsedTimeSeconds) {
@@ -169,7 +186,7 @@ public class Sprite {
 	public String getCurrentImageName() {
 		return currentImageName;
 	}
-	
+
 	/**
 	 * Sets sprites image/animation
 	 * 
@@ -177,15 +194,14 @@ public class Sprite {
 	 * @param ident - Images are loaded as name+ident (Tavish + Walk_North)
 	 * @param playMode - how the images should play. Static enum ints of this class.
 	 */
-	public void setImage(float durationSeconds, String ident, int playMode){
+	public void setImage(float durationSeconds, String ident, int playMode) {
 		setImage(durationSeconds, ident, playMode, TextureAtlas.class); //arbitrary default
 	}
-	
+
 	/**
-	 * Sets a sprite to a single still image.
-	 * Image name should be the filename without extension. Case sensitive.
+	 * Sets a sprite to a single still image. Image name should be the filename without extension. Case sensitive.
 	 */
-	public void setImage(String imageName){
+	public void setImage(String imageName) {
 		this.name = imageName;
 		currentImageName = "";
 		setImage(0, name, STILL_IMAGE, Texture.class); //arbitrary default
@@ -209,7 +225,7 @@ public class Sprite {
 			TextureAtlas ta = ((TextureAtlas) AssetLoader.getAsset(TextureAtlas.class, name + ".atlas"));
 			Array<AtlasRegion> ar = ta.findRegions(currentImageName);
 			animation = ar.toArray(AtlasRegion.class);
-			
+
 			seriesLength = animation.length;
 			frameDurationMillis = sequenceDurationMillis / seriesLength;
 			System.out.println(seriesLength + "  " + playMode);
@@ -219,7 +235,7 @@ public class Sprite {
 			}
 		} else if (classType == Texture.class) {
 			sprite = new TextureRegion((Texture) AssetLoader.getAsset(Texture.class, name + ".png"));
-			
+
 		}
 
 		if (playMode != LOOP_REVERSED && playMode != REVERSED)
