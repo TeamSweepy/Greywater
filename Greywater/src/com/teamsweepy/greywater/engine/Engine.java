@@ -17,6 +17,7 @@ import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.ui.GameScreen;
 import com.teamsweepy.greywater.ui.MainMenuScreen;
+import com.teamsweepy.math.Point2F;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -53,7 +54,7 @@ public class Engine extends Game {
 	//testvar
 	private Sprite aTestSprite;
 	Level levelForTesting;
-	int i = 0;
+	int rotatingIncrement = 0;
 
 	/**
 	 * Initialize core assets, automatically called by LibGDX
@@ -100,16 +101,17 @@ public class Engine extends Game {
 	 */
 	@Override
 	public void render() {
-		
+
 		//SIMPLE IMAGE TEST TODO REMOVE
 		if (AssetLoader.tick() >= 1f && aTestSprite == null) {
 			System.out.println("Loaderup");
-//			a = new Sprite("Tavish", "ATTACK_SOUTH");
-//			a.setImage(.3f, "AtTacK_SOUTHEAST", Sprite.LOOP_PINGPONG);
+			//			a = new Sprite("Tavish", "ATTACK_SOUTH");
+			//			a.setImage(.3f, "AtTacK_SOUTHEAST", Sprite.LOOP_PINGPONG);
 			aTestSprite = new Sprite("health-dial-rotate0001");
-			
+
 		}
 
+		Camera.getDefault().move(1, 1);
 		deltaTime = Gdx.graphics.getDeltaTime();
 		secondsElapsed += deltaTime;
 		excessTime += deltaTime * 1000000000 - ANIMATION_PERIOD_NANOSEC; //nano second accuracy!
@@ -118,8 +120,10 @@ public class Engine extends Game {
 		//scale from 1600x900 to whatever user screen is set to and clear graphics
 		Gdx.gl.glViewport((int) Camera.getDefault().xOffset, (int) Camera.getDefault().yOffset, Gdx.graphics.getWidth(),
 			Gdx.graphics.getHeight());
+
 		//this replaces the camera.translate function that doesn't work. 		
-		//batch.setProjectionMatrix(batch.getProjectionMatrix().translate(-Camera.getDefault().xOffset, -Camera.getDefault().yOffset, 0));
+		Point2F offsetPoint = Camera.getDefault().getTranslatedForMatrix();
+		batch.setProjectionMatrix(batch.getProjectionMatrix().translate(offsetPoint.x, offsetPoint.y, 0));
 		//TODO make it so that there is a zero-out function for offsets as well
 		Gdx.gl.glClearColor(0, 0, 0, 1); //black background
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -135,10 +139,12 @@ public class Engine extends Game {
 
 		if (aTestSprite != null) {
 			aTestSprite.tick(deltaTime);
+
 			batch.begin();
-			i++;
-			aTestSprite.renderRotated(batch, 400, 400, i);
-//			aTestSprite.render(batch, 400, 400);
+
+			rotatingIncrement++;
+			aTestSprite.renderRotated(batch, 400, 400, rotatingIncrement);
+
 			batch.end();
 		}
 

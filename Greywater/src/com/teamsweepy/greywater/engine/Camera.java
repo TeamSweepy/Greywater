@@ -22,7 +22,8 @@ public class Camera {
 	private static Camera defaultCamera;
 
 	private OrthographicCamera camera;
-	public float xOffset, yOffset;
+	public float xOffset, yOffset; //temporary tracking of camera movement to translate spriteBatch
+	public float xOffsetAggregate, yOffsetAggregate; //track total screen movement forever
 	public int width, height;
 
 	// Synchronized so the object won't be initialized in different threads
@@ -46,9 +47,9 @@ public class Camera {
 	public void move(float x, float y) {
 		xOffset -= x; //subtract so that if the coordinate is positive, the camera moves up/right
 		yOffset -= y;
-		//		camera.translate(x, y);
-		//		camera.update();
-		//		camera.apply(Gdx.gl10);
+
+		xOffsetAggregate -= x; //xOffset and yOffset get frequently reset, this is for locking to the screen
+		yOffsetAggregate -= y;
 
 	}
 
@@ -62,6 +63,15 @@ public class Camera {
 
 	public Matrix4 getProjectionMatrix() {
 		return camera.combined;
+	}
+
+	public Point2F getTranslatedForMatrix() {
+		float x = xOffset;
+		float y = yOffset;
+		xOffset = 0;
+		yOffset = 0;
+		return new Point2F(x, y);
+
 	}
 
 	public Point2F toIsoCoord(float xCoord, float yCoord) {
