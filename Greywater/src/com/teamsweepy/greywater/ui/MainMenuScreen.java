@@ -25,6 +25,10 @@ public class MainMenuScreen implements Screen {
 		// engine.batch.draw(AssetLoader.loadAnimationFromTexture("Tavish.atlas"),500, 500);
 		engine.batch.end();// end rendering
 	}
+	
+	public void tick(float delta){
+		
+	}
 
 	public void show() {
 		// TODO Auto-generated method stub

@@ -48,13 +48,7 @@ public class Engine extends Game {
 	private InputHandler inputHandlerGUI;
 	private InputGame inputHandlerGame;
 	private GameScreen gs;
-
-
-
-	//testvar
-	private Sprite aTestSprite;
-	Level levelForTesting;
-	int rotatingIncrement = 0;
+	private MainMenuScreen ms;
 
 	/**
 	 * Initialize core assets, automatically called by LibGDX
@@ -67,10 +61,9 @@ public class Engine extends Game {
 		Texture.setEnforcePotImages(false); //binary texture sizes are for the 80's
 
 		initInput();
-
+		gs = new GameScreen(this);
 		AssetLoader.init();
-		this.setScreen(new MainMenuScreen(this));
-		levelForTesting = new Level();
+		this.setScreen(gs);
 	}
 
 	/**
@@ -101,52 +94,19 @@ public class Engine extends Game {
 	 */
 	@Override
 	public void render() {
-
-		//SIMPLE IMAGE TEST TODO REMOVE
-		if (AssetLoader.tick() >= 1f && aTestSprite == null) {
-			System.out.println("Loaderup");
-			//			a = new Sprite("Tavish", "ATTACK_SOUTH");
-			//			a.setImage(.3f, "AtTacK_SOUTHEAST", Sprite.LOOP_PINGPONG);
-			aTestSprite = new Sprite("health-dial-rotate0001");
-
-		}
-
-		Camera.getDefault().move(1, 1);
+		
 		deltaTime = Gdx.graphics.getDeltaTime();
 		secondsElapsed += deltaTime;
 		excessTime += deltaTime * 1000000000 - ANIMATION_PERIOD_NANOSEC; //nano second accuracy!
 		skipCount = 0;
 
-		//scale from 1600x900 to whatever user screen is set to and clear graphics
-		Gdx.gl.glViewport((int) Camera.getDefault().xOffset, (int) Camera.getDefault().yOffset, Gdx.graphics.getWidth(),
-			Gdx.graphics.getHeight());
-
-		//this replaces the camera.translate function that doesn't work. 		
-		Point2F offsetPoint = Camera.getDefault().getTranslatedForMatrix();
-		batch.setProjectionMatrix(batch.getProjectionMatrix().translate(offsetPoint.x, offsetPoint.y, 0));
-		//TODO make it so that there is a zero-out function for offsets as well
 		Gdx.gl.glClearColor(0, 0, 0, 1); //black background
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-
 
 		tick(deltaTime); //tick all subcomponents
 		tickCount++;
 		super.render(); //calls the current screen render method
 		frameCount++;
-
-		levelForTesting.render(batch);
-
-		if (aTestSprite != null) {
-			aTestSprite.tick(deltaTime);
-
-			batch.begin();
-
-			rotatingIncrement++;
-			aTestSprite.renderRotated(batch, 400, 400, rotatingIncrement);
-
-			batch.end();
-		}
 
 		//if the frame is taking too long, update without rendering
 		while ((excessTime > ANIMATION_PERIOD_NANOSEC) && (skipCount < MAX_FRAME_SKIPS)) {
@@ -160,7 +120,14 @@ public class Engine extends Game {
 
 	}
 
-	public void tick(float deltaTime) {}
+	public void tick(float deltaTime) {
+		if(this.getScreen() == gs){
+			gs.tick(deltaTime);
+		}
+		else if(this.getScreen() == ms){
+			ms.tick(deltaTime);
+		}
+	}
 
 	@Override
 	public void resize(int width, int height) {}

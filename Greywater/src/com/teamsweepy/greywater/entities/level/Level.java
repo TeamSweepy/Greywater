@@ -33,10 +33,9 @@ public class Level {
 
 	public void render(SpriteBatch batch) {
 
-
 		TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
-		batch.begin();
-		for (int x = layer.getWidth() - 1; x >= 0; x--) {
+	
+		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = layer.getHeight() - 1; y >= 0; y--) {
 				TiledMapTileLayer.Cell cell = layer.getCell(x, y);
 				if (cell == null) continue;
@@ -44,16 +43,24 @@ public class Level {
 				TextureRegion region = tile.getTextureRegion();
 				region.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
-				Point2F p = mainCamera.toIsoCoord(56f * x, 56f * y);
+				Point2F p = mainCamera.toIsoCoord(56f * y, 56f * -x);
 				batch.draw(region.getTexture(), p.x, p.y);
-
-
-
 			}
 		}
 
-		batch.end();
+		layer = (TiledMapTileLayer) map.getLayers().get(1);
+		for (int x = 0; x < layer.getWidth(); x++) {
+			for (int y = layer.getHeight() - 1; y >= 0; y--) {
+				TiledMapTileLayer.Cell cell = layer.getCell(x, y);
+				if (cell == null) continue;
+				TiledMapTile tile = cell.getTile();
+				TextureRegion region = tile.getTextureRegion();
+				region.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
+				Point2F p = mainCamera.toIsoCoord(56f * y , 56f * -x );
+				batch.draw(region.getTexture(), p.x, p.y);
+			}
+		}
 	}
 
 	public void tick() {}

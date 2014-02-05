@@ -11,6 +11,7 @@ package com.teamsweepy.greywater.engine;
 
 import com.teamsweepy.math.Point2F;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
@@ -50,7 +51,6 @@ public class Camera {
 
 		xOffsetAggregate -= x; //xOffset and yOffset get frequently reset, this is for locking to the screen
 		yOffsetAggregate -= y;
-
 	}
 
 	public void update() {
