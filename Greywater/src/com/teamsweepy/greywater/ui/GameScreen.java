@@ -63,7 +63,7 @@ public class GameScreen implements Screen {
 			aTestSprite = new Sprite("health-dial-rotate0001");
 			Camera.getDefault().move(3900f, 1400);
 		}
-		Camera.getDefault().move(5f, 5f);
+	//	Camera.getDefault().move(5f, 5f);
 
 
 		if (aTestSprite != null) {

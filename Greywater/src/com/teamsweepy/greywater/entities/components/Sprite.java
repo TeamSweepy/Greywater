@@ -83,6 +83,15 @@ public class Sprite {
 		currentImageName = "";
 		setImage(0, name, STILL_IMAGE, Texture.class); //arbitrary default
 	}
+	
+	/**
+	 * Constructor for sprites that use a single, unatlased texture that was loaded elsewhere.
+	 * 
+	 */
+	public Sprite(TextureRegion texture){
+		sprite = texture;
+		playMode = STILL_IMAGE;
+	}
 
 	/**
 	 * Draws the sprite
@@ -189,7 +198,6 @@ public class Sprite {
 
 	/**
 	 * Sets sprites image/animation
-	 * 
 	 * @param duration_seconds - length of time to loop/play in seconds
 	 * @param ident - Images are loaded as name+ident (Tavish + Walk_North)
 	 * @param playMode - how the images should play. Static enum ints of this class.

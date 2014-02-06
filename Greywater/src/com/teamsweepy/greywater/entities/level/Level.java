@@ -9,7 +9,6 @@
 package com.teamsweepy.greywater.entities.level;
 
 import com.teamsweepy.greywater.engine.Camera;
-import com.teamsweepy.math.Point2F;
 
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,22 +18,36 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
+import java.util.ArrayList;
+
 
 public class Level {
 
 	private TiledMap map;
 	private Camera mainCamera;
+	private ArrayList<Object> depthSortList;
+	private ArrayList<Tile> tileList;
+
 
 	public Level() {
 		map = new TmxMapLoader().load("data/map.tmx");
-
 		mainCamera = Camera.getDefault();
+		tileList = new ArrayList<Tile>();
+		convertTiledMapToEntities();
 	}
 
 	public void render(SpriteBatch batch) {
 
+
+	}
+
+	public void tick() {}
+
+
+	private void convertTiledMapToEntities() {
 		TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
-	
+
+		//convert floor into Tile objects
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = layer.getHeight() - 1; y >= 0; y--) {
 				TiledMapTileLayer.Cell cell = layer.getCell(x, y);
@@ -42,12 +55,12 @@ public class Level {
 				TiledMapTile tile = cell.getTile();
 				TextureRegion region = tile.getTextureRegion();
 				region.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
-				Point2F p = mainCamera.toIsoCoord(56f * y, 56f * -x);
-				batch.draw(region.getTexture(), p.x, p.y);
+				tileList.add(new Tile(region, (float) x, (float) y, 50));
+				//Point2F p = mainCamera.toIsoCoord(56f * y, 56f * -x);
 			}
 		}
 
+		//get walls and doodads
 		layer = (TiledMapTileLayer) map.getLayers().get(1);
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = layer.getHeight() - 1; y >= 0; y--) {
@@ -56,15 +69,8 @@ public class Level {
 				TiledMapTile tile = cell.getTile();
 				TextureRegion region = tile.getTextureRegion();
 				region.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
-				Point2F p = mainCamera.toIsoCoord(56f * y , 56f * -x );
-				batch.draw(region.getTexture(), p.x, p.y);
+				//TODO create wall object here
 			}
 		}
 	}
-
-	public void tick() {}
-
-
-
 }
