@@ -11,6 +11,7 @@
 
 package com.teamsweepy.greywater.engine;
 
+import com.teamsweepy.greywater.engine.input.InputGUI;
 import com.teamsweepy.greywater.engine.input.InputGame;
 import com.teamsweepy.greywater.engine.input.InputHandler;
 import com.teamsweepy.greywater.entities.components.Sprite;
@@ -55,6 +56,7 @@ public class Engine extends Game {
 	 */
 	@Override
 	public void create() {
+		AssetLoader.init();
 		Camera.getDefault().setViewPort(NATIVE_WIDTH, NATIVE_HEIGHT);
 
 		batch = new SpriteBatch();
@@ -62,7 +64,6 @@ public class Engine extends Game {
 
 		initInput();
 		gs = new GameScreen(this);
-		AssetLoader.init();
 		this.setScreen(gs);
 	}
 
@@ -71,7 +72,7 @@ public class Engine extends Game {
 	 */
 	private void initInput() {
 		InputMultiplexer multiplexer = new InputMultiplexer();
-		inputHandlerGUI = new InputGame();
+		inputHandlerGUI = new InputGUI();
 		inputHandlerGame = new InputGame();
 		// The event first goes to the GUI input and if needed to the Game input
 		multiplexer.addProcessor(inputHandlerGUI);

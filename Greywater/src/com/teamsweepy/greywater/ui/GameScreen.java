@@ -61,7 +61,7 @@ public class GameScreen implements Screen {
 			//			a = new Sprite("Tavish", "ATTACK_SOUTH");
 			//			a.setImage(.3f, "AtTacK_SOUTHEAST", Sprite.LOOP_PINGPONG);
 			aTestSprite = new Sprite("health-dial-rotate0001");
-			Camera.getDefault().move(3900f, 1400);
+			
 		}
 	//	Camera.getDefault().move(5f, 5f);
 

@@ -66,7 +66,9 @@ public abstract class Entity {
 	 * @param g - Graphics object
 	 */
 	public void render(SpriteBatch g) {
-		graphicsComponent.render(g, getX() - mainCamera.xOffset, getY() - mainCamera.yOffset);//TODO replace with isometric transforms
+		Point2F p = mainCamera.toIsoCoord(getY()*56, -getX()*56);
+		System.out.println(p);
+		graphicsComponent.render(g, p.x, p.y);//TODO replace with isometric transforms
 	}
 
 	/**
@@ -90,6 +92,14 @@ public abstract class Entity {
 	public float getY() {
 		return physicsComponent.getHitBox().y;
 	}
+	
+	public float getWidth(){
+		return physicsComponent.getHitBox().width;
+	}
+	
+	public float getHeight(){
+		return physicsComponent.getHitBox().height;
+	}
 
 	public Point2F getLocation() {
 		return new Point2F(getX(), getY());
@@ -102,6 +112,6 @@ public abstract class Entity {
 	public double getDepth() {
 		float x = physicsComponent.getHitBox().width * .5f + getX();
 		float y = physicsComponent.getHitBox().height * .5f + getY();
-		return (x + y) * .866; //.866 is cos of 30 degrees, which is the isometric transform
+		return (x - y) * .866; //.866 is cos of 30 degrees, which is the isometric transform
 	}
 }

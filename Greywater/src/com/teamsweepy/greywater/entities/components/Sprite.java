@@ -83,14 +83,35 @@ public class Sprite {
 		currentImageName = "";
 		setImage(0, name, STILL_IMAGE, Texture.class); //arbitrary default
 	}
-	
+
 	/**
 	 * Constructor for sprites that use a single, unatlased texture that was loaded elsewhere.
 	 * 
 	 */
-	public Sprite(TextureRegion texture){
+	public Sprite(TextureRegion texture) {
 		sprite = texture;
 		playMode = STILL_IMAGE;
+	}
+
+	/**
+	 * @return the current Name + Ident to let you know what animation is active currently
+	 */
+	public String getCurrentImageName() {
+		return currentImageName;
+	}
+
+	public float getImageWidth() {
+		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING)
+			return sprite.getRegionWidth();
+		else
+			return animation[seriesPosition].getRegionWidth();
+	}
+
+	public float getImageHeight() {
+		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING)
+			return sprite.getRegionHeight();
+		else
+			return animation[seriesPosition].getRegionHeight();
 	}
 
 	/**
@@ -120,8 +141,9 @@ public class Sprite {
 			g.draw(sprite, x, y, sprite.getRegionWidth() / 2, sprite.getRegionHeight() / 2, sprite.getRegionWidth(),
 				sprite.getRegionHeight(), 1, 1, rotationDegCCW);
 		else
-			g.draw(animation[seriesPosition], x, y, sprite.getRegionWidth() / 2, sprite.getRegionHeight() / 2, sprite.getRegionWidth(),
-				sprite.getRegionHeight(), 1, 1, rotationDegCCW);
+			g.draw(animation[seriesPosition], x, y, animation[seriesPosition].getRegionWidth() / 2,
+				animation[seriesPosition].getRegionHeight() / 2, animation[seriesPosition].getRegionWidth(),
+				animation[seriesPosition].getRegionHeight(), 1, 1, rotationDegCCW);
 	}
 
 	/**
@@ -190,13 +212,6 @@ public class Sprite {
 	}
 
 	/**
-	 * @return the current Name + Ident to let you know what animation is active currently
-	 */
-	public String getCurrentImageName() {
-		return currentImageName;
-	}
-
-	/**
 	 * Sets sprites image/animation
 	 * @param duration_seconds - length of time to loop/play in seconds
 	 * @param ident - Images are loaded as name+ident (Tavish + Walk_North)
@@ -251,4 +266,5 @@ public class Sprite {
 		else
 			seriesPosition = (seriesLength - 1); //except reversed/revloop which starts at the end
 	}
+
 }

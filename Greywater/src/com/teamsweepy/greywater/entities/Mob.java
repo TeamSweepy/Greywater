@@ -7,10 +7,10 @@ public abstract class Mob extends Entity {
 
 	public String name;
 
-	private int direction;
-	private String currentDirection = "South";
-	private float walkCycleDuration = 1f;
-	private boolean attacking = false;
+	protected int direction;
+	protected String currentDirection = "South";
+	protected float walkCycleDuration = 1f;
+	protected boolean attacking = false;
 
 	public boolean friendly;
 

@@ -2,7 +2,7 @@
  * Used to hold data about an Entity's hitbox, including position, speed, and accessor methods. In reality, this class is the Entity. The
  * Entity interacts with the world entirely through this class because it is the 2D representation.
  * 
- * *********** IMPORTANT ************************
+ * *********** IMPORTANT ******************
  * 
  * The graphics component (sprite) is the isometric image that is rendered to the screen, but isometric math is unnecessarily intense, and
  * wasteful to do when cheaper, more effective methods are available. To that end, the world is ACTUALLY a top down rectangular world, and

@@ -12,6 +12,10 @@
 
 package com.teamsweepy.greywater.engine.input;
 
+import com.teamsweepy.greywater.engine.Camera;
+
+import com.badlogic.gdx.Input.Keys;
+
 import java.awt.Point;
 
 public class InputGUI extends InputHandler {
@@ -53,6 +57,21 @@ public class InputGUI extends InputHandler {
 
 	@Override
 	public boolean keyDown(int keycode) {
+		System.out.println("Herd");
+		if(keycode == Keys.W){
+			Camera.getDefault().move(0,200);
+		}
+		if(keycode == Keys.A){
+			Camera.getDefault().move(-200,0 );
+		}
+		if(keycode == Keys.S){
+			Camera.getDefault().move(0,-200 );
+		}
+		if(keycode == Keys.D){
+			Camera.getDefault().move(200,0 );
+		}
+		
+		
 		// TODO Implement the keys
 		return false;
 	}
