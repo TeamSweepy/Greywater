@@ -64,7 +64,7 @@ public class GameScreen implements Screen {
 			
 		}
 	//	Camera.getDefault().move(5f, 5f);
-
+		levelForTesting.tick(delta);
 
 		if (aTestSprite != null) {
 			aTestSprite.tick(delta);

@@ -122,10 +122,11 @@ public class Sprite {
 	 * @param y - y co-ordinate to render at
 	 */
 	public void render(SpriteBatch g, float x, float y) {
-		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING)
+		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING) {
 			g.draw(sprite, x, y);
-		else
+		} else {
 			g.draw(animation[seriesPosition], x, y);
+		}
 	}
 
 	/**
@@ -248,7 +249,6 @@ public class Sprite {
 			TextureAtlas ta = ((TextureAtlas) AssetLoader.getAsset(TextureAtlas.class, name + ".atlas"));
 			Array<AtlasRegion> ar = ta.findRegions(currentImageName);
 			animation = ar.toArray(AtlasRegion.class);
-
 			seriesLength = animation.length;
 			frameDurationMillis = sequenceDurationMillis / seriesLength;
 			System.out.println(seriesLength + "  " + playMode);
@@ -256,9 +256,9 @@ public class Sprite {
 				sprite = animation[0];
 				return; //no further processing needed on static images
 			}
+
 		} else if (classType == Texture.class) {
 			sprite = new TextureRegion((Texture) AssetLoader.getAsset(Texture.class, name + ".png"));
-
 		}
 
 		if (playMode != LOOP_REVERSED && playMode != REVERSED)

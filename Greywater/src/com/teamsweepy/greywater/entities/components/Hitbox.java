@@ -58,9 +58,10 @@ public class Hitbox {
 	 */
 	public void tick(float deltaTime) {
 		//get direction of movement * speed
+		
 		xDelta = Integer.signum((int) (destination.getX() - hitBox.getX())) * speed * deltaTime;
 		yDelta = Integer.signum((int) (destination.getY() - hitBox.getY())) * speed * deltaTime;
-
+		System.out.println(xDelta + yDelta);
 		if (xDelta != 0 || yDelta != 0) setLocation(xDelta + hitBox.getX(), yDelta + hitBox.getY());
 
 		xDelta = 0; //clear out for next cycle

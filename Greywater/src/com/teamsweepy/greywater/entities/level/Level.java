@@ -76,7 +76,7 @@ public class Level {
 
 	}
 
-	public void tick() {}
+	public void tick(float deltaTime) {TestTavishMob.tick(deltaTime);}
 
 
 	private void convertTiledMapToEntities() {

@@ -12,7 +12,7 @@ package com.teamsweepy.math;
 import java.awt.Point;
 
 
-public class Point2F extends Point {
+public class Point2F {
 
 	public float x;
 	public float y;
@@ -47,6 +47,14 @@ public class Point2F extends Point {
 
 	public String toString() {
 		return "Point2F x:" + x + " y:" + y;
+	}
+	
+	public float getX(){
+		return x;
+	}
+	
+	public float getY(){
+		return y;
 	}
 
 }

@@ -67,8 +67,7 @@ public abstract class Entity {
 	 */
 	public void render(SpriteBatch g) {
 		Point2F p = mainCamera.toIsoCoord(getY()*56, -getX()*56);
-		System.out.println(p);
-		graphicsComponent.render(g, p.x, p.y);//TODO replace with isometric transforms
+		graphicsComponent.render(g, p.x, p.y +  (200 - graphicsComponent.getImageHeight()));//TODO replace with isometric transforms
 	}
 
 	/**

@@ -20,13 +20,15 @@ public abstract class Mob extends Entity {
 	 * Update graphics and physics components, deal with animation and behavior
 	 */
 	public void tick(float deltaTime) {
+		getInput();
+		
 		if (HP < 0 && !graphicsComponent.getCurrentImageName().contains("DIE")) {
 			graphicsComponent.setImage(.4f, "Die", Sprite.FORWARD);
 			attacking = false;
 			return;
 		} else {
 			super.tick(deltaTime);
-
+			if(true) return;
 			if (attacking) graphicsComponent.setImage(.25f, "Attack_" + currentDirection, Sprite.FORWARD); // TODO if multiple attacks clicked, pingpong
 			else if (physicsComponent.isMoving()) {
 				graphicsComponent.setImage(walkCycleDuration, "Walk_" + currentDirection, Sprite.LOOP);
