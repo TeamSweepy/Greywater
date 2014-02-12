@@ -1,7 +1,5 @@
 package com.teamsweepy.greywater.entities;
 
-import com.teamsweepy.greywater.entities.components.Entity;
-import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
 
 import com.badlogic.gdx.Gdx;
@@ -10,14 +8,17 @@ import com.badlogic.gdx.Gdx;
 public class Player extends Mob{
 	
 	private float elTime = 0f;
-	
+	private boolean elTimes = true;
+	/**
+	 * Creates a new player standing in the center of the tile specified.
+	 * @param x - Tile X Position, not objective position
+	 * @param y - Tile Y Position, not objective position
+	 */
 	public Player(float x, float y){
+		super(x * 50, y * 50, 35, 35, 50f);
 		super.name = "Tavish";
 		currentDirection = "South";
 		this.graphicsComponent = new Sprite(name, "Stand_South");
-//		x = (int) (x * 50);
-//		y = (int) (y * 50);
-		this.physicsComponent = new Hitbox(x, y, 35, 35, 1f);
 		this.walkCycleDuration = 1;
 		graphicsComponent.setImage(.6f, "Walk_South", Sprite.LOOP);
 	}
@@ -26,12 +27,17 @@ public class Player extends Mob{
 	protected void getInput() {
 		// TODO Auto-generated method stub
 		elTime += Gdx.graphics.getDeltaTime();
-		System.out.println(elTime + "t");
 		if(elTime > 10 && elTime < 15){
+			
 			graphicsComponent.setImage(.6f, "Walk_East", Sprite.LOOP);
 		}
 		if(elTime > 20){
 			graphicsComponent.setImage(.6f, "Attack_East", Sprite.LOOP);
+		}
+		
+		if(elTime > 7 && elTimes){
+			this.physicsComponent.moveTo(getX() + 1, getY() + 90);
+			elTimes = !elTimes;
 		}
 		
 	}

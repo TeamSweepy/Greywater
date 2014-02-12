@@ -8,17 +8,17 @@
  * 
  * 
  * 
- * *********** IMPORTANT ************************
+ * *********** IMPORTANT *************
  * 
  * The graphics component (sprite) is an isometric image, it is a skewed square, rotated 45 degrees. An iso-tile has width:height of 2:1,
  * giving it the illusion of depth. Unfortunately, that makes programming super hard, and I am lazy. Far more powerful and understandable is
  * to represent the tiles as square in memory, as if the game were a top-down 2D style game. This means that all objects are squares or
  * rectangles, which makes the math easy and render sorting easier. The 2D is represented through the physics component (hitbox) and the iso
- * aspect is the graphics component. The middleman, which holds these two, is the Entity (or subclass thereof, such as this Tile) which
+ * aspect is the graphics component. The middleman, which holds these two, is the Entity (or subclass of same) which
  * makes them play nice, see below.
  * 
- * Only when an item is being rendered is it treated as isometric - the square co-ordinates are run through the math method - getIsoCoords()
- * and converted from boring 2D to exciting, sexy isometric co-ordinates. Because all images undergo the same transformation, the isometric
+ * Only when an item is being rendered is it treated as isometric and converted from boring 2D to exciting, 
+ * sexy isometric co-ordinates. Because all images undergo the same transformation, the isometric
  * image is a fair and accurate representation of the 2D flat "true" world in memory.
  * 
  * This class is that middleman that takes the 2D square world (flatspace) and uses fancible math things to make its x and y data into
@@ -34,6 +34,7 @@
 package com.teamsweepy.greywater.entities.components;
 
 import com.teamsweepy.greywater.engine.Camera;
+import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.math.Point2F;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -66,8 +67,8 @@ public abstract class Entity {
 	 * @param g - Graphics object
 	 */
 	public void render(SpriteBatch g) {
-		Point2F p = mainCamera.toIsoCoord(getY()*56, -getX()*56);
-		graphicsComponent.render(g, p.x, p.y +  (200 - graphicsComponent.getImageHeight()));//TODO replace with isometric transforms
+		Point2F p = Globals.toIsoCoord(getX(), getY());
+		graphicsComponent.render(g, p.x, p.y);
 	}
 
 	/**
@@ -108,9 +109,9 @@ public abstract class Entity {
 	/**
 	 * @return The approximate depth in Z space of the entity. Used for render sorting.
 	 */
-	public double getDepth() {
+	public float getDepth() {
 		float x = physicsComponent.getHitBox().width * .5f + getX();
 		float y = physicsComponent.getHitBox().height * .5f + getY();
-		return (x - y) * .866; //.866 is cos of 30 degrees, which is the isometric transform
+		return (x - y) * .866f; //.866 is cos of 30 degrees, which is the isometric transform
 	}
 }

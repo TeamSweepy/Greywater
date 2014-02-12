@@ -34,15 +34,13 @@ public class Level {
 	private ArrayList<Entity> depthSortList;
 	private Tile[][] tileList;
 	Mob TestTavishMob;
-	
+
 	private Comparator<Entity> spriteSorter = new Comparator<Entity>() {
 
 		@Override
 		public int compare(Entity e1, Entity e2) {
-			if (e1.getDepth() < e2.getDepth())
-				return -1;
-			if (e1.getDepth() > e2.getDepth())
-				return 1;
+			if (e1.getDepth() < e2.getDepth()) return -1;
+			if (e1.getDepth() > e2.getDepth()) return 1;
 			return 0;
 		}
 
@@ -54,34 +52,39 @@ public class Level {
 		mainCamera = Camera.getDefault();
 		depthSortList = new ArrayList<Entity>();
 		convertTiledMapToEntities();
-		while(AssetLoader.tick() < 1f){
-			
+		while (AssetLoader.tick() < 1f) {
+
 		}
-		TestTavishMob = new Player(0,100);
+		TestTavishMob = new Player(9, 94);
 		depthSortList.add(TestTavishMob);
 	}
 
 	public void render(SpriteBatch batch) {
-		for(int x = 0; x < tileList.length; x++){
-			for(int y = 0; y < tileList[x].length; y++){
-				if(tileList[x][y] != null){
+		for (int x = 0; x < tileList.length; x++) {
+			for (int y = 0; y < tileList[x].length; y++) {
+				if (tileList[x][y] != null) {
 					tileList[x][y].render(batch);
 				}
 			}
 		}
+		
 		Collections.sort(depthSortList, spriteSorter);
-		for(Entity e : depthSortList){
+		for (Entity e : depthSortList) {
 			e.render(batch);
 		}
 
 	}
 
-	public void tick(float deltaTime) {TestTavishMob.tick(deltaTime);}
+	public void tick(float deltaTime) {
+		
+		TestTavishMob.tick(deltaTime);
+	}
 
 
 	private void convertTiledMapToEntities() {
 		TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
 		tileList = new Tile[layer.getWidth()][layer.getHeight()];
+
 		//convert floor into Tile objects
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = layer.getHeight() - 1; y >= 0; y--) {
@@ -91,16 +94,16 @@ public class Level {
 				TextureRegion region = tile.getTextureRegion();
 				region.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 				if (tile.getProperties().containsKey("ANIMATED")) {
-
+					//TODO support animation in tiles
 				} else {
-					tileList[x][y] = new Tile(region, x*50, y*50, 50);
+					tileList[x][y] = new Tile(region, x * 50, y * 50, 50);
 				}
-				//Point2F p = mainCamera.toIsoCoord(56f * y, 56f * -x);
 			}
-		}
+		}//end outer for
 
 		//get walls and doodads
 		layer = (TiledMapTileLayer) map.getLayers().get(1);
+
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = layer.getHeight() - 1; y >= 0; y--) {
 				TiledMapTileLayer.Cell cell = layer.getCell(x, y);
@@ -108,8 +111,7 @@ public class Level {
 				TiledMapTile tile = cell.getTile();
 				TextureRegion region = tile.getTextureRegion();
 				region.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-				//TODO create wall object here
-			//	depthSortList.add(new Tile(region, x, y, 50));
+				depthSortList.add(new Tile(region, x * 50, y * 50, 50));
 			}
 		}
 	}

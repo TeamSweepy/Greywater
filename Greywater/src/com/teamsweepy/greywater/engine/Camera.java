@@ -11,7 +11,6 @@ package com.teamsweepy.greywater.engine;
 
 import com.teamsweepy.math.Point2F;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
@@ -72,19 +71,5 @@ public class Camera {
 		yOffset = 0;
 		return new Point2F(x, y);
 
-	}
-
-	public Point2F toIsoCoord(float xCoord, float yCoord) {
-		float x = xCoord - yCoord;
-		float y = (xCoord + yCoord) / 2;
-
-		return new Point2F(x, y);
-	}
-
-	public Point2F toNormalCoord(float xIso, float yIso) {
-		float x = (2 * xIso + yIso) / 2;
-		float y = (2 * yIso - xIso) / 2;
-
-		return new Point2F(x, y);
 	}
 }

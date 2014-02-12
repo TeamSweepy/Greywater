@@ -1,6 +1,7 @@
 
 package com.teamsweepy.greywater.entities.level;
 
+import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entities.components.Entity;
 import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
@@ -16,8 +17,8 @@ public class Tile extends Entity {
 	 * Constructor!
 	 * 
 	 * @param graphicsComponent - tile sprite that represents this bit of terrain
-	 * @param xPos -y location in 2D flatspace
-	 * @param yPos -x location in 2D flatspace
+	 * @param xPos - objective coordinates
+	 * @param yPos - objective coordinates
 	 * @param widthAndHeight - width of a tile on the grid, not isometric. Tiles are squares, width = height
 	 */
 	public Tile(Sprite graphicsComponent, float xPos, float yPos, int widthAndHeight) {
@@ -31,8 +32,8 @@ public class Tile extends Entity {
 	 * Constructor!
 	 * 
 	 * @param graphicsComponent - tile sprite that represents this bit of terrain
-	 * @param xPos -y location in 2D flatspace
-	 * @param yPos -x location in 2D flatspace
+	 * @param xPos - objective coordinates
+	 * @param yPos - objective coordinates
 	 * @param widthAndHeight - width of a tile on the grid, not isometric. Tiles are squares, width = height
 	 */
 	public Tile(TextureRegion tex, float xPos, float yPos, int widthAndHeight) {
@@ -42,7 +43,7 @@ public class Tile extends Entity {
 	}
 	
 	public void render(SpriteBatch g){
-		Point2F p = mainCamera.toIsoCoord((graphicsComponent.getImageWidth()/2)*getY()/getWidth(), graphicsComponent.getImageHeight()*-getX()/getHeight());
+		Point2F p = Globals.toIsoCoord(getX(), getY());;
 		graphicsComponent.render(g, p.x, p.y);
 	}
 
