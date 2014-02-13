@@ -47,8 +47,10 @@ public class Level {
 
 		@Override
 		public int compare(Entity e1, Entity e2) {
-			if (e1.getDepth() < e2.getDepth()) return -1;
-			if (e1.getDepth() > e2.getDepth()) return 1;
+			if (e1.getDepth() < e2.getDepth())
+				return -1;
+			if (e1.getDepth() > e2.getDepth())
+				return 1;
 			return 0;
 		}
 
@@ -66,7 +68,7 @@ public class Level {
 		mainCamera = Camera.getDefault();
 		convertTiledMapToEntities();
 
-		
+
 		// Init gui
 		GUI.initGUI();
 
@@ -75,9 +77,11 @@ public class Level {
 	public void render(SpriteBatch batch) {
 		for (int x = 0; x < tileList.length; x++) {
 			for (int y = 0; y < tileList[x].length; y++) {
-				if (tileList[x][y] != null) tileList[x][y].render(batch);
+				if (tileList[x][y] != null)
+					tileList[x][y].render(batch);
 
-				if (wallList[x][y] != null) depthSortList.add(wallList[x][y]);
+				if (wallList[x][y] != null)
+					depthSortList.add(wallList[x][y]);
 			}
 		}
 
@@ -91,49 +95,52 @@ public class Level {
 		}
 
 		depthSortList.clear();
-
-		// Render GUI
-		GUI.render(batch);
 	}
 
 	public void tick(float deltaTime) {
 		for (int x = 0; x < tileList.length; x++) {
 			for (int y = 0; y < tileList[x].length; y++) {
-				if (tileList[x][y] != null) tileList[x][y].tick(deltaTime);
+				if (tileList[x][y] != null)
+					tileList[x][y].tick(deltaTime);
 
-				if (wallList[x][y] != null) wallList[x][y].tick(deltaTime);
+				if (wallList[x][y] != null)
+					wallList[x][y].tick(deltaTime);
 			}
 		}
 		for (Mob mob : mobList) {
 			mob.tick(deltaTime);
 		}
-
-		// Update GUI
-		GUI.tick();
 	}
 
 	/**
 	 * Check to see if a given shape collides with the level geometry
 	 */
 	public boolean checkLevelCollision(Shape collisionVolume) {
-		if (collisionVolume == null) return false;
+		if (collisionVolume == null)
+			return false;
 		Point2F area = Globals.toTileIndices(collisionVolume.getBounds().x, collisionVolume.getBounds().y);
 
 		// only check tiles near the shape, not the whole map
 		int areaX = Math.round(area.x);
 		int areaY = Math.round(area.y);
-		if (areaX < 0) areaX = 0;
-		if (areaY < 0) areaY = 0;
+		if (areaX < 0)
+			areaX = 0;
+		if (areaY < 0)
+			areaY = 0;
 		int areaXEnd = areaX + 21;
 		int areaYEnd = areaY + 21;
-		if (areaXEnd > tileList.length) areaXEnd = tileList.length;
-		if (areaYEnd > tileList[0].length) areaYEnd = tileList[0].length;
+		if (areaXEnd > tileList.length)
+			areaXEnd = tileList.length;
+		if (areaYEnd > tileList[0].length)
+			areaYEnd = tileList[0].length;
 
 		for (int x = areaX; x < areaXEnd; x++) {
 			for (int y = areaY; y < areaYEnd; y++) {
-				if (wallList[x][y] == null) continue;
+				if (wallList[x][y] == null)
+					continue;
 				Rectangle r = wallList[x][y].getPhysicsShape();
-				if (collisionVolume.intersects(r.x, r.y, r.width, r.height)) return true;
+				if (collisionVolume.intersects(r.x, r.y, r.width, r.height))
+					return true;
 			}
 		}
 
@@ -152,7 +159,8 @@ public class Level {
 			for (int y = layer.getHeight() - 1; y >= 0; y--) {
 				TiledMapTileLayer.Cell cell = layer.getCell(x, y);
 
-				if (cell == null) continue;
+				if (cell == null)
+					continue;
 
 				TiledMapTile tile = cell.getTile();
 				TextureRegion region = tile.getTextureRegion();
@@ -172,7 +180,8 @@ public class Level {
 			for (int y = layer.getHeight() - 1; y >= 0; y--) {
 				TiledMapTileLayer.Cell cell = layer.getCell(x, y);
 
-				if (cell == null) continue;
+				if (cell == null)
+					continue;
 
 				TiledMapTile tile = cell.getTile();
 				TextureRegion region = tile.getTextureRegion();

@@ -28,7 +28,6 @@ public class Globals {
 		xCoord = yCoord * tileRatio;
 		yCoord = -temp;
 
-
 		//standard isometric math
 		float x = xCoord - yCoord;
 		float y = (xCoord + yCoord) / 2;
@@ -54,35 +53,35 @@ public class Globals {
 		Point2F tileIndex = new Point2F(xCoord / tileGridWidth, yCoord / tileGridHeight);
 		return tileIndex;
 	}
-	
+
 	/**
 	 * Gives the value of the entity's direction using angles
 	 * 
 	 * @param xDiff - TargetX - CurrentX
 	 * @param yDiff - TargetY - CurrentY
 	 */
-	public static String getDirectionString(double xDiff, double yDiff){
-		double angle =(-1)* Math.toDegrees(Math.atan2(yDiff, xDiff)) - 45;
-		if(angle < 0)
+	public static String getDirectionString(double xDiff, double yDiff) {
+		double angle = (-1) * Math.toDegrees(Math.atan2(yDiff, xDiff)) - 45;
+		if (angle < 0)
 			angle += 360;
-		if(angle >= 337.5 || angle < 22.5 )
+		if (angle >= 337.5 || angle < 22.5)
 			return "East";
-		else if(angle >= 22.5 && angle < 67.5  )
+		else if (angle >= 22.5 && angle < 67.5)
 			return "Northeast";
-		else if(angle >= 67.5 && angle < 112.5 )
+		else if (angle >= 67.5 && angle < 112.5)
 			return "North";
-		else if(angle >= 112.5 && angle < 157.5)
+		else if (angle >= 112.5 && angle < 157.5)
 			return "Northwest";
-		else if(angle >=  157.5 && angle < 202.5)
+		else if (angle >= 157.5 && angle < 202.5)
 			return "West";
-		else if(angle >= 202.5 && angle < 247.50)
+		else if (angle >= 202.5 && angle < 247.50)
 			return "Southwest";
-		else if(angle >= 247.5 && angle < 292.5)
+		else if (angle >= 247.5 && angle < 292.5)
 			return "South";
-		else if(angle >= 292.5 && angle < 337.5 )
+		else if (angle >= 292.5 && angle < 337.5)
 			return "Southeast";
-		
-		
+
+
 		return "666";
 	}
 }

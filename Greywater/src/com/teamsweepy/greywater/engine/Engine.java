@@ -91,7 +91,7 @@ public class Engine extends Game {
 	 */
 	@Override
 	public void render() {
-		
+
 		deltaTime = Gdx.graphics.getDeltaTime();
 		secondsElapsed += deltaTime;
 		excessTime += deltaTime * 1000000000 - ANIMATION_PERIOD_NANOSEC; //nano second accuracy!
@@ -113,15 +113,15 @@ public class Engine extends Game {
 			tickCount++;
 		}
 
-		if (secondsElapsed > 10.0) printStats();
+		if (secondsElapsed > 10.0)
+			printStats();
 
 	}
 
 	public void tick(float deltaTime) {
-		if(this.getScreen() == gs){
+		if (this.getScreen() == gs) {
 			gs.tick(deltaTime);
-		}
-		else if(this.getScreen() == ms){
+		} else if (this.getScreen() == ms) {
 			ms.tick(deltaTime);
 		}
 	}

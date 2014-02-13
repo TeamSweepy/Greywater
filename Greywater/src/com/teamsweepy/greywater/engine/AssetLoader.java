@@ -54,7 +54,8 @@ public class AssetLoader {
 			while (br.ready()) {
 				String currentLine = br.readLine();
 
-				if (currentLine.startsWith("//") || currentLine.length() < 6) continue;
+				if (currentLine.startsWith("//") || currentLine.length() < 6)
+					continue;
 
 				String action = currentLine.substring(0, currentLine.indexOf(";")).trim();
 				String fileName = ASSET_FOLDER + currentLine.substring(currentLine.indexOf(";") + 1, currentLine.lastIndexOf(";")).trim();
@@ -62,7 +63,8 @@ public class AssetLoader {
 
 				if (action.equalsIgnoreCase("LOAD")) {
 					assetManager.load(fileName, getAssetType(type));
-				} else System.out.println("Invalid file in " + iniName + " - " + currentLine);
+				} else
+					System.out.println("Invalid file in " + iniName + " - " + currentLine);
 			}
 
 			br.close();
@@ -92,10 +94,8 @@ public class AssetLoader {
 	/**
 	 * Getter for assets for use in game.
 	 * 
-	 * @param type
-	 *            - class of the asset type
-	 * @param name
-	 *            - name of the asset to get
+	 * @param type - class of the asset type
+	 * @param name - name of the asset to get
 	 * @return The asset requested or null
 	 */
 	public static <T> T getAsset(Class<?> type, String name) {
@@ -106,20 +106,25 @@ public class AssetLoader {
 	/**
 	 * Used to parse the type from INI files from a string into a proper type object.
 	 * 
-	 * @param type
-	 *            - name of the type as string from INI
+	 * @param type - name of the type as string from INI
 	 * @return - type object
-	 * @throws Exception
-	 *             - errors on no such type. Spelling counts!
+	 * @throws Exception - errors on no such type. Spelling counts!
 	 */
 	private static Class<?> getAssetType(String type) throws Exception {
-		if (type.equalsIgnoreCase("Texture")) return Texture.class;
-		if (type.equalsIgnoreCase("BitmapFont")) return BitmapFont.class;
-		if (type.equalsIgnoreCase("TextureAtlas")) return TextureAtlas.class;
-		if (type.equalsIgnoreCase("Music")) return Music.class;
-		if (type.equalsIgnoreCase("Sound")) return Sound.class;
-		if (type.equalsIgnoreCase("ParticleEffect")) return ParticleEffect.class;
-		if (type.equalsIgnoreCase("TiledMap")) return TiledMap.class;
+		if (type.equalsIgnoreCase("Texture"))
+			return Texture.class;
+		if (type.equalsIgnoreCase("BitmapFont"))
+			return BitmapFont.class;
+		if (type.equalsIgnoreCase("TextureAtlas"))
+			return TextureAtlas.class;
+		if (type.equalsIgnoreCase("Music"))
+			return Music.class;
+		if (type.equalsIgnoreCase("Sound"))
+			return Sound.class;
+		if (type.equalsIgnoreCase("ParticleEffect"))
+			return ParticleEffect.class;
+		if (type.equalsIgnoreCase("TiledMap"))
+			return TiledMap.class;
 
 		throw new Exception("Invalid Class Specified in AssetLoader! Invalid type - " + type);
 	}
@@ -134,10 +139,8 @@ public class AssetLoader {
 	/**
 	 * Remove a specific asset
 	 * 
-	 * @param name
-	 *            - the filename or assetname of the asset
-	 * @param type
-	 *            - the class of the asset
+	 * @param name - the filename or assetname of the asset
+	 * @param type - the class of the asset
 	 */
 	public static void dispose(String name, Class<?> type) {
 		try {

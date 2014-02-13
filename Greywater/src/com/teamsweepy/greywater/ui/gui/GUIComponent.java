@@ -1,3 +1,4 @@
+
 package com.teamsweepy.greywater.ui.gui;
 
 import com.badlogic.gdx.Gdx;
@@ -7,7 +8,7 @@ import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
 
 public class GUIComponent {
-	
+
 	public static float ratio = 1;
 
 	protected Point2F pos;
@@ -17,7 +18,7 @@ public class GUIComponent {
 
 	public GUIComponent() {
 		sprite = new Sprite("HUD-1600");
-		pos = new Point2F(0,0);
+		pos = new Point2F(0, 0);
 		size = new Point2F(Gdx.graphics.getWidth(), sprite.getImageHeight());
 		size = new Point2F(1600, sprite.getImageHeight());
 	}
@@ -27,7 +28,6 @@ public class GUIComponent {
 	}
 
 	public void render(SpriteBatch batch) {
-		pos = pos.add(Camera.getDefault().getTranslatedForMatrix());
-		sprite.render(batch, pos.getX(), pos.getY(), size.getX(), size.getY());
+		sprite.render(batch, -Camera.getDefault().xOffsetAggregate , -Camera.getDefault().yOffsetAggregate, size.getX(), size.getY());
 	}
 }

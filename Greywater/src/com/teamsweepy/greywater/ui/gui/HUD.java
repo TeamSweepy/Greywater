@@ -1,3 +1,4 @@
+
 package com.teamsweepy.greywater.ui.gui;
 
 import com.badlogic.gdx.Gdx;
@@ -21,6 +22,6 @@ public class HUD extends GUIComponent {
 	}
 
 	public void render(SpriteBatch batch) {
-		super.render(batch);
+		super.render(batch); //unnecessary unless you plan to add to this
 	}
 }

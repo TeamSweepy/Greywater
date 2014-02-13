@@ -18,12 +18,14 @@
 package com.teamsweepy.greywater.entities.components;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+
 import com.teamsweepy.greywater.engine.AssetLoader;
 
 public class Sprite {
@@ -61,10 +63,8 @@ public class Sprite {
 	/**
 	 * Constructor for sprite that rely on TextureAtlases
 	 * 
-	 * @param name
-	 *            - The name of the character/entity (Such as Tavish) This should match the name of their .atlas file!
-	 * @param imgName
-	 *            - image to start with (Such as Stand_South). It will be added to the name to find the image - Tavish + Stand_South
+	 * @param name - The name of the character/entity (Such as Tavish) This should match the name of their .atlas file!
+	 * @param imgName - image to start with (Such as Stand_South). It will be added to the name to find the image - Tavish + Stand_South
 	 */
 	public Sprite(String name, String imgName) {
 		this.name = name;
@@ -75,8 +75,7 @@ public class Sprite {
 	/**
 	 * Constructor for sprites that use single, unatlased textures.
 	 * 
-	 * @param imageName
-	 *            - the name of the image to use, such as "HUD-1600" (no file extension needed, it had better be PNG)
+	 * @param imageName - the name of the image to use, such as "HUD-1600" (no file extension needed, it had better be PNG)
 	 */
 	public Sprite(String imageName) {
 		this.name = imageName;
@@ -101,13 +100,17 @@ public class Sprite {
 	}
 
 	public float getImageWidth() {
-		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING) return sprite.getRegionWidth();
-		else return animation[seriesPosition].getRegionWidth();
+		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING)
+			return sprite.getRegionWidth();
+		else
+			return animation[seriesPosition].getRegionWidth();
 	}
 
 	public float getImageHeight() {
-		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING) return sprite.getRegionHeight();
-		else return animation[seriesPosition].getRegionHeight();
+		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING)
+			return sprite.getRegionHeight();
+		else
+			return animation[seriesPosition].getRegionHeight();
 	}
 
 	public Rectangle getImageRectangleAtOrigin(float x, float y) {
@@ -115,15 +118,11 @@ public class Sprite {
 	}
 
 	/**
-	 * Calls the other method with width and height params
-	 * Renders at default width and height
+	 * Calls the other method with width and height params Renders at default width and height
 	 * 
-	 * @param g
-	 *            - graphics object for rendering
-	 * @param x
-	 *            - x co-ordinate to render at
-	 * @param y
-	 *            - y co-ordinate to render at
+	 * @param g - graphics object for rendering
+	 * @param x - x co-ordinate to render at
+	 * @param y - y co-ordinate to render at
 	 */
 	public void render(SpriteBatch g, float x, float y) {
 		render(g, x, y, getImageWidth(), getImageHeight());
@@ -132,16 +131,11 @@ public class Sprite {
 	/**
 	 * Draws the sprite with a specific size
 	 * 
-	 * @param g
-	 *            - graphics object for rendering
-	 * @param x
-	 *            - x co-ordinate to render at
-	 * @param y
-	 *            - y co-ordinate to render at
-	 * @param w
-	 *            - w is the width of the drawing place
-	 * @param h
-	 *            - h is the height of the drawing place
+	 * @param g - graphics object for rendering
+	 * @param x - x co-ordinate to render at
+	 * @param y - y co-ordinate to render at
+	 * @param w - w is the width of the drawing place
+	 * @param h - h is the height of the drawing place
 	 */
 	public void render(SpriteBatch g, float x, float y, float w, float h) {
 		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING) {
@@ -154,27 +148,25 @@ public class Sprite {
 	/**
 	 * Draw an image rotated around the center of the image.
 	 * 
-	 * @param g
-	 *            - graphics object for rendering
-	 * @param x
-	 *            - x co-ordinate to render at
-	 * @param y
-	 *            - y co-ordinate to render at
-	 * @param rotationDegCCW
-	 *            - degrees to rotate the image. To go clockwise, use a negative value.
+	 * @param g - graphics object for rendering
+	 * @param x - x co-ordinate to render at
+	 * @param y - y co-ordinate to render at
+	 * @param rotationDegCCW - degrees to rotate the image. To go clockwise, use a negative value.
 	 */
 	public void renderRotated(SpriteBatch g, float x, float y, float rotationDegCCW) {
-		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING) g.draw(sprite, x, y, sprite.getRegionWidth() / 2, sprite.getRegionHeight() / 2, sprite.getRegionWidth(), sprite.getRegionHeight(),
-				1, 1, rotationDegCCW);
-		else g.draw(animation[seriesPosition], x, y, animation[seriesPosition].getRegionWidth() / 2, animation[seriesPosition].getRegionHeight() / 2, animation[seriesPosition].getRegionWidth(),
-				animation[seriesPosition].getRegionHeight(), 1, 1, rotationDegCCW);
+		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING)
+			g.draw(sprite, x, y, sprite.getRegionWidth() / 2, sprite.getRegionHeight() / 2, sprite.getRegionWidth(), sprite.getRegionHeight(), 1, 1, rotationDegCCW);
+		else
+			g.draw(animation[seriesPosition], x, y, animation[seriesPosition].getRegionWidth() / 2, animation[seriesPosition].getRegionHeight() / 2,
+				animation[seriesPosition].getRegionWidth(), animation[seriesPosition].getRegionHeight(), 1, 1, rotationDegCCW);
 	}
 
 	/**
 	 * Updates the image if it is animated, assumed to be called once every anim-period.
 	 */
 	public void tick(float elapsedTimeSeconds) {
-		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING) return; // no need to tick static images
+		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING)
+			return; // no need to tick static images
 
 		totalAnimTimeMillis += elapsedTimeSeconds * 1000;// seconds -> millis
 
@@ -196,7 +188,8 @@ public class Sprite {
 			seriesPosition = (seriesLength - (totalAnimTimeMillis / frameDurationMillis));
 
 			if (seriesPosition < 0) { // if we've gone past the last image in series
-				if (playMode == LOOP_REVERSED) seriesPosition = seriesLength - 1;
+				if (playMode == LOOP_REVERSED)
+					seriesPosition = seriesLength - 1;
 				else {
 					seriesPosition = 0;
 					stopAnimating();
@@ -206,10 +199,10 @@ public class Sprite {
 
 		if (playMode == LOOP_PINGPONG) {
 			if (Ping) // ping indicates forward playing
-			seriesPosition = (totalAnimTimeMillis / frameDurationMillis);
+				seriesPosition = (totalAnimTimeMillis / frameDurationMillis);
 			else
-			// !Ping (pong) indicates reverse playing
-			seriesPosition = seriesLength - 1 - (totalAnimTimeMillis / frameDurationMillis);
+				// !Ping (pong) indicates reverse playing
+				seriesPosition = seriesLength - 1 - (totalAnimTimeMillis / frameDurationMillis);
 
 			// if past either end of the loop
 			if (seriesPosition > seriesLength - 1) {
@@ -237,12 +230,9 @@ public class Sprite {
 	/**
 	 * Sets sprites image/animation
 	 * 
-	 * @param duration_seconds
-	 *            - length of time to loop/play in seconds
-	 * @param ident
-	 *            - Images are loaded as name+ident (Tavish + Walk_North)
-	 * @param playMode
-	 *            - how the images should play. Static enum ints of this class.
+	 * @param duration_seconds - length of time to loop/play in seconds
+	 * @param ident - Images are loaded as name+ident (Tavish + Walk_North)
+	 * @param playMode - how the images should play. Static enum ints of this class.
 	 */
 	public void setImage(float durationSeconds, String ident, int playMode) {
 		setImage(durationSeconds, ident, playMode, TextureAtlas.class); // arbitrary default
@@ -262,7 +252,8 @@ public class Sprite {
 	 */
 	private void setImage(float durationSeconds, String ident, int playMode, Class<?> classType) {
 		this.playMode = playMode;
-		if (currentImageName.equalsIgnoreCase(name + "_" + ident)) return;
+		if (currentImageName.equalsIgnoreCase(name + "_" + ident))
+			return;
 
 		Ping = true;
 		currentImageName = name + "_" + ident;
@@ -277,7 +268,7 @@ public class Sprite {
 			animation = ar.toArray(AtlasRegion.class);
 			seriesLength = animation.length;
 			frameDurationMillis = sequenceDurationMillis / seriesLength;
-
+			animation[0].getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 			if (playMode == STILL_IMAGE) {
 				sprite = animation[0];
 				return; // no further processing needed on static images
@@ -285,10 +276,13 @@ public class Sprite {
 
 		} else if (classType == Texture.class) {
 			sprite = new TextureRegion((Texture) AssetLoader.getAsset(Texture.class, name + ".png"));
+			sprite.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		}
 
-		if (playMode != LOOP_REVERSED && playMode != REVERSED) seriesPosition = 0; // everything starts at the beginning
-		else seriesPosition = (seriesLength - 1); // except reversed/revloop which starts at the end
+		if (playMode != LOOP_REVERSED && playMode != REVERSED)
+			seriesPosition = 0; // everything starts at the beginning
+		else
+			seriesPosition = (seriesLength - 1); // except reversed/revloop which starts at the end
 	}
 
 }
