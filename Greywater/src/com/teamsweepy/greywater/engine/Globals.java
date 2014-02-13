@@ -4,7 +4,7 @@
 
 package com.teamsweepy.greywater.engine;
 
-import com.teamsweepy.math.Point2F;
+import com.teamsweepy.greywater.math.Point2F;
 
 public class Globals {
 

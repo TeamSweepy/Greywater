@@ -33,12 +33,11 @@
 
 package com.teamsweepy.greywater.entities.components;
 
-import com.teamsweepy.greywater.engine.Camera;
-import com.teamsweepy.greywater.engine.Globals;
-import com.teamsweepy.math.Point2F;
-
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.teamsweepy.greywater.engine.Camera;
+import com.teamsweepy.greywater.engine.Globals;
+import com.teamsweepy.greywater.math.Point2F;
 
 
 public abstract class Entity {

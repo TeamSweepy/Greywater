@@ -11,21 +11,17 @@
 
 package com.teamsweepy.greywater.engine;
 
-import com.teamsweepy.greywater.engine.input.InputGUI;
-import com.teamsweepy.greywater.engine.input.InputGame;
-import com.teamsweepy.greywater.engine.input.InputHandler;
-import com.teamsweepy.greywater.entities.components.Sprite;
-import com.teamsweepy.greywater.entities.level.Level;
-import com.teamsweepy.greywater.ui.GameScreen;
-import com.teamsweepy.greywater.ui.MainMenuScreen;
-import com.teamsweepy.math.Point2F;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.teamsweepy.greywater.engine.input.InputGUI;
+import com.teamsweepy.greywater.engine.input.InputGame;
+import com.teamsweepy.greywater.engine.input.InputHandler;
+import com.teamsweepy.greywater.ui.GameScreen;
+import com.teamsweepy.greywater.ui.MainMenuScreen;
 
 public class Engine extends Game {
 

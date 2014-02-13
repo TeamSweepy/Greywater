@@ -8,15 +8,14 @@
 
 package com.teamsweepy.greywater.ui;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Engine;
 import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.entities.level.Level;
-import com.teamsweepy.math.Point2F;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
+import com.teamsweepy.greywater.math.Point2F;
 
 public class GameScreen implements Screen {
 

@@ -1,16 +1,15 @@
 
 package com.teamsweepy.greywater.entities;
 
+import java.awt.geom.Line2D;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entities.components.Entity;
 import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.entities.level.Level;
-import com.teamsweepy.math.Point2F;
-
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import java.awt.geom.Line2D;
+import com.teamsweepy.greywater.math.Point2F;
 
 public abstract class Mob extends Entity {
 

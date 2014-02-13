@@ -9,11 +9,10 @@
 
 package com.teamsweepy.greywater.engine;
 
-import com.teamsweepy.math.Point2F;
-
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
+import com.teamsweepy.greywater.math.Point2F;
 
 // If we want multiple cameras, we need to write this camera a little bit different.
 

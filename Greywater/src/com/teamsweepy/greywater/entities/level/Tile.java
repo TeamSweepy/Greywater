@@ -1,14 +1,10 @@
 
 package com.teamsweepy.greywater.entities.level;
 
-import com.teamsweepy.greywater.engine.Globals;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.teamsweepy.greywater.entities.components.Entity;
 import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
-import com.teamsweepy.math.Point2F;
-
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 
 public class Tile extends Entity {

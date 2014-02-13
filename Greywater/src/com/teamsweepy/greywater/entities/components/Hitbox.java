@@ -22,9 +22,8 @@
 
 package com.teamsweepy.greywater.entities.components;
 
-import com.teamsweepy.math.Point2F;
-
 import com.badlogic.gdx.math.Rectangle;
+import com.teamsweepy.greywater.math.Point2F;
 
 
 public class Hitbox {
