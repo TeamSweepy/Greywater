@@ -24,6 +24,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
 
@@ -112,6 +114,10 @@ public class Sprite {
 			return sprite.getRegionHeight();
 		else
 			return animation[seriesPosition].getRegionHeight();
+	}
+	
+	public Rectangle getImageRectangleAtOrigin(float x, float y){
+		return new Rectangle(x, y, getImageWidth(), getImageWidth());
 	}
 
 	/**
@@ -251,7 +257,7 @@ public class Sprite {
 			animation = ar.toArray(AtlasRegion.class);
 			seriesLength = animation.length;
 			frameDurationMillis = sequenceDurationMillis / seriesLength;
-			System.out.println(seriesLength + "  " + playMode);
+
 			if (playMode == STILL_IMAGE) {
 				sprite = animation[0];
 				return; //no further processing needed on static images

@@ -15,7 +15,7 @@ public class Player extends Mob{
 	 * @param y - Tile Y Position, not objective position
 	 */
 	public Player(float x, float y){
-		super(x * 50, y * 50, 35, 35, 50f);
+		super(x * 50, y * 50, 35, 35, 1f);
 		super.name = "Tavish";
 		currentDirection = "South";
 		this.graphicsComponent = new Sprite(name, "Stand_South");
@@ -25,7 +25,7 @@ public class Player extends Mob{
 
 	@Override
 	protected void getInput() {
-		// TODO Auto-generated method stub
+		// TODO remove depthsort testing code
 		elTime += Gdx.graphics.getDeltaTime();
 		if(elTime > 10 && elTime < 15){
 			
@@ -38,14 +38,21 @@ public class Player extends Mob{
 		if(elTime > 7 && elTimes){
 			this.physicsComponent.moveTo(getX() + 1, getY() + 90);
 			elTimes = !elTimes;
+			
 		}
-		
+
 	}
 
 	@Override
 	protected void attack(Mob enemy) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean interact() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	

@@ -8,16 +8,6 @@ import com.teamsweepy.math.Point2F;
 
 public class Globals {
 
-	//Directional data! Sprites can only face these directions.
-	public static final int NORTH = 0;
-	public static final int NORTHEAST = 1;
-	public static final int EAST = 2;
-	public static final int SOUTHEAST = 3;
-	public static final int SOUTH = 4;
-	public static final int SOUTHWEST = 5;
-	public static final int WEST = 6;
-	public static final int NORTHWEST = 7;
-
 	//width and height of a tile in memory (not image size)
 	public static float tileGridWidth = 50;
 	public static float tileGridHeight = 50;
@@ -25,7 +15,7 @@ public class Globals {
 	//width and height of a tile in on screen
 	public static float tileImageWidth = 56;
 	public static float tileImageHeight = 112;
-	
+
 	public static float tileRatio = 1.12f;
 
 	/**
@@ -37,8 +27,8 @@ public class Globals {
 		float temp = xCoord * tileRatio;
 		xCoord = yCoord * tileRatio;
 		yCoord = -temp;
-		
-		
+
+
 		//standard isometric math
 		float x = xCoord - yCoord;
 		float y = (xCoord + yCoord) / 2;
@@ -64,6 +54,35 @@ public class Globals {
 		Point2F tileIndex = new Point2F(xCoord / tileGridWidth, yCoord / tileGridHeight);
 		return tileIndex;
 	}
+	
+	/**
+	 * Gives the value of the entity's direction using angles
+	 * 
+	 * @param xDiff - TargetX - CurrentX
+	 * @param yDiff - TargetY - CurrentY
+	 */
+	public static String getDirectionString(double xDiff, double yDiff){
+		double angle =(-1)* Math.toDegrees(Math.atan2(yDiff, xDiff)) - 45;
+		if(angle < 0)
+			angle += 360;
+		if(angle >= 337.5 || angle < 22.5 )
+			return "East";
+		else if(angle >= 22.5 && angle < 67.5  )
+			return "Northeast";
+		else if(angle >= 67.5 && angle < 112.5 )
+			return "North";
+		else if(angle >= 112.5 && angle < 157.5)
+			return "Northwest";
+		else if(angle >=  157.5 && angle < 202.5)
+			return "West";
+		else if(angle >= 202.5 && angle < 247.50)
+			return "Southwest";
+		else if(angle >= 247.5 && angle < 292.5)
+			return "South";
+		else if(angle >= 292.5 && angle < 337.5 )
+			return "Southeast";
+		
+		
+		return "666";
+	}
 }
-
-

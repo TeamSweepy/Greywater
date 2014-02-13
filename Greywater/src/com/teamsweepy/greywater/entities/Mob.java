@@ -5,31 +5,45 @@ import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entities.components.Entity;
 import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
+import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.math.Point2F;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.awt.geom.Line2D;
+
 public abstract class Mob extends Entity {
 
-	public String name;
+	/* ********* ANIMATION VARIABLES *********** */
+	public String name; //indicates what Atlas to get sprites from
+	protected String currentDirection = "South";   //used to indicate what direction Mob is facing to get the corresponding sprite
+	protected float walkCycleDuration = 1f; //duration in seconds of animation
 
-	protected int direction;
-	protected String currentDirection = "South";
-	protected float walkCycleDuration = 1f;
+	/* *********** WORLD INTERACTION VARIABLES ************ */
 	protected boolean attacking = false;
-
-	public boolean friendly;
-
+	public boolean friendly; //indicates if this is a friend of the Player.
 	private int HP = 100;
+	protected Line2D.Float sightLine;
+	protected boolean canSeeTarget;
+	protected int maxSightRange = 20;//in tiles
+	private Entity focusTarget;
+	static Level world;
+
+	//protected Inventory inventory;
 
 	/**
 	 * @param x - tile location x
 	 * @param y - tile location y
 	 * @param width - physics component width
 	 * @param height - - physics component height
+	 * @param speed - tiles per second
 	 */
 	public Mob(float x, float y, int width, int height, float speed) {
-		physicsComponent = new Hitbox(x, y, width, height, speed);
+		physicsComponent = new Hitbox(x, y, width, height, speed * 50);
+	}
+
+	public static void initMobs(Level currentLevel) {
+		world = currentLevel;
 	}
 
 	/**
@@ -54,7 +68,7 @@ public abstract class Mob extends Entity {
 			return;
 		} else {
 			super.tick(deltaTime);
-			if (true) return;
+
 			if (attacking)
 				graphicsComponent.setImage(.25f, "Attack_" + currentDirection, Sprite.FORWARD); // TODO if multiple attacks clicked, pingpong
 			else if (physicsComponent.isMoving()) {
@@ -64,11 +78,10 @@ public abstract class Mob extends Entity {
 		}
 	}
 
-	/**
-	 * Change the Mob's HP by the given amount.
-	 * 
-	 * @param damage - how much to change mob HP by
-	 */
+	//	public Inventory getInventory(){ TODO activate when inventories exist
+	//		return inventory;
+	//	}
+
 	public void changeHP(int damage) {
 		HP -= damage;
 		System.out.println(name + " took " + damage + " dmg ---> " + HP + " HP");
@@ -78,8 +91,25 @@ public abstract class Mob extends Entity {
 	}
 
 	public boolean isAlive() {
-		if (HP > 0) return true;
+		if (HP > 0)
+			return true;
 		return false;
+	}
+
+	public int getHP() {
+		return HP;
+	}
+
+	public boolean canSeeTarget() {
+		if (sightLine != null && sightLine.getP1().distance(sightLine.getP2()) <= this.maxSightRange && !world.checkLevelCollision(sightLine))
+			canSeeTarget = true;
+		else
+			canSeeTarget = false;
+		return canSeeTarget;
+	}
+
+	public Line2D.Float getSight() {
+		return sightLine;
 	}
 
 	/**
@@ -89,4 +119,5 @@ public abstract class Mob extends Entity {
 
 	protected abstract void attack(Mob enemy);
 
+	public abstract boolean interact();
 }

@@ -41,11 +41,6 @@ public class Tile extends Entity {
 		// speed is 0 because tiles don't move, silly
 		this.physicsComponent = new Hitbox(xPos, yPos, widthAndHeight, widthAndHeight, 0);
 	}
-	
-	public void render(SpriteBatch g){
-		Point2F p = Globals.toIsoCoord(getX(), getY());;
-		graphicsComponent.render(g, p.x, p.y);
-	}
 
 
 }

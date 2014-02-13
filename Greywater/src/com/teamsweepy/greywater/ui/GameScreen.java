@@ -35,14 +35,11 @@ public class GameScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		//scale from 1600x900 to whatever user screen is set to and clear graphics
-		Gdx.gl.glViewport((int) Camera.getDefault().xOffset, (int) Camera.getDefault().yOffset, Gdx.graphics.getWidth(),
-			Gdx.graphics.getHeight());
+		Gdx.gl.glViewport((int) Camera.getDefault().xOffset, (int) Camera.getDefault().yOffset, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		//this replaces the camera.translate function that doesn't work. 		
 		Point2F offsetPoint = Camera.getDefault().getTranslatedForMatrix();
 		engine.batch.setProjectionMatrix(engine.batch.getProjectionMatrix().translate(offsetPoint.x, offsetPoint.y, 0));
-
-
 
 		engine.batch.begin();// start render
 
@@ -58,12 +55,9 @@ public class GameScreen implements Screen {
 		//SIMPLE IMAGE TEST TODO REMOVE
 		if (AssetLoader.tick() >= 1f && aTestSprite == null) {
 			System.out.println("Loaderup");
-			//			a = new Sprite("Tavish", "ATTACK_SOUTH");
-			//			a.setImage(.3f, "AtTacK_SOUTHEAST", Sprite.LOOP_PINGPONG);
 			aTestSprite = new Sprite("health-dial-rotate0001");
-			
+
 		}
-	//	Camera.getDefault().move(5f, 5f);
 		levelForTesting.tick(delta);
 
 		if (aTestSprite != null) {

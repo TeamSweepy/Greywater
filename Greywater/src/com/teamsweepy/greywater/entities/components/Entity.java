@@ -14,12 +14,12 @@
  * giving it the illusion of depth. Unfortunately, that makes programming super hard, and I am lazy. Far more powerful and understandable is
  * to represent the tiles as square in memory, as if the game were a top-down 2D style game. This means that all objects are squares or
  * rectangles, which makes the math easy and render sorting easier. The 2D is represented through the physics component (hitbox) and the iso
- * aspect is the graphics component. The middleman, which holds these two, is the Entity (or subclass of same) which
- * makes them play nice, see below.
+ * aspect is the graphics component. The middleman, which holds these two, is the Entity (or subclass of same) which makes them play nice,
+ * see below.
  * 
- * Only when an item is being rendered is it treated as isometric and converted from boring 2D to exciting, 
- * sexy isometric co-ordinates. Because all images undergo the same transformation, the isometric
- * image is a fair and accurate representation of the 2D flat "true" world in memory.
+ * Only when an item is being rendered is it treated as isometric and converted from boring 2D to exciting, sexy isometric co-ordinates.
+ * Because all images undergo the same transformation, the isometric image is a fair and accurate representation of the 2D flat "true" world
+ * in memory.
  * 
  * This class is that middleman that takes the 2D square world (flatspace) and uses fancible math things to make its x and y data into
  * isometric fancy x and y data, which is then used to control rendering by the graphics component.
@@ -51,8 +51,6 @@ public abstract class Entity {
 	public Entity() {
 		mainCamera = Camera.getDefault();
 	}
-
-
 
 	/**
 	 * Ticks components (graphics and physics)
@@ -92,18 +90,23 @@ public abstract class Entity {
 	public float getY() {
 		return physicsComponent.getHitBox().y;
 	}
-	
-	public float getWidth(){
+
+	public float getWidth() {
 		return physicsComponent.getHitBox().width;
 	}
-	
-	public float getHeight(){
+
+	public float getHeight() {
 		return physicsComponent.getHitBox().height;
 	}
 
 	public Point2F getLocation() {
 		return new Point2F(getX(), getY());
 
+	}
+
+	public boolean didPointHitImage(Point2F point) {
+		Point2F p = Globals.toIsoCoord(getX(), getY());
+		return graphicsComponent.getImageRectangleAtOrigin(p.x, p.y).contains(point.x, point.y);
 	}
 
 	/**
