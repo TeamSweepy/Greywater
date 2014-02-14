@@ -1,7 +1,5 @@
 package com.teamsweepy.greywater.entities.components.ai;
 
-import com.teamsweepy.greywater.math.Point2F;
-
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -16,8 +14,8 @@ import java.util.List;
 public class Pathfinder
 {
     private PriorityQueue<AStarPath<Point>> paths;
-    private Map<Point, Double> mindists;
-    private Double lastCost;
+    private Map<Point, Double> mindists; // Map<K, V> needs two objects
+    private double lastCost;
     private int expandedCounter;
 
     private int[][] map;
@@ -34,24 +32,23 @@ public class Pathfinder
         lastCost = 0.0;
     }
 
-    private boolean isGoal(Point node) {
-        return (node.x == end.x) &&(node.y == end.y);
+    private boolean isGoal(Point from) {
+        return (from.x == end.x) &&(from.y == end.y);
     }
 
     // It's going to get the value from an map array,
     // The X and Y both need to be integers
     // Map 0 = walkable area
-    private Double g(Point from, Point to) {
+    private double g(Point from, Point to) {
         if(from.x == to.x && from.y == to.y) return 0.0;
-        if(map[to.y][to.x] == 0) return 1.0;
-        return Double.MAX_VALUE;
+        if(map[from.y][from.x] == 0) return 1.0;
+        return 0;
     }
 
-    private Double h(Point to) {
-        return new Double(
-                Math.abs(map[0].length - 1 - to.x)
-                + Math.abs(map.length - 1 - to.y)
-        );
+    private double h(Point from, Point to) {
+        double dx = from.x - to.x;
+        double dy = from.y - to.y;
+        return new Double(Math.sqrt(dx * dx + dy * dy));
     }
 
     private List<Point> generateSuccesor(Point node){
@@ -59,15 +56,22 @@ public class Pathfinder
         int x = node.x;
         int y = node.y;
 
-        if(y < map.length-1 && map[y+1][x]!=1) ret.add(new Point(x, y+1));
-        if(x < map[0].length-1 && map[y][x+1]!=1) ret.add(new Point(x+1, y));
+        if(y < map.length-1 && map[y+1][x]!=1) ret.add(new Point(x, y+1)); // Up
+        if(y > 0 && map[y-1][x]!=1) ret.add(new Point(x, y-1)); // Down
+        if(x > 0 && map[y][x-1]!=1) ret.add(new Point(x-1, y)); // Left
+        if(x < map[0].length-1 && map[y][x+1]!=1) ret.add(new Point(x+1, y)); // Right
+
+        if(x < map[0].length-1 && y < map.length-1 && map[y+1][x+1]!=1) ret.add(new Point(x+1, y+1)); // Up-Right
+        if(x < map[0].length-1 && y > 0 && map[y-1][x+1]!=1) ret.add(new Point(x+1, y-1)); // Down-Right
+        if(x > 0 && y < map.length-1 && map[y+1][x-1]!=1) ret.add(new Point(x-1, y+1)); // Up-Left
+        if(x > 0 && y > 0 && map[y-1][x-1]!=1) ret.add(new Point(x-1, y-1)); // Down-Left
 
         return ret;
     }
 
-    private Double f(AStarPath p, Point from, Point to) {
-        Double g = g(from, to) + ((p.parent != null) ? p.parent.g : 0.0);
-        Double h = h(to);
+    private double f(AStarPath p, Point from, Point to) {
+        double g = g(from, to) + ((p.parent != null) ? p.parent.g : 0);
+        double h = h(from, to);
 
         p.g = g;
         p.f = g + h;
@@ -79,7 +83,7 @@ public class Pathfinder
         Point p = path.point;
         Double min = mindists.get(path.point);
 
-        if(min == null || min.doubleValue() > path.f.doubleValue()){
+        if(min == null || min.doubleValue() > path.f){
             mindists.put(path.point, path.f);
         } else {
             return;
@@ -90,19 +94,11 @@ public class Pathfinder
         for(Point t : successors){
             AStarPath newPath = new AStarPath(path);
             newPath.point = t;
-            f(newPath, path.point, t);
+            f(newPath, (Point)newPath.point, end);
             paths.offer(newPath);
         }
 
         expandedCounter ++;
-    }
-
-    public Double getCost(){
-        return lastCost;
-    }
-
-    public int getExpandedCounter(){
-        return expandedCounter;
     }
 
     public void setMap(int[][] map)
@@ -143,7 +139,7 @@ public class Pathfinder
                 AStarPath<Point> p = paths.poll();
 
                 if(p == null){
-                    lastCost = Double.MAX_VALUE;
+                    lastCost = 0;
                     return null;
                 }
 
@@ -182,6 +178,16 @@ public class Pathfinder
         nodes.clear();
         pathIndex = 0;
     }
+
+    // Used for debugging
+    public Double getCost(){
+        return lastCost;
+    }
+
+    //Used for debugging
+    public int getExpandedCounter(){
+        return expandedCounter;
+    }
 }
 
 // The AStarPath will only be used in this class,
@@ -189,8 +195,8 @@ public class Pathfinder
 class AStarPath<T> implements Comparable {
 
     public T point;
-    public Double f; // Objects are faster
-    public Double g;
+    public double f; // Objects are faster
+    public double g;
     public AStarPath parent;
 
     public AStarPath() {
