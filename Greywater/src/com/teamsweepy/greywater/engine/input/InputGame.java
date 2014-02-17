@@ -12,7 +12,7 @@
 
 package com.teamsweepy.greywater.engine.input;
 
-import java.awt.Point;
+import com.teamsweepy.greywater.math.Point2F;
 
 import com.badlogic.gdx.Input.Keys;
 
@@ -24,7 +24,7 @@ public class InputGame extends InputHandler {
 	 * */
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		isDown = true;
-		mousePosition = new Point(screenX, screenY);
+		mousePosition = new Point2F(screenX, screenY);
 
 		return true;
 	}
@@ -35,7 +35,7 @@ public class InputGame extends InputHandler {
 	 * */
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		isDown = false;
-		mousePosition = new Point(screenX, screenY);
+		mousePosition = new Point2F(screenX, screenY);
 
 		return true;
 	}
@@ -45,7 +45,7 @@ public class InputGame extends InputHandler {
 	 * Upon a mouse / pointer moved this event occurs. It saves the mouse input data
 	 * */
 	public boolean mouseMoved(int screenX, int screenY) {
-		mousePosition = new Point(screenX, screenY);
+		mousePosition = new Point2F(screenX, screenY);
 
 		return true;
 	}

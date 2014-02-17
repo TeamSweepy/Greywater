@@ -11,14 +11,22 @@
 
 package com.teamsweepy.greywater.engine.input;
 
+import com.teamsweepy.greywater.math.Point2F;
+
 import java.awt.Point;
 
 import com.badlogic.gdx.InputProcessor;
 
 public abstract class InputHandler implements InputProcessor {
 
+	/* ********************* MOUSE INPUT CONSTANTS ************************ */
+	public static final int MOUSE_DOWN = 0;
+	public static final int MOUSE_UP = 1;
+	public static final int MOUSE_MOVED = 2;
+
+
 	/* ********************* MOUSE INPUT VARIABLES ************************ */
-	protected static Point mousePosition;
+	protected static Point2F mousePosition;
 	protected static boolean isDown;
 
 	/**
@@ -33,7 +41,7 @@ public abstract class InputHandler implements InputProcessor {
 	 * 
 	 * @return mousepostion
 	 */
-	public static Point getMousePosition() {
+	public static Point2F getMousePosition() {
 		return mousePosition;
 	}
 
@@ -43,7 +51,7 @@ public abstract class InputHandler implements InputProcessor {
 	 * @return mousepostion.x
 	 */
 	public static int getX() {
-		return mousePosition.x;
+		return (int) mousePosition.x;
 	}
 
 	/**
@@ -52,7 +60,7 @@ public abstract class InputHandler implements InputProcessor {
 	 * @return mousepostion.y
 	 */
 	public static int getY() {
-		return mousePosition.y;
+		return (int) mousePosition.y;
 	}
 
 	// ******** Abstract methods ******** //

@@ -12,7 +12,7 @@ public class HUD extends GUIComponent {
 		sprite = new Sprite("HUD-1600");
 		pos = new Point2F(0, 0);
 
-		ratio = Gdx.graphics.getWidth() / sprite.getImageWidth();
+		ratio = Gdx.graphics.getWidth() / sprite.getImageWidth(); // Ratio for all the GUI components
 
 		size = new Point2F(Gdx.graphics.getWidth(), sprite.getImageHeight() * ratio);
 	}

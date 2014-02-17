@@ -1,9 +1,11 @@
 
 package com.teamsweepy.greywater.ui.gui;
 
-import java.util.ArrayList;
+import com.teamsweepy.greywater.math.Point2F;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import java.util.ArrayList;
 
 public class GUI {
 
@@ -29,6 +31,17 @@ public class GUI {
 
 	public static void initGUI() {
 		addGUIComponent(new HUD());
+	}
+
+	public static boolean input(int event, Point2F mousePosition) {
+		for (GUIComponent guiC : guiComponents) {
+			if (guiC.intersects(mousePosition)) {
+				guiC.input(mousePosition, event);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

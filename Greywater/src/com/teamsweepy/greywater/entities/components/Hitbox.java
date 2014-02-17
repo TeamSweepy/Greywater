@@ -73,6 +73,17 @@ public class Hitbox {
 	}
 
 	/**
+	 * Checks a point intersection with a Hitbox
+	 * 
+	 * @param Point needed to be checked for intersecting
+	 */
+	public boolean intersects(Point2F point) {
+		boolean intersectsOnX = hitBox.getX() < point.x && hitBox.getX() + hitBox.getWidth() > point.x;
+		boolean intersectsOnY = hitBox.getY() < point.y && hitBox.getY() + hitBox.getHeight() > point.y;
+		return intersectsOnX && intersectsOnY;
+	}
+
+	/**
 	 * Updates the hitspace (teleports)
 	 * 
 	 * @param x- new x co-ordinate

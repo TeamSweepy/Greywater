@@ -1,6 +1,6 @@
 /**
- * Input handler for GUI. This class gets the input events first. Upon using them the methods return true, which means that the Game input will not 
- * receive the event. Upon returning false, the event will be passed to the game Input class
+ * Input handler for GUI. This class gets the input events first. Upon using them the methods return true, which means that the Game input
+ * will not receive the event. Upon returning false, the event will be passed to the game Input class
  * 
  * The methods are static, since there will only be 1 instance of every input
  * 
@@ -13,10 +13,11 @@
 package com.teamsweepy.greywater.engine.input;
 
 import com.teamsweepy.greywater.engine.Camera;
+import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.GUI;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-
-import java.awt.Point;
 
 public class InputGUI extends InputHandler {
 
@@ -26,10 +27,11 @@ public class InputGUI extends InputHandler {
 	 * */
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		isDown = true;
-		mousePosition = new Point(screenX, screenY);
+		mousePosition = new Point2F(screenX, screenY);
+		
+		Point2F mousePositionOnScreen = new Point2F(mousePosition.x, Gdx.graphics.getHeight() - mousePosition.y);
 
-		// TODO return true, if the mouse position intersects one of the GUI elements
-		return false;
+		return GUI.input(MOUSE_DOWN, mousePositionOnScreen);
 	}
 
 	@Override
@@ -38,10 +40,11 @@ public class InputGUI extends InputHandler {
 	 * */
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		isDown = false;
-		mousePosition = new Point(screenX, screenY);
+		mousePosition = new Point2F(screenX, screenY);
+		
+		Point2F mousePositionOnScreen = new Point2F(mousePosition.x, Gdx.graphics.getHeight() - mousePosition.y);
 
-		// TODO return true, if the mouse position intersects one of the GUI elements
-		return false;
+		return GUI.input(MOUSE_UP, mousePositionOnScreen);
 	}
 
 	@Override
@@ -49,28 +52,29 @@ public class InputGUI extends InputHandler {
 	 * Upon a mouse / pointer moved this event occurs. It saves the mouse input data
 	 * */
 	public boolean mouseMoved(int screenX, int screenY) {
-		mousePosition = new Point(screenX, screenY);
+		mousePosition = new Point2F(screenX, screenY);
 
-		// TODO return true, if the mouse position intersects one of the GUI elements
-		return false;
+		Point2F mousePositionOnScreen = new Point2F(mousePosition.x, Gdx.graphics.getHeight() - mousePosition.y);
+
+		return GUI.input(MOUSE_MOVED, mousePositionOnScreen);
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if(keycode == Keys.W){
-			Camera.getDefault().move(0,900);
+		if (keycode == Keys.W) {
+			Camera.getDefault().move(0, 900);
 		}
-		if(keycode == Keys.A){
-			Camera.getDefault().move(-900,0 );
+		if (keycode == Keys.A) {
+			Camera.getDefault().move(-900, 0);
 		}
-		if(keycode == Keys.S){
-			Camera.getDefault().move(0,-900 );
+		if (keycode == Keys.S) {
+			Camera.getDefault().move(0, -900);
 		}
-		if(keycode == Keys.D){
-			Camera.getDefault().move(900,0 );
+		if (keycode == Keys.D) {
+			Camera.getDefault().move(900, 0);
 		}
-		
-		
+
+
 		// TODO Implement the keys
 		return false;
 	}
