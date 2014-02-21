@@ -2,13 +2,14 @@
 package com.teamsweepy.greywater.ui.gui;
 
 import com.teamsweepy.greywater.engine.Camera;
-import com.teamsweepy.greywater.engine.input.InputGUI;
 import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import java.util.ArrayList;
 
 public class GUIComponent {
 
@@ -20,6 +21,8 @@ public class GUIComponent {
 
 	public Sprite sprite;
 
+	protected ArrayList<GUIComponent> subComponents = new ArrayList<GUIComponent>();
+
 	public GUIComponent() {
 		sprite = new Sprite("HUD-1600");
 		pos = new Point2F(0, 0);
@@ -30,15 +33,14 @@ public class GUIComponent {
 	}
 
 	public void input(Point2F mousePosition, int event) {
-		if (event == InputGUI.MOUSE_MOVED)
-			return;
+		for (GUIComponent child : subComponents) {
+			child.input(mousePosition, event);
+		}
 
-		System.out.println("GOT THE INPUT " + event);
+		//System.out.println("GOT THE INPUT " + event);
 	}
 
-	public void tick() {
-
-	}
+	public void tick() {}
 
 	public void render(SpriteBatch batch) {
 		sprite.render(batch, -Camera.getDefault().xOffsetAggregate, -Camera.getDefault().yOffsetAggregate, size.getX(), size.getY());
@@ -50,6 +52,10 @@ public class GUIComponent {
 
 	public boolean intersects(Point2F mousePosition) {
 		mousePosition = mousePosition.div(ratio);// scale the input to the game size
-		return hitbox.intersects(mousePosition);
+		for (GUIComponent child : subComponents) {
+			if (child.intersects(mousePosition))
+				return true;
+		}
+		return false;
 	}
 }

@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.subgui.ButtonCircular;
+import com.teamsweepy.greywater.ui.gui.subgui.Plane;
 
 public class HUD extends GUIComponent {
 
@@ -13,8 +15,23 @@ public class HUD extends GUIComponent {
 		pos = new Point2F(0, 0);
 
 		ratio = Gdx.graphics.getWidth() / sprite.getImageWidth(); // Ratio for all the GUI components
-
 		size = new Point2F(Gdx.graphics.getWidth(), sprite.getImageHeight() * ratio);
+
+		initSubComponents();
+	}
+
+	private void initSubComponents() {
+		subComponents.add(new Plane(0, 0, 1600, 160));// 160 is the aproximate height of the HUD - it is the background of the HUD
+
+		subComponents.add(new ButtonCircular(800, 290 - 39, 37) {
+
+			@Override
+			protected void clicked() {
+				super.clicked();
+				// TODO On inventory open
+			}
+		});// The inventory open button
+
 	}
 
 	public void tick() {
