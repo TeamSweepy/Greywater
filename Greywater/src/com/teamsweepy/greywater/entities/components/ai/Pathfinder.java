@@ -36,19 +36,22 @@ public class Pathfinder
         return (from.x == end.x) &&(from.y == end.y);
     }
 
-    // It's going to get the value from an map array,
-    // The X and Y both need to be integers
-    // Map 0 = walkable area
-    private double g(Point from, Point to) {
-        if(from.x == to.x && from.y == to.y) return 0.0;
-        if(map[from.y][from.x] == 0) return 1.0;
-        return 0;
+    // There is no need to set a Point in the parameter
+
+    private double g(int x, int y) {
+        int posX = Math.abs(x);
+        int posY = Math.abs(y);
+        if((posX > 1 && posY == 0) || (posY > 1 && posX == 0)) {
+            return 10.0; // Straight
+        } else {
+            return 14.0; // Diagonal
+        }
     }
 
     private double h(Point from, Point to) {
         double dx = from.x - to.x;
         double dy = from.y - to.y;
-        return new Double(Math.sqrt(dx * dx + dy * dy));
+        return 10.0 * (Math.abs(dx) + Math.abs(dy));
     }
 
     private List<Point> generateSuccesor(Point node){
@@ -70,11 +73,18 @@ public class Pathfinder
     }
 
     private double f(AStarPath p, Point from, Point to) {
-        double g = g(from, to) + ((p.parent != null) ? p.parent.g : 0);
+        double g;
+        if(p.parent != null) {
+            Point parent = (Point)p.parent.point;
+            g = g(parent.x - from.x, parent.y - from.y) + p.parent.g;
+        } else {
+            g = g(from.x, from.y);
+        }
+
         double h = h(from, to);
 
         p.g = g;
-        p.f = g + h;
+        p.f = g+h;
 
         return p.f;
     }
