@@ -56,6 +56,7 @@ public class Engine extends Game {
 		Camera.getDefault().setViewPort(NATIVE_WIDTH, NATIVE_HEIGHT);
 
 		batch = new SpriteBatch();
+		batch.setProjectionMatrix(Camera.getDefault().getProjectionMatrix());
 		Texture.setEnforcePotImages(false); //binary texture sizes are for the 80's
 
 		initInput();

@@ -43,7 +43,7 @@ public class GUIComponent {
 	public void tick() {}
 
 	public void render(SpriteBatch batch) {
-		sprite.render(batch, -Camera.getDefault().xOffsetAggregate, -Camera.getDefault().yOffsetAggregate, size.getX(), size.getY());
+		sprite.render(batch, -Camera.getDefault().xOffsetAggregate, -Camera.getDefault().yOffsetAggregate);//, size.getX(), size.getY());
 	}
 
 	public Hitbox getHitbox() {
