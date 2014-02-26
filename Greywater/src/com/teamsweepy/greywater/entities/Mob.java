@@ -1,15 +1,17 @@
 
 package com.teamsweepy.greywater.entities;
 
-import java.awt.geom.Line2D;
-
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entities.components.Entity;
 import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
+import com.teamsweepy.greywater.entities.components.ai.Pathfinder;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import java.awt.geom.Line2D;
 
 public abstract class Mob extends Entity {
 
@@ -26,7 +28,8 @@ public abstract class Mob extends Entity {
 	protected boolean canSeeTarget;
 	protected int maxSightRange = 20;//in tiles
 	private Entity focusTarget;
-	static Level world;
+	private Level world;
+	Pathfinder pather;
 
 	//protected Inventory inventory;
 
@@ -37,12 +40,10 @@ public abstract class Mob extends Entity {
 	 * @param height - - physics component height
 	 * @param speed - tiles per second
 	 */
-	public Mob(float x, float y, int width, int height, float speed) {
+	public Mob(float x, float y, int width, int height, float speed, Level level) {
 		physicsComponent = new Hitbox(x, y, width, height, speed * 50);
-	}
-
-	public static void initMobs(Level currentLevel) {
-		world = currentLevel;
+		world = level;
+		pather = new Pathfinder(level);
 	}
 
 	/**

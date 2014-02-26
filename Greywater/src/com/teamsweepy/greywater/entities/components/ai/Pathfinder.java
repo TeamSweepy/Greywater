@@ -1,229 +1,263 @@
+
 package com.teamsweepy.greywater.entities.components.ai;
 
-import java.awt.*;
-import java.util.*;
+import com.teamsweepy.greywater.entities.level.Level;
+
+import java.awt.Point;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
 
 /**
- * This class implements the A* algorithm
- * TODO: Make it so whe can change the step length (every tile is a step),
- * TODO: This way whe can get the best performance from the pathfinder
- *
+ * This class implements the A* algorithm TODO: Make it so whe can change the step length (every tile is a step), TODO: This way whe can get
+ * the best performance from the pathfinder
+ * 
  * User: Robin de Jong
  */
-public class Pathfinder
-{
-    private PriorityQueue<AStarPath<Point>> paths;
-    private Map<Point, Double> mindists; // Map<K, V> needs two objects
-    private double lastCost;
-    private int expandedCounter;
+public class Pathfinder {
 
-    private int[][] map;
-    private Point end, start;
+	private PriorityQueue<AStarPath<Point>> paths;
+	private Map<Point, Double> mindists; // Map<K, V> needs two objects
+	private double lastCost;
+	private int expandedCounter;
 
-    private LinkedList<Point> nodes;
-    private int pathIndex;
+	private int[][] map;
+	private Point end, start;
 
-    public Pathfinder() {
-        paths = new PriorityQueue<AStarPath<Point>>();
-        nodes = new LinkedList<Point>();
-        mindists = new HashMap<Point, Double>();
-        expandedCounter = 0;
-        lastCost = 0.0;
-    }
+	private LinkedList<Point> nodes;
+	private int pathIndex;
 
-    private boolean isGoal(Point from) {
-        return (from.x == end.x) &&(from.y == end.y);
-    }
+	public Pathfinder(Level l) {
+		paths = new PriorityQueue<AStarPath<Point>>();
+		nodes = new LinkedList<Point>();
+		mindists = new HashMap<Point, Double>();
+		expandedCounter = 0;
+		lastCost = 0.0;
+		map = generateWalkCostMap(l);
+	}
 
-    // There is no need to set a Point in the parameter
+	public void updateLevel(Level l) {
+		paths = new PriorityQueue<AStarPath<Point>>();
+		nodes = new LinkedList<Point>();
+		mindists = new HashMap<Point, Double>();
+		expandedCounter = 0;
+		lastCost = 0.0;
+		map = generateWalkCostMap(l);
+	}
 
-    private double g(int x, int y) {
-        int posX = Math.abs(x);
-        int posY = Math.abs(y);
-        if((posX > 1 && posY == 0) || (posY > 1 && posX == 0)) {
-            return 10.0; // Straight
-        } else {
-            return 14.0; // Diagonal
-        }
-    }
+	private boolean isGoal(Point from) {
+		return (from.x == end.x) && (from.y == end.y);
+	}
 
-    private double h(Point from, Point to) {
-        double dx = from.x - to.x;
-        double dy = from.y - to.y;
-        return 10.0 * (Math.abs(dx) + Math.abs(dy));
-    }
+	// There is no need to set a Point in the parameter
 
-    private List<Point> generateSuccesor(Point node){
-        List<Point> ret = new LinkedList<Point>();
-        int x = node.x;
-        int y = node.y;
+	private double g(int x, int y) {
+		int posX = Math.abs(x);
+		int posY = Math.abs(y);
+		if ((posX > 1 && posY == 0) || (posY > 1 && posX == 0)) {
+			return 10.0; // Straight
+		} else {
+			return 14.0; // Diagonal
+		}
+	}
 
-        if(y < map.length-1 && map[y+1][x]!=1) ret.add(new Point(x, y+1)); // Up
-        if(y > 0 && map[y-1][x]!=1) ret.add(new Point(x, y-1)); // Down
-        if(x > 0 && map[y][x-1]!=1) ret.add(new Point(x-1, y)); // Left
-        if(x < map[0].length-1 && map[y][x+1]!=1) ret.add(new Point(x+1, y)); // Right
+	private double h(Point from, Point to) {
+		double dx = from.x - to.x;
+		double dy = from.y - to.y;
+		return 10.0 * (Math.abs(dx) + Math.abs(dy));
+	}
 
-        if(x < map[0].length-1 && y < map.length-1 && map[y+1][x+1]!=1) ret.add(new Point(x+1, y+1)); // Up-Right
-        if(x < map[0].length-1 && y > 0 && map[y-1][x+1]!=1) ret.add(new Point(x+1, y-1)); // Down-Right
-        if(x > 0 && y < map.length-1 && map[y+1][x-1]!=1) ret.add(new Point(x-1, y+1)); // Up-Left
-        if(x > 0 && y > 0 && map[y-1][x-1]!=1) ret.add(new Point(x-1, y-1)); // Down-Left
+	private List<Point> generateSuccesor(Point node) {
+		List<Point> ret = new LinkedList<Point>();
+		int x = node.x;
+		int y = node.y;
 
-        return ret;
-    }
+		if (y < map.length - 1 && map[y + 1][x] != 1)
+			ret.add(new Point(x, y + 1)); // Up
+		if (y > 0 && map[y - 1][x] != 1)
+			ret.add(new Point(x, y - 1)); // Down
+		if (x > 0 && map[y][x - 1] != 1)
+			ret.add(new Point(x - 1, y)); // Left
+		if (x < map[0].length - 1 && map[y][x + 1] != 1)
+			ret.add(new Point(x + 1, y)); // Right
 
-    private double f(AStarPath p, Point from, Point to) {
-        double g;
-        if(p.parent != null) {
-            Point parent = (Point)p.parent.point;
-            g = g(parent.x - from.x, parent.y - from.y) + p.parent.g;
-        } else {
-            g = g(from.x, from.y);
-        }
+		if (x < map[0].length - 1 && y < map.length - 1 && map[y + 1][x + 1] != 1)
+			ret.add(new Point(x + 1, y + 1)); // Up-Right
+		if (x < map[0].length - 1 && y > 0 && map[y - 1][x + 1] != 1)
+			ret.add(new Point(x + 1, y - 1)); // Down-Right
+		if (x > 0 && y < map.length - 1 && map[y + 1][x - 1] != 1)
+			ret.add(new Point(x - 1, y + 1)); // Up-Left
+		if (x > 0 && y > 0 && map[y - 1][x - 1] != 1)
+			ret.add(new Point(x - 1, y - 1)); // Down-Left
 
-        double h = h(from, to);
+		return ret;
+	}
 
-        p.g = g;
-        p.f = g+h;
+	private double f(AStarPath p, Point from, Point to) {
+		double g;
+		if (p.parent != null) {
+			Point parent = (Point) p.parent.point;
+			g = g(parent.x - from.x, parent.y - from.y) + p.parent.g;
+		} else {
+			g = g(from.x, from.y);
+		}
 
-        return p.f;
-    }
+		double h = h(from, to);
 
-    private void expand(AStarPath<Point> path) {
-        Point p = path.point;
-        Double min = mindists.get(path.point);
+		p.g = g;
+		p.f = g + h;
 
-        if(min == null || min.doubleValue() > path.f){
-            mindists.put(path.point, path.f);
-        } else {
-            return;
-        }
+		return p.f;
+	}
 
-        List<Point> successors = generateSuccesor(p);
+	private void expand(AStarPath<Point> path) {
+		Point p = path.point;
+		Double min = mindists.get(path.point);
 
-        for(Point t : successors){
-            AStarPath newPath = new AStarPath(path);
-            newPath.point = t;
-            f(newPath, (Point)newPath.point, end);
-            paths.offer(newPath);
-        }
+		if (min == null || min.doubleValue() > path.f) {
+			mindists.put(path.point, path.f);
+		} else {
+			return;
+		}
 
-        expandedCounter ++;
-    }
+		List<Point> successors = generateSuccesor(p);
 
-    public void setMap(int[][] map)
-    {
-        this.map = map;
-    }
+		for (Point t : successors) {
+			AStarPath newPath = new AStarPath(path);
+			newPath.point = t;
+			f(newPath, (Point) newPath.point, end);
+			paths.offer(newPath);
+		}
 
-    public boolean hasPath(){
-        if (nodes == null || pathIndex == nodes.size())
-            return false;
+		expandedCounter++;
+	}
 
-        return true;
-    }
+	public void setMap(int[][] map) {
+		this.map = map;
+	}
 
-    public void setNewPath(Point start, Point end) {
-        this.start = start;
-        this.end = end;
-    }
+	public boolean hasPath() {
+		if (nodes == null || pathIndex == nodes.size())
+			return false;
 
-    public Point getNextLoc() {
-        if (nodes == null || pathIndex == nodes.size())
-            return null;
-        else {
-            pathIndex++;
-            return nodes.get(pathIndex - 1);
-        }
-    }
+		return true;
+	}
 
-    public List<Point> compute(){
-        try
-        {
-            AStarPath root = new AStarPath<Point>();
-            root.point = start;
-            f(root, start, end);
-            expand(root);
+	public void setNewPath(Point start, Point end) {
+		this.start = start;
+		this.end = end;
+	}
 
-            for(;;){
-                AStarPath<Point> p = paths.poll();
+	public Point getNextLoc() {
+		if (nodes == null || pathIndex == nodes.size())
+			return null;
+		else {
+			pathIndex++;
+			return nodes.get(pathIndex - 1);
+		}
+	}
 
-                if(p == null){
-                    lastCost = 0;
-                    return null;
-                }
+	public List<Point> compute() {
+		try {
+			AStarPath root = new AStarPath<Point>();
+			root.point = start;
+			f(root, start, end);
+			expand(root);
 
-                Point last = p.point;
-                lastCost = p.g;
+			for (;;) {
+				AStarPath<Point> p = paths.poll();
 
-                if(isGoal(last)) {
-                    LinkedList<Point> retPath = new LinkedList<Point>();
+				if (p == null) {
+					lastCost = 0;
+					return null;
+				}
 
-                    for(AStarPath<Point> i = p; i != null; i = i.parent){
-                        retPath.addFirst(i.point);
-                    }
-                    nodes = retPath;
-                    return retPath;
-                }
+				Point last = p.point;
+				lastCost = p.g;
 
-                expand(p);
+				if (isGoal(last)) {
+					LinkedList<Point> retPath = new LinkedList<Point>();
 
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+					for (AStarPath<Point> i = p; i != null; i = i.parent) {
+						retPath.addFirst(i.point);
+					}
+					nodes = retPath;
+					return retPath;
+				}
+
+				expand(p);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 
-        return null;
-    }
+		return null;
+	}
 
-    public Point getDestination(){
+	public Point getDestination() {
 
-        return nodes.get(nodes.size()-1);
-    }
+		return nodes.get(nodes.size() - 1);
+	}
 
-    public void clearPath(){
-        nodes.clear();
-        pathIndex = 0;
-    }
+	public void clearPath() {
+		nodes.clear();
+		pathIndex = 0;
+	}
 
-    // Used for debugging
-    public Double getCost(){
-        return lastCost;
-    }
+	// Used for debugging
+	public Double getCost() {
+		return lastCost;
+	}
 
-    //Used for debugging
-    public int getExpandedCounter(){
-        return expandedCounter;
-    }
+	//Used for debugging
+	public int getExpandedCounter() {
+		return expandedCounter;
+	}
+
+	private int[][] generateWalkCostMap(Level l) {
+		Point dimensions = l.getMapDimensions();
+		int[][] mapCost = new int[dimensions.x][dimensions.y];
+		for (int x = 0; x < dimensions.x; x++) {
+			for (int y = 0; y < dimensions.y; y++) {
+				if (l.isTileWalkable(x, y)) {
+					mapCost[x][y] = 1;
+				} else {
+					mapCost[x][y] = 0;
+				}
+			}
+		}
+		return mapCost;
+	}
 }
 
 // The AStarPath will only be used in this class,
 // So whe define a private class
 class AStarPath<T> implements Comparable {
 
-    public T point;
-    public double f; // Objects are faster
-    public double g;
-    public AStarPath parent;
+	public T point;
+	public double f; // Objects are faster
+	public double g;
+	public AStarPath parent;
 
-    public AStarPath() {
-        parent = null;
-        point = null;
-        g = f = 0.0;
-    }
+	public AStarPath() {
+		parent = null;
+		point = null;
+		g = f = 0.0;
+	}
 
-    public AStarPath(AStarPath p) {
-        parent = p;
-        g = p.g;
-        f = p.f;
-    }
+	public AStarPath(AStarPath p) {
+		parent = p;
+		g = p.g;
+		f = p.f;
+	}
 
-    @Override
-    public int compareTo(Object o) {
-        AStarPath<T> p = (AStarPath<T>)o;
-        return (int)(f-p.f);
-    }
+	@Override
+	public int compareTo(Object o) {
+		AStarPath<T> p = (AStarPath<T>) o;
+		return (int) (f - p.f);
+	}
 }

@@ -8,10 +8,14 @@
 
 package com.teamsweepy.greywater.entities.level;
 
-import java.awt.Shape;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import com.teamsweepy.greywater.engine.AssetLoader;
+import com.teamsweepy.greywater.engine.Camera;
+import com.teamsweepy.greywater.engine.Globals;
+import com.teamsweepy.greywater.entities.Mob;
+import com.teamsweepy.greywater.entities.Player;
+import com.teamsweepy.greywater.entities.components.Entity;
+import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.GUI;
 
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,14 +25,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
-import com.teamsweepy.greywater.engine.AssetLoader;
-import com.teamsweepy.greywater.engine.Camera;
-import com.teamsweepy.greywater.engine.Globals;
-import com.teamsweepy.greywater.entities.Mob;
-import com.teamsweepy.greywater.entities.Player;
-import com.teamsweepy.greywater.entities.components.Entity;
-import com.teamsweepy.greywater.math.Point2F;
-import com.teamsweepy.greywater.ui.gui.GUI;
+
+import java.awt.Point;
+import java.awt.Shape;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Level {
 
@@ -60,16 +62,16 @@ public class Level {
 		while (AssetLoader.tick() < 1f) {
 			// do nothing TODO remove later
 		}
-		mobList = new ArrayList<Mob>();
-		depthSortList = new ArrayList<Entity>();
-		TestTavishMob = new Player(9, 94);
-		mobList.add(TestTavishMob);
 		map = new TmxMapLoader().load("data/map.tmx");
 		mainCamera = Camera.getDefault();
 		convertTiledMapToEntities();
 
+		mobList = new ArrayList<Mob>();
+		depthSortList = new ArrayList<Entity>();
+		TestTavishMob = new Player(9, 94, this);
+		mobList.add(TestTavishMob);
 
-		// Init gui
+		// Init gui TODO move elsewhere
 		GUI.initGUI();
 
 	}
@@ -111,6 +113,12 @@ public class Level {
 			mob.tick(deltaTime);
 		}
 	}
+	
+	public boolean isTileWalkable(int x, int y){
+		if(wallList[x][y] != null)
+			return false;
+		return true;
+	}
 
 	/**
 	 * Check to see if a given shape collides with the level geometry
@@ -143,7 +151,6 @@ public class Level {
 					return true;
 			}
 		}
-
 		return false;
 	}
 
@@ -189,5 +196,9 @@ public class Level {
 				wallList[x][y] = new Tile(region, x * 50, y * 50, 50);
 			}
 		}
+	}
+	
+	public Point getMapDimensions(){
+		return new Point(tileList.length, tileList[0].length);
 	}
 }

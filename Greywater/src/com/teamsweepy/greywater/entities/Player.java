@@ -2,6 +2,7 @@
 package com.teamsweepy.greywater.entities;
 
 import com.teamsweepy.greywater.entities.components.Sprite;
+import com.teamsweepy.greywater.entities.level.Level;
 
 import com.badlogic.gdx.Gdx;
 
@@ -16,8 +17,8 @@ public class Player extends Mob {
 	 * @param x - Tile X Position, not objective position
 	 * @param y - Tile Y Position, not objective position
 	 */
-	public Player(float x, float y) {
-		super(x * 50, y * 50, 35, 35, 1f);
+	public Player(float x, float y, Level level) {
+		super(x * 50, y * 50, 35, 35, 1f, level);
 		super.name = "Tavish";
 		currentDirection = "South";
 		this.graphicsComponent = new Sprite(name, "Stand_South");
@@ -40,8 +41,9 @@ public class Player extends Mob {
 		if (elTime > 7 && elTimes) {
 			this.physicsComponent.moveTo(getX() + 1, getY() + 90);
 			elTimes = !elTimes;
-
 		}
+		
+		
 
 	}
 
