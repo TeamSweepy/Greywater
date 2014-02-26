@@ -6,6 +6,8 @@ package com.teamsweepy.greywater.engine;
 
 import com.teamsweepy.greywater.math.Point2F;
 
+import java.awt.Point;
+
 public class Globals {
 
 	//width and height of a tile in memory (not image size)
@@ -49,9 +51,17 @@ public class Globals {
 	/**
 	 * Converts objective coordinates to tile indices
 	 */
-	public static Point2F toTileIndices(float xCoord, float yCoord) {
-		Point2F tileIndex = new Point2F(xCoord / tileGridWidth, yCoord / tileGridHeight);
+	public static Point toTileIndices(float xCoord, float yCoord) {
+		Point tileIndex = new Point(Math.round(xCoord / tileGridWidth), Math.round(yCoord / tileGridHeight));
 		return tileIndex;
+	}
+	
+	/**
+	 * Converts objective coordinates to tile indices
+	 */
+	public static Point2F toNormalCoordFromTileIndices(float xCoord, float yCoord) {
+		Point2F location = new Point2F((xCoord * tileGridWidth), (yCoord * tileGridHeight));
+		return location;
 	}
 
 	/**

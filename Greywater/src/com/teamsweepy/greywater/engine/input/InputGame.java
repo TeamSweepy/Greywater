@@ -46,7 +46,7 @@ public class InputGame extends InputHandler {
 	 * */
 	public boolean mouseMoved(int screenX, int screenY) {
 		mousePosition = new Point2F(screenX, screenY);
-
+		System.out.println("GAME MOVED");
 		return true;
 	}
 

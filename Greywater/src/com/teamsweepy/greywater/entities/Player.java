@@ -1,16 +1,22 @@
 
 package com.teamsweepy.greywater.entities;
 
+import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.entities.level.Level;
+import com.teamsweepy.greywater.math.Point2F;
 
 import com.badlogic.gdx.Gdx;
+
+import java.awt.Point;
 
 
 public class Player extends Mob {
 
 	private float elTime = 0f;
 	private boolean elTimes = true;
+
+	private Point2F clickLocation;
 
 	/**
 	 * Creates a new player standing in the center of the tile specified.
@@ -28,22 +34,35 @@ public class Player extends Mob {
 
 	@Override
 	protected void getInput() {
-		// TODO remove depthsort testing code
-		elTime += Gdx.graphics.getDeltaTime();
-		if (elTime > 10 && elTime < 15) {
 
-			graphicsComponent.setImage(.6f, "Walk_East", Sprite.LOOP);
-		}
-		if (elTime > 20) {
-			graphicsComponent.setImage(.6f, "Attack_East", Sprite.LOOP);
-		}
+		boolean tempvar = false;
+		if (false) { //code doesn't currently work, should be unreachable
 
-		if (elTime > 7 && elTimes) {
-			this.physicsComponent.moveTo(getX() + 1, getY() + 90);
-			elTimes = !elTimes;
-		}
-		
-		
+
+			//PATHFINDING CODE	
+			if (tempvar) { //this will be replaced with an input variable -- if(inputReceived)
+				Point startTile = Globals.toTileIndices(getLocation().x, getLocation().y);
+				Point clickedTile = Globals.toTileIndices(clickLocation.x, clickLocation.y);
+				pather.setNewPath(startTile, clickedTile);
+
+				Point newPoint = pather.getNextLoc();
+				if (newPoint != null) {
+					Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
+					physicsComponent.moveTo(newLoc.x, newLoc.y);
+				}
+
+			} else { //if no recent click, continue along pre-established path
+				if (!physicsComponent.isMoving()) {
+					Point newPoint = pather.getNextLoc();
+					if (newPoint != null) {
+						Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
+						physicsComponent.moveTo(newLoc.x, newLoc.y);
+					}
+				}
+			} //END PATHFINDING CODE
+
+
+		}//end unreachable code
 
 	}
 

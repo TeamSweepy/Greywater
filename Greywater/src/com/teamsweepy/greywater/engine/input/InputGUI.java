@@ -55,7 +55,6 @@ public class InputGUI extends InputHandler {
 		mousePosition = new Point2F(screenX, screenY);
 
 		Point2F mousePositionOnScreen = new Point2F(mousePosition.x, Gdx.graphics.getHeight() - mousePosition.y);
-
 		return GUI.input(MOUSE_MOVED, mousePositionOnScreen);
 	}
 
