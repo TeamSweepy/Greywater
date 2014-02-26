@@ -126,7 +126,7 @@ public class Level {
 	public boolean checkLevelCollision(Shape collisionVolume) {
 		if (collisionVolume == null)
 			return false;
-		Point2F area = Globals.toTileIndices(collisionVolume.getBounds().x, collisionVolume.getBounds().y);
+		Point area = Globals.toTileIndices(collisionVolume.getBounds().x, collisionVolume.getBounds().y);
 
 		// only check tiles near the shape, not the whole map
 		int areaX = Math.round(area.x);
