@@ -114,11 +114,18 @@ public class Engine extends Game {
 			tickCount++;
 		}
 
-		if (secondsElapsed > 10.0)
+		if (secondsElapsed > 10.0){
 			printStats();
+			tickCount = 0;
+			secondsElapsed = 0;
+			frameCount = 0;
+		}
 
 	}
 
+	/**
+	 * Called by libGDX's render method - update physics and logic components
+	 */
 	public void tick(float deltaTime) {
 		if (this.getScreen() == gs) {
 			gs.tick(deltaTime);
@@ -152,10 +159,6 @@ public class Engine extends Game {
 		System.out.println("*******************************");
 		System.out.println();
 		System.out.println();
-
-		tickCount = 0;
-		secondsElapsed = 0;
-		frameCount = 0;
 	}
 
 }

@@ -28,9 +28,9 @@ import com.badlogic.gdx.utils.Disposable;
 
 public class AssetLoader {
 
-	// wanted to name it assMan, didn't, because I'm a grown up
 	private final static String ASSET_FOLDER = "data/";
 
+	// wanted to name it assMan, didn't, because I'm a grown up
 	private static AssetManager assetManager;
 
 	/**
@@ -43,13 +43,13 @@ public class AssetLoader {
 
 	/**
 	 * Loads all files listed in the given ini file. Note that files are expect to be of the format: LOAD; Filepath; Type
-	 * 
 	 * @param iniName
 	 */
 	public static void parseINI(String iniName) {
 		try {
 			FileHandle setFile = Gdx.files.internal(ASSET_FOLDER + iniName);
-			BufferedReader br = setFile.reader(64);
+			BufferedReader br = setFile.reader(64); //that's numberwang
+			//64 is totally arbitrary here, but it works and its a nice number
 
 			while (br.ready()) {
 				String currentLine = br.readLine();
@@ -83,8 +83,7 @@ public class AssetLoader {
 
 	/**
 	 * Update loaders, create assets if loaders have completed.
-	 * 
-	 * @return percent complete as float.
+	 * @return percent complete as float from 0 - 1.
 	 */
 	public static float tick() {
 		assetManager.update();
@@ -93,7 +92,6 @@ public class AssetLoader {
 
 	/**
 	 * Getter for assets for use in game.
-	 * 
 	 * @param type - class of the asset type
 	 * @param name - name of the asset to get
 	 * @return The asset requested or null
@@ -105,12 +103,12 @@ public class AssetLoader {
 
 	/**
 	 * Used to parse the type from INI files from a string into a proper type object.
-	 * 
 	 * @param type - name of the type as string from INI
 	 * @return - type object
 	 * @throws Exception - errors on no such type. Spelling counts!
 	 */
 	private static Class<?> getAssetType(String type) throws Exception {
+		//no switch used here to support Java 6
 		if (type.equalsIgnoreCase("Texture"))
 			return Texture.class;
 		if (type.equalsIgnoreCase("BitmapFont"))
@@ -138,7 +136,6 @@ public class AssetLoader {
 
 	/**
 	 * Remove a specific asset
-	 * 
 	 * @param name - the filename or assetname of the asset
 	 * @param type - the class of the asset
 	 */

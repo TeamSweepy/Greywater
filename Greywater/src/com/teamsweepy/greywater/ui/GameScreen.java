@@ -31,6 +31,7 @@ public class GameScreen implements Screen {
 	public GameScreen(Engine eng) {
 		engine = eng;
 		levelForTesting = new Level();
+		GUI.initGUI();
 	}
 
 	@Override

@@ -28,7 +28,7 @@ public class Button extends GUIComponent {
 	}
 
 
-	public void input(Point2F mousePosition, int event) {
+	public void handleInput(Point2F mousePosition, int event) {
 		if (!intersects(mousePosition))
 			return;
 

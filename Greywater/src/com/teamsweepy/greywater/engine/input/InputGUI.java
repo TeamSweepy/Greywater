@@ -1,6 +1,6 @@
 /**
  * Input handler for GUI. This class gets the input events first. Upon using them the methods return true, which means that the Game input
- * will not receive the event. Upon returning false, the event will be passed to the game Input class
+ * will not receive the event. Upon returning false, the event will be passed to the Game Input class
  * 
  * The methods are static, since there will only be 1 instance of every input
  * 
@@ -28,10 +28,10 @@ public class InputGUI extends InputHandler {
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		isDown = true;
 		mousePosition = new Point2F(screenX, screenY);
-		
+
 		Point2F mousePositionOnScreen = new Point2F(mousePosition.x, Gdx.graphics.getHeight() - mousePosition.y);
 
-		return GUI.input(MOUSE_DOWN, mousePositionOnScreen);
+		return GUI.handleInput(MOUSE_DOWN, mousePositionOnScreen);
 	}
 
 	@Override
@@ -41,10 +41,10 @@ public class InputGUI extends InputHandler {
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		isDown = false;
 		mousePosition = new Point2F(screenX, screenY);
-		
+
 		Point2F mousePositionOnScreen = new Point2F(mousePosition.x, Gdx.graphics.getHeight() - mousePosition.y);
 
-		return GUI.input(MOUSE_UP, mousePositionOnScreen);
+		return GUI.handleInput(MOUSE_UP, mousePositionOnScreen);
 	}
 
 	@Override
@@ -55,22 +55,22 @@ public class InputGUI extends InputHandler {
 		mousePosition = new Point2F(screenX, screenY);
 
 		Point2F mousePositionOnScreen = new Point2F(mousePosition.x, Gdx.graphics.getHeight() - mousePosition.y);
-		return GUI.input(MOUSE_MOVED, mousePositionOnScreen);
+		return GUI.handleInput(MOUSE_MOVED, mousePositionOnScreen);
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Keys.W) {
-			Camera.getDefault().move(0, 900);
+			Camera.getDefault().move(0, 200);
 		}
 		if (keycode == Keys.A) {
-			Camera.getDefault().move(-900, 0);
+			Camera.getDefault().move(-200, 0);
 		}
 		if (keycode == Keys.S) {
-			Camera.getDefault().move(0, -900);
+			Camera.getDefault().move(0, -200);
 		}
 		if (keycode == Keys.D) {
-			Camera.getDefault().move(900, 0);
+			Camera.getDefault().move(200, 0);
 		}
 
 

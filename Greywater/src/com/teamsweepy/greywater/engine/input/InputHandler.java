@@ -29,40 +29,6 @@ public abstract class InputHandler implements InputProcessor {
 	protected static Point2F mousePosition;
 	protected static boolean isDown;
 
-	/**
-	 * Returns if the mouse is down
-	 */
-	public static boolean isDown() {
-		return isDown;
-	}
-
-	/**
-	 * Returns the mouse position as a Point
-	 * 
-	 * @return mousepostion
-	 */
-	public static Point2F getMousePosition() {
-		return mousePosition;
-	}
-
-	/**
-	 * Returns the x of the mouse position
-	 * 
-	 * @return mousepostion.x
-	 */
-	public static int getX() {
-		return (int) mousePosition.x;
-	}
-
-	/**
-	 * Returns if the mouse is down
-	 * 
-	 * @return mousepostion.y
-	 */
-	public static int getY() {
-		return (int) mousePosition.y;
-	}
-
 	// ******** Abstract methods ******** //
 	@Override
 	/**

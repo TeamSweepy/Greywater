@@ -9,12 +9,12 @@
 
 package com.teamsweepy.greywater.engine;
 
+import com.teamsweepy.greywater.math.Point2F;
+
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
-import com.teamsweepy.greywater.math.Point2F;
-
-// If we want multiple cameras, we need to write this camera a little bit different.
+import com.badlogic.gdx.math.Vector3;
 
 public class Camera {
 
@@ -26,9 +26,12 @@ public class Camera {
 	public int width, height;
 
 	// Synchronized so the object won't be initialized in different threads
+	/**
+	 * Sets up or returns the singleton camera object used everywhere
+	 */
 	public static synchronized Camera getDefault() {
-		if (defaultCamera == null) defaultCamera = new Camera();
-
+		if (defaultCamera == null)
+			defaultCamera = new Camera();
 		return defaultCamera;
 	}
 
@@ -69,6 +72,14 @@ public class Camera {
 		xOffset = 0;
 		yOffset = 0;
 		return new Point2F(x, y);
+	}
 
+	/**
+	 * Convert user screen coordinates into game viewport coordinates
+	 */
+	public Point2F unproject(Point2F point) {
+		Vector3 v3f = new Vector3(point.x, point.y, 0);
+		camera.unproject(v3f);
+		return new Point2F(v3f.x, v3f.y);
 	}
 }

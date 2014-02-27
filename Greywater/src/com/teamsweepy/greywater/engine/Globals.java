@@ -42,9 +42,16 @@ public class Globals {
 	 * Convert screen coordinates to flatspace/objective coordinates
 	 */
 	public static Point2F toNormalCoord(float xIso, float yIso) {
-		float x = (2 * xIso + yIso) / 2;
-		float y = (2 * yIso - xIso) / 2;
-		//TODO fix this method so it's the proper inverse of toIsoCoord
+		//reverse the x and y because Tiled Map Editor uses a wacky coordinate system
+		//divide x and y by the ratio of hitbox to sprite size
+		float temp = xIso/tileRatio;
+		xIso = yIso/tileRatio;
+		yIso = temp;
+		
+		//standard isometric math
+		float x = xIso/2f - yIso;
+		float y = yIso - xIso/2f;
+
 		return new Point2F(x, y);
 	}
 

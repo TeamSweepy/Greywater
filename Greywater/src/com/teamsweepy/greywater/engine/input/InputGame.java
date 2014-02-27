@@ -1,6 +1,6 @@
 /**
- * Input handler for Gane view. It is the last one that accepts the events. If others did not absorb the event, it gets passed to this listener.
- * All methods return true, since it will always take the input.
+ * Input handler for Gane view. It is the last one that accepts the events. If others did not absorb the event, it gets passed to this
+ * listener. All methods return true, since it will always take the input.
  * 
  * The methods are static, since there will only be 1 instance of every input
  * 
@@ -12,6 +12,8 @@
 
 package com.teamsweepy.greywater.engine.input;
 
+import com.teamsweepy.greywater.engine.Camera;
+import com.teamsweepy.greywater.entities.Player;
 import com.teamsweepy.greywater.math.Point2F;
 
 import com.badlogic.gdx.Input.Keys;
@@ -24,8 +26,10 @@ public class InputGame extends InputHandler {
 	 * */
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		isDown = true;
-		mousePosition = new Point2F(screenX, screenY);
-
+		mousePosition = Camera.getDefault().unproject(new Point2F(screenX, screenY));
+		//	System.out.println("local coords = "+ screenX + " , " + screenY);
+		//	System.out.println("unprojected coords = " + mousePosition.x + " , " + mousePosition.y);
+		Player.handleInput(mousePosition, isDown, -69);
 		return true;
 	}
 
@@ -35,8 +39,7 @@ public class InputGame extends InputHandler {
 	 * */
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		isDown = false;
-		mousePosition = new Point2F(screenX, screenY);
-
+		Player.handleInput(mousePosition, isDown, -69);
 		return true;
 	}
 
@@ -45,7 +48,8 @@ public class InputGame extends InputHandler {
 	 * Upon a mouse / pointer moved this event occurs. It saves the mouse input data
 	 * */
 	public boolean mouseMoved(int screenX, int screenY) {
-		mousePosition = new Point2F(screenX, screenY);
+		mousePosition = Camera.getDefault().unproject(new Point2F(screenX, screenY));
+		Player.handleInput(mousePosition, false, -69);
 		return true;
 	}
 

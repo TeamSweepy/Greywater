@@ -71,8 +71,7 @@ public class Level {
 		TestTavishMob = new Player(9, 94, this);
 		mobList.add(TestTavishMob);
 
-		// Init gui TODO move elsewhere
-		GUI.initGUI();
+		
 
 	}
 
@@ -113,9 +112,9 @@ public class Level {
 			mob.tick(deltaTime);
 		}
 	}
-	
-	public boolean isTileWalkable(int x, int y){
-		if(wallList[x][y] != null)
+
+	public boolean isTileWalkable(int x, int y) {
+		if (wallList[x][y] != null)
 			return false;
 		return true;
 	}
@@ -197,8 +196,8 @@ public class Level {
 			}
 		}
 	}
-	
-	public Point getMapDimensions(){
+
+	public Point getMapDimensions() {
 		return new Point(tileList.length, tileList[0].length);
 	}
 }

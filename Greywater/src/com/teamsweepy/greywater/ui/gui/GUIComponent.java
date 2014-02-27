@@ -32,9 +32,9 @@ public class GUIComponent {
 		hitbox = new Hitbox((int) pos.x, (int) pos.y, (int) size.x, (int) size.y, 0f);
 	}
 
-	public void input(Point2F mousePosition, int event) {
+	public void handleInput(Point2F mousePosition, int event) {
 		for (GUIComponent child : subComponents) {
-			child.input(mousePosition, event);
+			child.handleInput(mousePosition, event);
 		}
 
 		//System.out.println("GOT THE INPUT " + event);

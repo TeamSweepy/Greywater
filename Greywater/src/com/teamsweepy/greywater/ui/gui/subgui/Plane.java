@@ -29,7 +29,7 @@ public class Plane extends GUIComponent {
 
 
 
-	public void input(Point2F mousePosition, int event) {}
+	public void handleInput(Point2F mousePosition, int event) {}
 
 	public void render(SpriteBatch batch) {}
 

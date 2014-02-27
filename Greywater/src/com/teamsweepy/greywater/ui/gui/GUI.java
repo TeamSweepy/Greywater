@@ -33,10 +33,10 @@ public class GUI {
 		addGUIComponent(new HUD());
 	}
 
-	public static boolean input(int event, Point2F mousePosition) {
+	public static boolean handleInput(int event, Point2F mousePosition) {
 		for (GUIComponent guiC : guiComponents) {
 			if (guiC.intersects(mousePosition)) {
-				guiC.input(mousePosition, event);
+				guiC.handleInput(mousePosition, event);
 				return true;
 			}
 		}
