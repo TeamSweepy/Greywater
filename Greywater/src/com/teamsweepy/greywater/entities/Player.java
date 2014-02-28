@@ -4,6 +4,7 @@ package com.teamsweepy.greywater.entities;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entities.components.Sprite;
+import com.teamsweepy.greywater.entities.components.ai.PathfinderMotor;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
 
@@ -20,6 +21,8 @@ public class Player extends Mob {
 	private static Point2F mouseLocation;
 	private static boolean mouseClicked;
 
+    private PathfinderMotor pather;
+
 	/**
 	 * Creates a new player standing in the center of the tile specified.
 	 * @param x - Tile X Position, not objective position
@@ -32,40 +35,42 @@ public class Player extends Mob {
 		this.graphicsComponent = new Sprite(name, "Stand_South");
 		this.walkCycleDuration = 1;
 		graphicsComponent.setImage(.6f, "Walk_South", Sprite.LOOP);
+
+        pather = new PathfinderMotor(PathfinderMotor.Method.ASTAR);
+        pather.updateMap(level);
 	}
 
 	@Override
 	protected void getInput() {
 
-		if(mouseClicked){
-			Point2F objCo = Globals.toNormalCoord(mouseLocation.x - Camera.getDefault().xOffsetAggregate, mouseLocation.y - Camera.getDefault().yOffsetAggregate);
-			Point tileCo = Globals.toTileIndices(objCo.x, objCo.y);
-			System.out.println(objCo);
-			System.out.println(tileCo);
-			mouseClicked = false;
-		}
+//		if(mouseClicked){
+//			Point2F objCo = Globals.toNormalCoord(mouseLocation.x - Camera.getDefault().xOffsetAggregate, mouseLocation.y - Camera.getDefault().yOffsetAggregate);
+//			Point tileCo = Globals.toTileIndices(objCo.x, objCo.y);
+//			System.out.println(objCo);
+//			System.out.println(tileCo);
+//			mouseClicked = false;
+//		}
 
-//			//PATHFINDING CODE	
-//			if (mouseClicked) {
-//				Point startTile = Globals.toTileIndices(getLocation().x, getLocation().y);
-//				Point clickedTile = Globals.toTileIndices(mouseLocation.x, mouseLocation.y);
-//				pather.setNewPath(startTile, clickedTile);
-//
-//				Point newPoint = pather.getNextLoc();
-//				if (newPoint != null) {
-//					Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
-//					physicsComponent.moveTo(newLoc.x, newLoc.y);
-//				}
-//
-//			} else { //if no recent click, continue along pre-established path
-//				if (!physicsComponent.isMoving()) {
-//					Point newPoint = pather.getNextLoc();
-//					if (newPoint != null) {
-//						Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
-//						physicsComponent.moveTo(newLoc.x, newLoc.y);
-//					}
-//				}
-//			} //END PATHFINDING CODE
+			//PATHFINDING CODE
+			if (mouseClicked) {
+				Point startTile = Globals.toTileIndices(getLocation().x, getLocation().y);
+				Point clickedTile = Globals.toTileIndices(mouseLocation.x, mouseLocation.y);
+                pather.createPath(startTile, clickedTile);
+
+				Point newPoint = pather.getNextStep();
+				if (newPoint != null) {
+					Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
+					physicsComponent.moveTo(newLoc.x, newLoc.y);
+				}
+			} else { //if no recent click, continue along pre-established path
+				if (!physicsComponent.isMoving()) {
+					Point newPoint = pather.getNextStep();
+					if (newPoint != null) {
+						Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
+						physicsComponent.moveTo(newLoc.x, newLoc.y);
+					}
+				}
+			} //END PATHFINDING CODE
 
 
 	}

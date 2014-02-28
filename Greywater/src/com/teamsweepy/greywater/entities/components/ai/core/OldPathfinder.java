@@ -1,5 +1,7 @@
-
-package com.teamsweepy.greywater.entities.components.ai;
+/*
+ * IMPORTANT: This shouldn't be used anymore, it stays here until I'm certain everything works as expected
+ */
+package com.teamsweepy.greywater.entities.components.ai.core;
 
 import com.teamsweepy.greywater.entities.level.Level;
 
@@ -10,13 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-/**
- * This class implements the A* algorithm TODO: Make it so whe can change the step length (every tile is a step), TODO: This way whe can get
- * the best performance from the pathfinder
- * 
- * User: Robin de Jong
- */
-public class Pathfinder {
+public class OldPathfinder {
 
 	private PriorityQueue<AStarPath<Point>> paths;
 	private Map<Point, Double> mindists; // Map<K, V> needs two objects
@@ -29,7 +25,7 @@ public class Pathfinder {
 	private LinkedList<Point> nodes;
 	private int pathIndex;
 
-	public Pathfinder(Level l) {
+	public OldPathfinder(Level l) {
 		paths = new PriorityQueue<AStarPath<Point>>();
 		nodes = new LinkedList<Point>();
 		mindists = new HashMap<Point, Double>();
@@ -236,20 +232,20 @@ public class Pathfinder {
 
 // The AStarPath will only be used in this class,
 // So whe define a private class
-class AStarPath<T> implements Comparable {
+class AStarPaath<T> implements Comparable {
 
 	public T point;
 	public double f; // Objects are faster
 	public double g;
 	public AStarPath parent;
 
-	public AStarPath() {
+	public AStarPaath() {
 		parent = null;
 		point = null;
 		g = f = 0.0;
 	}
 
-	public AStarPath(AStarPath p) {
+	public AStarPaath(AStarPath p) {
 		parent = p;
 		g = p.g;
 		f = p.f;

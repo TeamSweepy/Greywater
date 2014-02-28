@@ -5,7 +5,8 @@ import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entities.components.Entity;
 import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
-import com.teamsweepy.greywater.entities.components.ai.Pathfinder;
+import com.teamsweepy.greywater.entities.components.ai.PathfinderMotor;
+import com.teamsweepy.greywater.entities.components.ai.core.Pathfinder;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
 
@@ -29,7 +30,7 @@ public abstract class Mob extends Entity {
 	protected int maxSightRange = 20;//in tiles
 	private Entity focusTarget;
 	private Level world;
-	Pathfinder pather;
+    private PathfinderMotor pather;
 
 	//protected Inventory inventory;
 
@@ -43,7 +44,8 @@ public abstract class Mob extends Entity {
 	public Mob(float x, float y, int width, int height, float speed, Level level) {
 		physicsComponent = new Hitbox(x, y, width, height, speed * 50);
 		world = level;
-		pather = new Pathfinder(level);
+		pather = new PathfinderMotor(PathfinderMotor.Method.POTENTIAL_FIELD);
+        pather.updateMap(level);
 	}
 
 	/**

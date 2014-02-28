@@ -21,7 +21,7 @@ public class Main {
 		cfg.resizable = false;
 		
 		//set fullscreen and match current resolution
-		cfg.setFromDisplayMode(LwjglApplicationConfiguration.getDesktopDisplayMode());
+//		cfg.setFromDisplayMode(LwjglApplicationConfiguration.getDesktopDisplayMode());
 		new LwjglApplication(new Engine(), cfg);
 	}
 }
