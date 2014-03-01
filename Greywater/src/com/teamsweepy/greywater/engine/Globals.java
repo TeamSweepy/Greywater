@@ -52,15 +52,16 @@ public class Globals {
 
 		float x = xIso + yIso / 2;
 		float y = yIso / 2 - xIso;
-
-		return new Point2F(x, y);
+		//+- 50 because that is the size of the tile in objective coords
+		return new Point2F(x + 50, y- 50);
 	}
 
 	/**
 	 * Converts objective coordinates to tile indices
+	 * VERIFIED OUTPUT
 	 */
 	public static Point toTileIndices(float xCoord, float yCoord) {
-		Point tileIndex = new Point(Math.round(xCoord / tileGridWidth), Math.round(yCoord / tileGridHeight));
+		Point tileIndex = new Point((int)Math.floor(xCoord / tileGridWidth), (int)Math.floor(yCoord / tileGridHeight));
 		return tileIndex;
 	}
 	

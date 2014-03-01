@@ -55,7 +55,7 @@ public abstract class Mob extends Entity {
 	public void render(SpriteBatch g) {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		//center on the tile
-		graphicsComponent.render(g, p.x - graphicsComponent.getImageWidth() / 2, p.y - Globals.tileImageHeight / 2);
+		graphicsComponent.render(g, p.x - graphicsComponent.getImageWidth() / 4, p.y + Globals.tileImageHeight / 3);
 	}
 
 	/**

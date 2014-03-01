@@ -68,7 +68,7 @@ public class Level {
 
 		mobList = new ArrayList<Mob>();
 		depthSortList = new ArrayList<Entity>();
-		TestTavishMob = new Player(0, 0, this);
+		TestTavishMob = new Player(0, 10, this);
 		mobList.add(TestTavishMob);
 
 		

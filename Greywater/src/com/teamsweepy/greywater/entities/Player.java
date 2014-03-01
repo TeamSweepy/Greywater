@@ -43,16 +43,13 @@ public class Player extends Mob {
 	@Override
 	protected void getInput() {
 
-//		if(mouseClicked){
-//			Point2F objCo = Globals.toNormalCoord(mouseLocation.x - Camera.getDefault().xOffsetAggregate, mouseLocation.y - Camera.getDefault().yOffsetAggregate);
-//			Point tileCo = Globals.toTileIndices(objCo.x, objCo.y);
-//			System.out.println(objCo);
-//			System.out.println(tileCo);
-//			mouseClicked = false;
-//		}
+		if(mouseClicked){
+			mouseClicked = false;
+		}
 
 			//PATHFINDING CODE
 			if (mouseClicked) {
+				
 				Point startTile = Globals.toTileIndices(getLocation().x, getLocation().y);
 				Point clickedTile = Globals.toTileIndices(mouseLocation.x, mouseLocation.y);
                 pather.createPath(startTile, clickedTile);
