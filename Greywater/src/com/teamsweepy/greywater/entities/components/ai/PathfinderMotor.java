@@ -25,6 +25,8 @@ public class PathfinderMotor
 
     // PF specific
     private double[][] pfMap;
+    private Point curPos;
+    private Point[] nodesDirections;
 
     public PathfinderMotor(Method method) {
         currentMethod = method;
@@ -57,9 +59,40 @@ public class PathfinderMotor
                 return aStarMap.get(pathIndex - 1);
             }
         } else if(currentMethod == Method.POTENTIAL_FIELD){
+            if(!pathfinder.isGoal(curPos)) {
+                curPos = getBestNode(curPos, nodesDirections, pfMap);
+                return curPos;
+            }
         }
 
         return null;
+    }
+
+    private Point getBestNode(Point pos, Point[] directions, double[][] map){
+        Point node = null;
+
+        double highestValue = 0;
+
+        for(Point dir : directions) {
+            int x = pos.x + dir.x;
+            int y = pos.y + dir.y;
+            Point newPos = new Point(x, y);
+
+            if(pathfinder.isGoal(newPos)) {
+                return newPos;
+            }
+
+            if(x > 0 && x < map.length) {
+                if (y > 0 && y < map[0].length) {
+                    if(map[x][y] > highestValue) {
+                        highestValue = map[x][y];
+                        node = newPos;
+                    }
+                }
+            }
+        }
+
+        return node;
     }
 
     public void updateMap(Level level) {

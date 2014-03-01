@@ -39,7 +39,7 @@ public abstract class Pathfinder<T> {
     // Used in the initialization
     public abstract void reset();
 
-    protected abstract boolean isGoal(Point from);
+    public abstract boolean isGoal(Point from);
 
     protected abstract double h(Point from, Point to);
 }
