@@ -7,19 +7,18 @@ import com.teamsweepy.greywater.math.Point2F;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
-public class ButtonCircular extends Button {
+public class ButtonCircular extends SubGUIComponent {
 
 	protected float radius;
 
 	public ButtonCircular() {
 		pos = new Point2F(0, 0);
-		radius = 100 * ratio;
+		radius = 100;
 	}
 
 	public ButtonCircular(float x, float y, float radius) {
-		this.radius = radius * ratio;
+		this.radius = radius;
 		pos = new Point2F(x, y);
-		size = size.mul(ratio);
 
 		hitbox = new Hitbox((int) pos.x, (int) pos.y, (int) size.x, (int) size.y, 0f);
 	}

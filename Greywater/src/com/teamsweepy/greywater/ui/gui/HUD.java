@@ -14,21 +14,19 @@ public class HUD extends GUIComponent {
 		sprite = new Sprite("HUD-1600");
 		pos = new Point2F(0, 0);
 
-		ratio = Gdx.graphics.getWidth() / sprite.getImageWidth(); // Ratio for all the GUI components
-		size = new Point2F(Gdx.graphics.getWidth(), sprite.getImageHeight() * ratio);
+		size = new Point2F(Gdx.graphics.getWidth(), sprite.getImageHeight());
 
 		initSubComponents();
 	}
 
 	private void initSubComponents() {
-		subComponents.add(new Plane(0, 0, 1600, 160));// 160 is the aproximate height of the HUD - it is the background of the HUD
+		subComponents.add(new Plane(0, 0, 1600, 180));// 160 is the aproximate height of the HUD - it is the background of the HUD
 
 		subComponents.add(new ButtonCircular(800, 290 - 39, 37) {
 
 			@Override
 			protected void clicked() {
-				super.clicked();
-				// TODO On inventory open
+				System.out.println("Inventory button clicked");
 			}
 		});// The inventory open button
 

@@ -29,9 +29,10 @@ public class InputGUI extends InputHandler {
 		isDown = true;
 		mousePosition = new Point2F(screenX, screenY);
 
-		Point2F mousePositionOnScreen = new Point2F(mousePosition.x, Gdx.graphics.getHeight() - mousePosition.y);
+		//Point2F mousePositionOnScreen = new Point2F(mousePosition.x, Gdx.graphics.getHeight() - mousePosition.y);
+		Point2F mousePositionInGame = Camera.getDefault().unproject(mousePosition);
 
-		return GUI.handleInput(MOUSE_DOWN, mousePositionOnScreen);
+		return GUI.handleInput(MOUSE_DOWN, mousePositionInGame);
 	}
 
 	@Override

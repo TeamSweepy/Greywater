@@ -13,8 +13,6 @@ import java.util.ArrayList;
 
 public class GUIComponent {
 
-	public static float ratio = 1; // Gets calculated in HUD (since HUD extends to the full width)
-
 	protected Point2F pos;
 	protected Point2F size;
 	protected Hitbox hitbox;
@@ -34,7 +32,8 @@ public class GUIComponent {
 
 	public void handleInput(Point2F mousePosition, int event) {
 		for (GUIComponent child : subComponents) {
-			child.handleInput(mousePosition, event);
+			if (child.intersects(mousePosition))
+				child.handleInput(mousePosition, event);
 		}
 
 		//System.out.println("GOT THE INPUT " + event);
@@ -51,7 +50,6 @@ public class GUIComponent {
 	}
 
 	public boolean intersects(Point2F mousePosition) {
-		mousePosition = mousePosition.div(ratio);// scale the input to the game size
 		for (GUIComponent child : subComponents) {
 			if (child.intersects(mousePosition))
 				return true;
