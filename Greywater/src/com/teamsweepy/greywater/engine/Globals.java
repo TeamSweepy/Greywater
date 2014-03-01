@@ -22,6 +22,7 @@ public class Globals {
 
 	/**
 	 * Convert objective coordinates to screen coordinates
+	 * VERIFIED OUTPUT
 	 */
 	public static Point2F toIsoCoord(float xCoord, float yCoord) {
 		//reverse the x and y because Tiled Map Editor uses a wacky coordinate system
@@ -40,17 +41,17 @@ public class Globals {
 
 	/**
 	 * Convert screen coordinates to flatspace/objective coordinates
+	 * VERIFIED OUTPUT
 	 */
 	public static Point2F toNormalCoord(float xIso, float yIso) {
 		//reverse the x and y because Tiled Map Editor uses a wacky coordinate system
 		//divide x and y by the ratio of hitbox to sprite size
-		float temp = xIso/tileRatio;
-		xIso = yIso/tileRatio;
+		float temp = xIso / tileRatio;
+		xIso = -yIso / tileRatio;
 		yIso = temp;
-		
-		//standard isometric math
-		float x = xIso/2f - yIso;
-		float y = yIso - xIso/2f;
+
+		float x = xIso + yIso / 2;
+		float y = yIso / 2 - xIso;
 
 		return new Point2F(x, y);
 	}
