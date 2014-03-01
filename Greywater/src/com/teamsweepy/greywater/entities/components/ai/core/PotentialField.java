@@ -37,12 +37,12 @@ public class PotentialField extends Pathfinder<double[][]>
         for(Point obstacle : obstacles){
             for(int x = 0; x < map.length; x ++) {
                 for(int y = 0; y < map[0].length; y ++) {
-                    Point currentPos = new Point(x, y);
+                    double newFloat = Math.pow(0.5, h(new Point(x, y), obstacle))/20;
 
-                    if(isGoal(currentPos)) {
+                    if(x == obstacle.x && y == obstacle.y){
                         generateMap[x][y] = 0;
                     } else {
-                        generateMap[x][y] = Math.pow(.5, h(currentPos, obstacle));
+                        generateMap[x][y] = generateMap[x][y] - newFloat;
                     }
                 }
             }
@@ -64,7 +64,7 @@ public class PotentialField extends Pathfinder<double[][]>
     }
 
     @Override
-    protected boolean isGoal(Point from) {
+    public boolean isGoal(Point from) {
         return (from.x == end.x) && (from.y == end.y);
     }
 
