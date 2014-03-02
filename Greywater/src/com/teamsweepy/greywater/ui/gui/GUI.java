@@ -31,6 +31,7 @@ public class GUI {
 
 	public static void initGUI() {
 		addGUIComponent(new HUD());
+		addGUIComponent(new Inventory());
 	}
 
 	public static boolean handleInput(int event, Point2F mousePosition) {
@@ -40,8 +41,15 @@ public class GUI {
 				return true;
 			}
 		}
-
 		return false;
+	}
+
+	public static HUD getHUD() {
+		return (HUD) guiComponents.get(0);
+	}
+
+	public static Inventory getInventory() {
+		return (Inventory) guiComponents.get(1);
 	}
 
 }

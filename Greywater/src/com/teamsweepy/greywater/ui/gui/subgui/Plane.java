@@ -1,9 +1,8 @@
 
 package com.teamsweepy.greywater.ui.gui.subgui;
 
-import com.teamsweepy.greywater.entities.components.Hitbox;
+import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
-import com.teamsweepy.greywater.ui.gui.GUIComponent;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -11,22 +10,22 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Plane extends SubGUIComponent {
 
 	public Plane() {
-		pos = new Point2F(0, 0);
-		size = new Point2F(100, 100);
-
-		hitbox = new Hitbox((int) pos.x, (int) pos.y, (int) size.x, (int) size.y, 0f);
+		super(0, 0, 100, 100);
 	}
 
 	public Plane(float x, float y, float w, float h) {
-		pos = new Point2F(x, y);
-		size = new Point2F(w, h);
-
-		hitbox = new Hitbox((int) pos.x, (int) pos.y, (int) size.x, (int) size.y, 0f);
+		super(x, y, w, h);
+		sprite = new Sprite("healthpotion");
 	}
 
-	public void render(SpriteBatch batch) {}
+	protected void clicked() {}
 
+	public void render(SpriteBatch g) {}
+
+	@Override
 	public boolean intersects(Point2F mousePosition) {
 		return getHitbox().intersects(mousePosition);
 	}
+
+	/* public boolean intersects(Point2F mousePosition) { return getHitbox().intersects(mousePosition); } */
 }

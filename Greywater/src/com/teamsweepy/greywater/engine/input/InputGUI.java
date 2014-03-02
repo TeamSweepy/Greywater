@@ -29,9 +29,9 @@ public class InputGUI extends InputHandler {
 		isDown = true;
 		mousePosition = new Point2F(screenX, screenY);
 
-		//Point2F mousePositionOnScreen = new Point2F(mousePosition.x, Gdx.graphics.getHeight() - mousePosition.y);
 		Point2F mousePositionInGame = Camera.getDefault().unproject(mousePosition);
 
+		System.out.println(mousePositionInGame.toString());
 		return GUI.handleInput(MOUSE_DOWN, mousePositionInGame);
 	}
 
@@ -43,9 +43,9 @@ public class InputGUI extends InputHandler {
 		isDown = false;
 		mousePosition = new Point2F(screenX, screenY);
 
-		Point2F mousePositionOnScreen = new Point2F(mousePosition.x, Gdx.graphics.getHeight() - mousePosition.y);
+		Point2F mousePositionInGame = Camera.getDefault().unproject(mousePosition);
 
-		return GUI.handleInput(MOUSE_UP, mousePositionOnScreen);
+		return GUI.handleInput(MOUSE_UP, mousePositionInGame);
 	}
 
 	@Override
@@ -55,8 +55,8 @@ public class InputGUI extends InputHandler {
 	public boolean mouseMoved(int screenX, int screenY) {
 		mousePosition = new Point2F(screenX, screenY);
 
-		Point2F mousePositionOnScreen = new Point2F(mousePosition.x, Gdx.graphics.getHeight() - mousePosition.y);
-		return GUI.handleInput(MOUSE_MOVED, mousePositionOnScreen);
+		Point2F mousePositionInGame = Camera.getDefault().unproject(mousePosition);
+		return GUI.handleInput(MOUSE_MOVED, mousePositionInGame);
 	}
 
 	@Override

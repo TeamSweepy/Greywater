@@ -45,6 +45,13 @@ public class Hitbox {
 	 * @param hitWidth- width of the hitBox
 	 * @param hitHeight- height of hitBox
 	 */
+
+	public Hitbox() {
+		destination = new Point2F();
+		this.speed = 0;
+		hitBox = new Rectangle();
+	}
+
 	public Hitbox(float x, float y, int hitWidth, int hitHeight, float spd) {
 		destination = new Point2F(x, y);
 		this.speed = spd;
@@ -107,6 +114,10 @@ public class Hitbox {
 	 */
 	public void stopMovement() {
 		destination.setLocation(hitBox.x, hitBox.y);
+	}
+
+	public String toString() {
+		return "{" + hitBox.x + " " + hitBox.y + " || " + hitBox.width + " " + hitBox.height + "}";
 	}
 
 	public Rectangle getHitBox() {

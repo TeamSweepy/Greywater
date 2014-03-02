@@ -20,7 +20,7 @@ public class ButtonCircular extends SubGUIComponent {
 		this.radius = radius;
 		pos = new Point2F(x, y);
 
-		hitbox = new Hitbox((int) pos.x, (int) pos.y, (int) size.x, (int) size.y, 0f);
+		hitbox = new Hitbox();
 	}
 
 	public void render(SpriteBatch batch) {}
