@@ -1,18 +1,18 @@
 
-package com.teamsweepy.greywater.ui.item;
+package com.teamsweepy.greywater.ui.item.weapons;
 
 import com.teamsweepy.greywater.entities.components.Sprite;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
-public class HealthPotion extends Item {
+public class TazerWrench extends Wrench {
 
-	public final int ID = 01;
-	public final String name = "Health Potion";
+	public final int ID = 05;
+	public final String name = "Tazer wrench";
 
-	public HealthPotion() {
-		sprite = new Sprite("healthpotion");
+	public TazerWrench() {
+		sprite = new Sprite("tazerwrench");
 	}
 
 	@Override

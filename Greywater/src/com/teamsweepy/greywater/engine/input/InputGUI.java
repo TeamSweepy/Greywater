@@ -21,6 +21,8 @@ import com.badlogic.gdx.Input.Keys;
 
 public class InputGUI extends InputHandler {
 
+	public static Point2F position = new Point2F();
+
 	@Override
 	/**
 	 * Upon a mouse / pointer click this event occurs. It saves the mouse input data
@@ -30,6 +32,7 @@ public class InputGUI extends InputHandler {
 		mousePosition = new Point2F(screenX, screenY);
 
 		Point2F mousePositionInGame = Camera.getDefault().unproject(mousePosition);
+		position = mousePositionInGame;
 
 		return GUI.handleInput(MOUSE_DOWN, mousePositionInGame);
 	}
@@ -43,6 +46,7 @@ public class InputGUI extends InputHandler {
 		mousePosition = new Point2F(screenX, screenY);
 
 		Point2F mousePositionInGame = Camera.getDefault().unproject(mousePosition);
+		position = mousePositionInGame;
 
 		return GUI.handleInput(MOUSE_UP, mousePositionInGame);
 	}
@@ -55,6 +59,8 @@ public class InputGUI extends InputHandler {
 		mousePosition = new Point2F(screenX, screenY);
 
 		Point2F mousePositionInGame = Camera.getDefault().unproject(mousePosition);
+		position = mousePositionInGame;
+
 		return GUI.handleInput(MOUSE_MOVED, mousePositionInGame);
 	}
 

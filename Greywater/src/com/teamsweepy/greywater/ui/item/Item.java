@@ -20,11 +20,23 @@ public class Item {
 
 	}
 
+	public void render(SpriteBatch g, float x, float y) {
+		if (sprite == null) {
+			System.out.println("[ERROR] There is no Sprite assigned to " + name + " item");
+			return;
+		}
+		render(g, x, y, sprite.getImageWidth(), sprite.getImageHeight());
+	}
+
 	public void render(SpriteBatch g, float x, float y, float w, float h) {
 		if (sprite == null) {
 			System.out.println("[ERROR] There is no Sprite assigned to " + name + " item");
 			return;
 		}
 		sprite.render(g, x, y, w, h);
+	}
+
+	public Sprite getSprite() {
+		return sprite;
 	}
 }

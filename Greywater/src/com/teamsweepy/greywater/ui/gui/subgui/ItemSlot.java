@@ -4,8 +4,9 @@ package com.teamsweepy.greywater.ui.gui.subgui;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.Cursor;
+import com.teamsweepy.greywater.ui.gui.GUI;
 import com.teamsweepy.greywater.ui.gui.Inventory;
-import com.teamsweepy.greywater.ui.item.HealthPotion;
 import com.teamsweepy.greywater.ui.item.Item;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,8 +26,27 @@ public class ItemSlot extends SubGUIComponent {
 
 	@Override
 	protected void clicked() {
-		System.out.println("Hi" + "clicked on the item slot");
-		item = new HealthPotion();
+		Cursor cursor = GUI.getCursor();
+
+		if (item == null) {
+
+			if (cursor.getItem() != null) { // move the item from the cursor into the slot
+				this.item = cursor.getItem();
+				cursor.setItem(null);
+			}
+
+		} else if (item != null) { // there is an item in the slot
+
+			if (cursor.getItem() == null) {// move the item from the slot to the cursor
+				cursor.setItem(item);
+				this.item = null;
+
+			} else { // swap the items
+				Item temp = item;
+				item = cursor.getItem();
+				cursor.setItem(temp);
+			}
+		}
 	}
 
 	@Override
@@ -43,11 +63,19 @@ public class ItemSlot extends SubGUIComponent {
 		// render the item in the slot
 		if (item == null)
 			return;
-		item.render(g, pos.x - xOff, pos.y - yOff, size.x, size.y);
+		item.render(g, pos.x - xOff, pos.y - yOff);
 	}
 
 	@Override
 	public boolean intersects(Point2F mousePosition) {
 		return getHitbox().intersects(mousePosition);
+	}
+
+	public Item getItem() {
+		return item;
+	}
+
+	public void setItem(Item item) {
+		this.item = item;
 	}
 }
