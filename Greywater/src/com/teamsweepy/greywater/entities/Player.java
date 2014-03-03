@@ -29,7 +29,7 @@ public class Player extends Mob {
 	 * @param y - Tile Y Position, not objective position
 	 */
 	public Player(float x, float y, Level level) {
-		super(x * 50, y * 50, 35, 35, 1f, level);
+		super(x * 50 + 25, y * 50 + 25, 35, 35, 1.25f, level);
 		super.name = "Tavish";
 		currentDirection = "South";
 		this.graphicsComponent = new Sprite(name, "Stand_South");
@@ -42,17 +42,15 @@ public class Player extends Mob {
 
 	@Override
 	protected void getInput() {
-
-		if(mouseClicked){
-			mouseClicked = false;
-		}
-
 			//PATHFINDING CODE
 			if (mouseClicked) {
-				
+				mouseClicked = false;
 				Point startTile = Globals.toTileIndices(getLocation().x, getLocation().y);
-				Point clickedTile = Globals.toTileIndices(mouseLocation.x, mouseLocation.y);
-                pather.createPath(startTile, clickedTile);
+				Point2F objectiveClick = Globals.toNormalCoord(mouseLocation.x, mouseLocation.y);
+				Point clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
+				System.out.println(startTile);
+				System.out.println(clickedTile);
+				pather.createPath(startTile, clickedTile);
 
 				Point newPoint = pather.getNextStep();
 				if (newPoint != null) {

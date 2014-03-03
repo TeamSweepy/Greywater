@@ -68,7 +68,7 @@ public class Level {
 
 		mobList = new ArrayList<Mob>();
 		depthSortList = new ArrayList<Entity>();
-		TestTavishMob = new Player(0, 10, this);
+		TestTavishMob = new Player(0, 0, this);
 		mobList.add(TestTavishMob);
 
 		
@@ -111,6 +111,8 @@ public class Level {
 		for (Mob mob : mobList) {
 			mob.tick(deltaTime);
 		}
+		
+		//Camera.getDefault().moveTo(TestTavishMob.getX(), TestTavishMob.getY());
 	}
 
 	public boolean isTileWalkable(int x, int y) {

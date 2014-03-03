@@ -53,6 +53,7 @@ public class GameScreen implements Screen {
 
 	public void tick(float delta) {
 		levelForTesting.tick(delta);
+		
 		GUI.tick();
 	}
 

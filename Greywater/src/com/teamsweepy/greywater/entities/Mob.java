@@ -55,13 +55,14 @@ public abstract class Mob extends Entity {
 	public void render(SpriteBatch g) {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		//center on the tile
-		graphicsComponent.render(g, p.x - graphicsComponent.getImageWidth() / 4, p.y + Globals.tileImageHeight / 3);
+		graphicsComponent.render(g, p.x - graphicsComponent.getImageWidth() / 2, p.y + Globals.tileImageHeight / 3);
 	}
 
 	/**
 	 * Update graphics and physics components, deal with animation and behavior
 	 */
 	public void tick(float deltaTime) {
+		super.tick(deltaTime);
 		getInput();
 
 		if (HP < 0 && !graphicsComponent.getCurrentImageName().contains("DIE")) {
@@ -69,11 +70,12 @@ public abstract class Mob extends Entity {
 			attacking = false;
 			return;
 		} else {
-			super.tick(deltaTime);
+			
 
 			if (attacking)
 				graphicsComponent.setImage(.25f, "Attack_" + currentDirection, Sprite.FORWARD); // TODO if multiple attacks clicked, pingpong
 			else if (physicsComponent.isMoving()) {
+				currentDirection = Globals.getDirectionString(physicsComponent.destination.x - getX(), physicsComponent.destination.y - getY());
 				graphicsComponent.setImage(walkCycleDuration, "Walk_" + currentDirection, Sprite.LOOP);
 			} else
 				graphicsComponent.setImage(1f, "Stand_" + currentDirection, Sprite.STILL_IMAGE);

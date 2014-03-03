@@ -31,7 +31,6 @@ public class InputGUI extends InputHandler {
 
 		Point2F mousePositionInGame = Camera.getDefault().unproject(mousePosition);
 
-		System.out.println(mousePositionInGame.toString());
 		return GUI.handleInput(MOUSE_DOWN, mousePositionInGame);
 	}
 

@@ -46,8 +46,8 @@ public class Globals {
 	public static Point2F toNormalCoord(float xIso, float yIso) {
 		//reverse the x and y because Tiled Map Editor uses a wacky coordinate system
 		//divide x and y by the ratio of hitbox to sprite size
-		float temp = xIso / tileRatio;
-		xIso = -yIso / tileRatio;
+		float temp = (xIso  - Camera.getDefault().xOffsetAggregate) / tileRatio;
+		xIso = -(yIso - Camera.getDefault().yOffsetAggregate) / tileRatio;
 		yIso = temp;
 
 		float x = xIso + yIso / 2;
@@ -67,9 +67,11 @@ public class Globals {
 	
 	/**
 	 * Converts objective coordinates to tile indices
+	 * VERIFIED OUTPUT
 	 */
 	public static Point2F toNormalCoordFromTileIndices(float xCoord, float yCoord) {
-		Point2F location = new Point2F((xCoord * tileGridWidth), (yCoord * tileGridHeight));
+		//+25 to indicate the center of a tile
+		Point2F location = new Point2F((xCoord * tileGridWidth) + 25, (yCoord * tileGridHeight) + 25);
 		return location;
 	}
 
@@ -80,7 +82,7 @@ public class Globals {
 	 * @param yDiff - TargetY - CurrentY
 	 */
 	public static String getDirectionString(double xDiff, double yDiff) {
-		double angle = (-1) * Math.toDegrees(Math.atan2(yDiff, xDiff)) - 45;
+		double angle =  Math.toDegrees(Math.atan2(yDiff, xDiff)) - 45;
 		if (angle < 0)
 			angle += 360;
 		if (angle >= 337.5 || angle < 22.5)

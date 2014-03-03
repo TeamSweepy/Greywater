@@ -27,8 +27,6 @@ public class InputGame extends InputHandler {
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		isDown = true;
 		mousePosition = Camera.getDefault().unproject(new Point2F(screenX, screenY));
-		//	System.out.println("local coords = "+ screenX + " , " + screenY);
-		//	System.out.println("unprojected coords = " + mousePosition.x + " , " + mousePosition.y);
 		Player.handleInput(mousePosition, isDown, -69);
 		return true;
 	}

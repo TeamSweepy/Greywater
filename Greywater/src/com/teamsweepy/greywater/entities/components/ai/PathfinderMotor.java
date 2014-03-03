@@ -44,6 +44,7 @@ public class PathfinderMotor
         pathfinder.reset();
         pathfinder.setStart(from);
         pathfinder.setEnd(end);
+        pathIndex = 0;
 
         if(currentMethod == Method.ASTAR){
             aStarMap = (java.util.List<Point>)pathfinder.create();

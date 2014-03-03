@@ -64,9 +64,9 @@ public class Hitbox {
 	 */
 	public void tick(float deltaTime) {
 		//get direction of movement * speed
-
-		xDelta = Integer.signum((int) (destination.getX() - hitBox.getX())) * speed * deltaTime;
-		yDelta = Integer.signum((int) (destination.getY() - hitBox.getY())) * speed * deltaTime;
+		
+		xDelta = Math.signum((destination.getX() - hitBox.getX())) * speed * deltaTime;
+		yDelta = Math.signum((destination.getY() - hitBox.getY())) * speed * deltaTime;
 		if (Math.abs(xDelta) > Math.abs(destination.getX() - hitBox.getX()))
 			xDelta = destination.getX() - hitBox.getX();
 
@@ -129,7 +129,7 @@ public class Hitbox {
 		if ((destination.getX() - hitBox.x) == 0. && (destination.getX() - hitBox.x) == 0.)
 			if ((destination.getY() - hitBox.y == 0.) && (destination.getY() - hitBox.y) == 0.)
 				return false;
-
+			
 		return true;
 	}
 }
