@@ -24,7 +24,11 @@ public class ItemSlot extends SubGUIComponent {
 		sprite = new Sprite("slot");
 	}
 
+
 	@Override
+	/**
+	 * Handle on click. Move the items from and to the cursor when needed
+	 * */
 	protected void clicked() {
 		Cursor cursor = GUI.getCursor();
 

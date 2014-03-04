@@ -3,7 +3,6 @@ package com.teamsweepy.greywater.ui.gui;
 
 import com.teamsweepy.greywater.engine.input.InputGUI;
 import com.teamsweepy.greywater.ui.item.Item;
-import com.teamsweepy.greywater.ui.item.potions.HealthPotion;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -14,7 +13,8 @@ public class Cursor extends GUIComponent {
 
 	public Cursor() {
 		super();
-		item = new HealthPotion();
+		//item = new HealthPotion();
+		item = null;
 	}
 
 	@Override

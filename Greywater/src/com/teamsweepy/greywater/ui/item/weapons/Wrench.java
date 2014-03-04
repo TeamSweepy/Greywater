@@ -2,12 +2,11 @@
 package com.teamsweepy.greywater.ui.item.weapons;
 
 import com.teamsweepy.greywater.entities.components.Sprite;
-import com.teamsweepy.greywater.ui.item.Item;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
-public class Wrench extends Item {
+public class Wrench extends Weapon {
 
 	public final int ID = 04;
 	public final String name = "Wrench";
