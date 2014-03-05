@@ -47,7 +47,9 @@ public class GUIComponent {
 	public void render(SpriteBatch batch) {
 		if (!visible)
 			return;
+
 		sprite.render(batch, pos.x - Camera.getDefault().xOffsetAggregate, pos.y - Camera.getDefault().yOffsetAggregate);
+
 
 		// Render all the subcomponents
 		for (SubGUIComponent child : subComponents) {

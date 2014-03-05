@@ -24,8 +24,7 @@ public class Camera {
 	public float xOffset, yOffset; //temporary tracking of camera movement to translate spriteBatch
 	public float xOffsetAggregate, yOffsetAggregate; //track total screen movement forever
 	public int width, height;
-	public float xPos;
-	public float yPos;
+
 
 	// Synchronized so the object won't be initialized in different threads
 	/**
@@ -85,13 +84,14 @@ public class Camera {
 		return camera.combined;
 	}
 
-	public Point2F getTranslatedForMatrix() {
+	public Point2F getTranslatedMatrix() {
 		float x = xOffset;
 		float y = yOffset;
 		xOffset = 0;
 		yOffset = 0;
 		return new Point2F(x, y);
 	}
+
 
 	/**
 	 * Convert user screen coordinates into game viewport coordinates

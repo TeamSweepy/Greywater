@@ -16,6 +16,7 @@ import com.teamsweepy.greywater.ui.gui.GUI;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GameScreen implements Screen {
 
@@ -23,6 +24,7 @@ public class GameScreen implements Screen {
 
 	//testvar
 	Level levelForTesting;
+	SpriteBatch guiBatch;
 
 
 	public GameScreen(Engine eng) {
@@ -30,14 +32,17 @@ public class GameScreen implements Screen {
 		engine = eng;
 		levelForTesting = new Level();
 		GUI.initGUI();
+
 	}
 
 	@Override
 	public void render(float delta) {
 		//scale from 1600x900 to whatever user screen is set to and clear graphics
-		Gdx.gl.glViewport((int) Camera.getDefault().xOffset, (int) Camera.getDefault().yOffset, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-
+		//this replaces the camera.translate function that doesn't work. 		
+		Point2F offsetPoint = Camera.getDefault().getTranslatedMatrix();
+		engine.batch.setProjectionMatrix(engine.batch.getProjectionMatrix().translate(offsetPoint.x, offsetPoint.y, 0));
 
 		engine.batch.begin();// start render
 		levelForTesting.render(engine.batch);
@@ -46,10 +51,6 @@ public class GameScreen implements Screen {
 	}
 
 	public void tick(float delta) {
-		//this replaces the camera.translate function that doesn't work. 		
-		Point2F offsetPoint = Camera.getDefault().getTranslatedForMatrix();
-		engine.batch.setProjectionMatrix(engine.batch.getProjectionMatrix().translate(offsetPoint.x, offsetPoint.y, 0));
-
 		levelForTesting.tick(delta);
 		GUI.tick();
 	}

@@ -30,7 +30,7 @@ public abstract class Mob extends Entity {
 	protected int maxSightRange = 20;//in tiles
 	private Entity focusTarget;
 	private Level world;
-    private PathfinderMotor pather;
+	private PathfinderMotor pather;
 
 	//protected Inventory inventory;
 
@@ -45,7 +45,7 @@ public abstract class Mob extends Entity {
 		physicsComponent = new Hitbox(x, y, width, height, speed * 50);
 		world = level;
 		pather = new PathfinderMotor(PathfinderMotor.Method.POTENTIAL_FIELD);
-        pather.updateMap(level);
+		pather.updateMap(level);
 	}
 
 	/**
@@ -70,15 +70,17 @@ public abstract class Mob extends Entity {
 			attacking = false;
 			return;
 		} else {
-			
+
 
 			if (attacking)
 				graphicsComponent.setImage(.25f, "Attack_" + currentDirection, Sprite.FORWARD); // TODO if multiple attacks clicked, pingpong
 			else if (physicsComponent.isMoving()) {
+				String cDir = currentDirection;
 				currentDirection = Globals.getDirectionString(physicsComponent.destination.x - getX(), physicsComponent.destination.y - getY());
 				graphicsComponent.setImage(walkCycleDuration, "Walk_" + currentDirection, Sprite.LOOP);
-			} else
+			} else {
 				graphicsComponent.setImage(1f, "Stand_" + currentDirection, Sprite.STILL_IMAGE);
+			}
 		}
 	}
 
