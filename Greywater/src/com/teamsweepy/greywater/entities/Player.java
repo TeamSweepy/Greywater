@@ -9,19 +9,17 @@ import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.awt.Point;
 
 
 public class Player extends Mob {
 
-	private float elTime = 0f;
-	private boolean elTimes = true;
-
 	private static Point2F mouseLocation;
 	private static boolean mouseClicked;
 
-    private PathfinderMotor pather;
+	private PathfinderMotor pather;
 
 	/**
 	 * Creates a new player standing in the center of the tile specified.
@@ -36,38 +34,36 @@ public class Player extends Mob {
 		this.walkCycleDuration = 1;
 		graphicsComponent.setImage(.6f, "Walk_South", Sprite.LOOP);
 
-        pather = new PathfinderMotor(PathfinderMotor.Method.ASTAR);
-        pather.updateMap(level);
+		pather = new PathfinderMotor(PathfinderMotor.Method.ASTAR);
+		pather.updateMap(level);
 	}
 
 	@Override
 	protected void getInput() {
-			//PATHFINDING CODE
-			if (mouseClicked) {
-				mouseClicked = false;
-				Point startTile = Globals.toTileIndices(getLocation().x, getLocation().y);
-				Point2F objectiveClick = Globals.toNormalCoord(mouseLocation.x, mouseLocation.y);
-				Point clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
-				System.out.println(startTile);
-				System.out.println(clickedTile);
-				pather.createPath(startTile, clickedTile);
+		//PATHFINDING CODE
+		if (mouseClicked) {
+			mouseClicked = false;
+			Point startTile = Globals.toTileIndices(getLocation().x, getLocation().y);
+			Point2F objectiveClick = Globals.toNormalCoord(mouseLocation.x, mouseLocation.y);
+			Point clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
+			System.out.println("Player starts at " + startTile);
+			System.out.println("Clicked to move to " + clickedTile);
+			pather.createPath(startTile, clickedTile);
 
+			Point newPoint = pather.getNextStep();
+			if (newPoint != null) {
+				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
+				physicsComponent.moveTo(newLoc.x, newLoc.y);
+			}
+		} else { //if no recent click, continue along pre-established path
+			if (!physicsComponent.isMoving()) {
 				Point newPoint = pather.getNextStep();
 				if (newPoint != null) {
 					Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 					physicsComponent.moveTo(newLoc.x, newLoc.y);
 				}
-			} else { //if no recent click, continue along pre-established path
-				if (!physicsComponent.isMoving()) {
-					Point newPoint = pather.getNextStep();
-					if (newPoint != null) {
-						Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
-						physicsComponent.moveTo(newLoc.x, newLoc.y);
-					}
-				}
-			} //END PATHFINDING CODE
-
-
+			}
+		} //END PATHFINDING CODE
 	}
 
 	@Override
@@ -81,15 +77,15 @@ public class Player extends Mob {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	/**
 	 * Sets local player input variables. Used as a callback.
 	 */
-	public static void handleInput(Point2F screenLocation, boolean clicked, int keyCode){
+	public static void handleInput(Point2F screenLocation, boolean clicked, int keyCode) {
 		mouseClicked = clicked;
 		mouseLocation = screenLocation;
-		
-		if(mouseLocation !=null || keyCode != -69){
+
+		if (mouseLocation != null || keyCode != -69) {
 			return; //TODO deal with key input when needed
 		}
 	}

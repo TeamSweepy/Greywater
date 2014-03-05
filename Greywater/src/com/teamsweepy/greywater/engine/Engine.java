@@ -114,7 +114,7 @@ public class Engine extends Game {
 			tickCount++;
 		}
 
-		if (secondsElapsed > 10.0){
+		if (secondsElapsed > 10.0) {
 			printStats();
 			tickCount = 0;
 			secondsElapsed = 0;

@@ -70,8 +70,9 @@ public class Level {
 		depthSortList = new ArrayList<Entity>();
 		TestTavishMob = new Player(0, 0, this);
 		mobList.add(TestTavishMob);
+		Camera.getDefault().moveTo(Globals.toIsoCoord(TestTavishMob.getX(), TestTavishMob.getY()));
 
-		
+
 
 	}
 
@@ -96,6 +97,7 @@ public class Level {
 		}
 
 		depthSortList.clear();
+		Camera.getDefault().moveTo(Globals.toIsoCoord(TestTavishMob.getX(), TestTavishMob.getY()));
 	}
 
 	public void tick(float deltaTime) {
@@ -111,8 +113,7 @@ public class Level {
 		for (Mob mob : mobList) {
 			mob.tick(deltaTime);
 		}
-		
-		//Camera.getDefault().moveTo(TestTavishMob.getX(), TestTavishMob.getY());
+
 	}
 
 	public boolean isTileWalkable(int x, int y) {

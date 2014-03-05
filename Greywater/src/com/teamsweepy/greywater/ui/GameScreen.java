@@ -8,27 +8,25 @@
 
 package com.teamsweepy.greywater.ui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-
-import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Engine;
-import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.GUI;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 
 public class GameScreen implements Screen {
 
 	private Engine engine;
 
 	//testvar
-	private Sprite aTestSprite;
 	Level levelForTesting;
-	int rotatingIncrement = 0;
+
 
 	public GameScreen(Engine eng) {
+
 		engine = eng;
 		levelForTesting = new Level();
 		GUI.initGUI();
@@ -39,21 +37,20 @@ public class GameScreen implements Screen {
 		//scale from 1600x900 to whatever user screen is set to and clear graphics
 		Gdx.gl.glViewport((int) Camera.getDefault().xOffset, (int) Camera.getDefault().yOffset, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		//this replaces the camera.translate function that doesn't work. 		
-		Point2F offsetPoint = Camera.getDefault().getTranslatedForMatrix();
-		engine.batch.setProjectionMatrix(engine.batch.getProjectionMatrix().translate(offsetPoint.x, offsetPoint.y, 0));
+
 
 		engine.batch.begin();// start render
-
 		levelForTesting.render(engine.batch);
-
 		GUI.render(engine.batch);
 		engine.batch.end();// end render
 	}
 
 	public void tick(float delta) {
+		//this replaces the camera.translate function that doesn't work. 		
+		Point2F offsetPoint = Camera.getDefault().getTranslatedForMatrix();
+		engine.batch.setProjectionMatrix(engine.batch.getProjectionMatrix().translate(offsetPoint.x, offsetPoint.y, 0));
+
 		levelForTesting.tick(delta);
-		
 		GUI.tick();
 	}
 

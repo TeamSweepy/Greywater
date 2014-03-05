@@ -19,9 +19,13 @@ public class Globals {
 	public static float tileImageHeight = 112;
 
 	public static float tileRatio = 1.12f;
+	
+	public static Point2F toScreenCoord(float xIso, float yIso){
+		return new Point2F(xIso + Camera.getDefault().xOffsetAggregate, yIso + Camera.getDefault().yOffsetAggregate);
+	}
 
 	/**
-	 * Convert objective coordinates to screen coordinates
+	 * Convert objective coordinates to isometric coordinates
 	 * VERIFIED OUTPUT
 	 */
 	public static Point2F toIsoCoord(float xCoord, float yCoord) {

@@ -24,6 +24,8 @@ public class Camera {
 	public float xOffset, yOffset; //temporary tracking of camera movement to translate spriteBatch
 	public float xOffsetAggregate, yOffsetAggregate; //track total screen movement forever
 	public int width, height;
+	public float xPos;
+	public float yPos;
 
 	// Synchronized so the object won't be initialized in different threads
 	/**
@@ -44,6 +46,7 @@ public class Camera {
 		this.height = height;
 
 		camera.setToOrtho(false, width, height);
+		camera.translate(new Vector3(-camera.position.x, -camera.position.y, -camera.position.z));
 	}
 
 	public void move(float x, float y) {
@@ -52,6 +55,22 @@ public class Camera {
 
 		xOffsetAggregate -= x; //xOffset and yOffset get frequently reset, this is for locking to the screen
 		yOffsetAggregate -= y;
+	}
+
+	public void moveTo(Point2F move) {
+		move = Globals.toScreenCoord(move.x, move.y);
+		moveTo(move.x, move.y);
+	}
+
+	public void moveTo(float xMove, float yMove) {
+		if (xMove == ((width / 2) + 50) && yMove == (2 * height / 3))
+			return;
+
+		xOffset = -(xMove - ((width / 2) + 50)); //center the player in the camera view
+		yOffset = -(yMove - (2 * height / 3));
+
+		xOffsetAggregate += xOffset;
+		yOffsetAggregate += yOffset;
 	}
 
 	public void update() {
