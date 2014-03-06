@@ -1,12 +1,7 @@
 
 package com.teamsweepy.greywater.ui.gui.crafting;
 
-import com.teamsweepy.greywater.ui.item.Item;
-import com.teamsweepy.greywater.ui.item.misc.VoltCell;
-import com.teamsweepy.greywater.ui.item.potions.HealthPotion;
-import com.teamsweepy.greywater.ui.item.potions.Mercury;
-import com.teamsweepy.greywater.ui.item.weapons.TazerWrench;
-import com.teamsweepy.greywater.ui.item.weapons.Wrench;
+import com.teamsweepy.greywater.ui.item.IDs;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,30 +9,39 @@ import java.util.List;
 
 
 public enum ShapelessRecipe {
-	/* NAME ( new Item{new NeededItem, new NeededItem...}, new CraftedItem); */
-	TAZER_WRENCH(new Item[] { new VoltCell(), new Wrench() }, new TazerWrench()), // 
-	MERCURY(new Item[] { new HealthPotion(), new TazerWrench() }, new Mercury()), //
-	VOLT_CELL(new Item[] { new Mercury(), new HealthPotion(), new Wrench() }, new VoltCell()), //
-	WRENCH(new Item[] { new VoltCell() }, new Wrench()), //
-	HEALTH_POTION(new Item[] { new Mercury(), new Mercury(), new Mercury() }, new HealthPotion());
 
-	private Item[] items;
-	private Item crafted;
+	TAZER_WRENCH(new int[] { IDs.VOLT_CELL.getID(), IDs.WRENCH.getID() }, IDs.TAZER_WRENCH.getID()), //
+	MERCURY(new int[] { IDs.HEALTH_POTION.getID(), IDs.TAZER_WRENCH.getID() }, IDs.MERCURY.getID()), //
+	VOLT_CELL(new int[] { IDs.MERCURY.getID(), IDs.HEALTH_POTION.getID(), IDs.WRENCH.getID() }, IDs.VOLT_CELL.getID()), //
+	WRENCH(new int[] { IDs.VOLT_CELL.getID() }, IDs.WRENCH.getID()), //
+	HEALTH_POTION(new int[] { IDs.MERCURY.getID(), IDs.MERCURY.getID(), IDs.MERCURY.getID() }, IDs.HEALTH_POTION.getID());
 
-	private ShapelessRecipe(Item items[], Item crafted) {
+	private int[] items;
+	private int crafted;
+
+	private ShapelessRecipe(int items[], int crafted) {
 		this.items = items;
 		this.crafted = crafted;
 	}
 
-	public Item[] getNeededItems() {
+	public int[] getNeededItems() {
 		return items;
 	}
 
-	public Item getCrafted() {
+	public String neededItemsToString() {
+		String output = "";
+		for (int i = 0; i < items.length; i++) {
+			output += items[i];
+		}
+		return output;
+	}
+
+	public int getCrafted() {
 		return crafted;
 	}
 
 	public static List<ShapelessRecipe> getAllRecipies() {
 		return Arrays.asList(ShapelessRecipe.values());
 	}
+
 }

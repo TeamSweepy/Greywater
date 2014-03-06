@@ -57,7 +57,7 @@ public class Inventory extends GUIComponent {
 			itemSlots.get(3 + i).setItem(new VoltCell());
 		}
 
-		visible = false;
+		visible = true;
 	}
 
 	@Override

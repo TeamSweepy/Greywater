@@ -26,15 +26,23 @@ public class Crafting {
 		if (temp.isEmpty())
 			return null;
 
+		System.out.println(recipies.size());
 		for (ShapelessRecipe recipie : recipies) {
-				
+
 			ArrayList<Item> items = getItemsFromSlots(craftingSlots);
 			items = removeAllEmpty(items);
+			/*int[] itemsGottenIDs = new int[items.size()];
+			for (int i = 0; i < items.size(); i++) {
+				itemsGottenIDs[i] = items.get(i).getID();
+			}*/
 
-			Item[] itemsNeeded = recipie.getNeededItems();
+			int[] itemsNeeded = recipie.getNeededItems(); //get needed items form the recipie
+
+			if (itemsNeeded.length > items.size())
+				continue;
 
 			boolean canCraft = true;
-			for (Item i : itemsNeeded) {// check if it contains all the items
+			for (int i : itemsNeeded) {// check if it contains all the items
 
 				Item containsIt = contains(items, i);
 				items.remove(containsIt);
@@ -42,9 +50,9 @@ public class Crafting {
 					canCraft = false;
 
 			}
-
+			//System.out.println(canCraft);
 			if (canCraft && items.isEmpty())
-				return recipie.getCrafted();
+				return Item.getByID(recipie.getCrafted());
 		}
 
 
@@ -52,14 +60,11 @@ public class Crafting {
 	}
 
 	/** Checks if the array list contains a certain item */
-	private static Item contains(ArrayList<Item> items, Item item) {
-		//System.out.println(items);
+	private static Item contains(ArrayList<Item> items, int itemID) {
 		for (int a = 0; a < items.size(); a++) {
 			Item i = items.get(a);
 
-			System.out.println(i.getClass() + " " + item.getClass());
-			if (i.getClass() == item.getClass()) {
-				//System.out.println(i);
+			if (i.getID() == itemID) {
 				return i;
 			}
 		}
