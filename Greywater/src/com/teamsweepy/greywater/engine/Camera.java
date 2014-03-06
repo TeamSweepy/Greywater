@@ -62,11 +62,11 @@ public class Camera {
 	}
 
 	public void moveTo(float xMove, float yMove) {
-		if (xMove == ((width / 2) + 50) && yMove == (2 * height / 3))
+		if (xMove == (width / 2) && yMove == (height / 2))
 			return;
 
-		xOffset = -(xMove - ((width / 2) + 50)); //center the player in the camera view
-		yOffset = -(yMove - (2 * height / 3));
+		xOffset = -(xMove - (width / 2)); //center the player in the camera view
+		yOffset = -(yMove - (height / 2));
 
 		xOffsetAggregate += xOffset;
 		yOffsetAggregate += yOffset;

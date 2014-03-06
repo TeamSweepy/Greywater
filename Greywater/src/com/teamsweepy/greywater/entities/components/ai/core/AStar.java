@@ -34,6 +34,9 @@ package com.teamsweepy.greywater.entities.components.ai.core;
 
         @Override
         public boolean isGoal(Point from) {
+        	if(end == null){
+        		return false;
+        	}
             return (from.x == end.x) && (from.y == end.y);
         }
 
@@ -70,7 +73,7 @@ package com.teamsweepy.greywater.entities.components.ai.core;
 
             if (x < map.length - 1 && y < map[0].length - 1 && map[x + 1][y + 1] != 1)
                 ret.add(new Point(x + 1, y + 1)); // Up-Right
-            if (x < map.length - 1 && y > 0 && map[x + 1][y + 1] != 1)
+            if (x < map.length - 1 && y > 0 && map[x + 1][y - 1] != 1)
                 ret.add(new Point(x + 1, y - 1)); // Down-Right
             if (x > 0 && y < map[0].length - 1 && map[x - 1][y + 1] != 1)
                 ret.add(new Point(x - 1, y + 1)); // Up-Left
@@ -124,6 +127,10 @@ package com.teamsweepy.greywater.entities.components.ai.core;
             try {
                 AStarPath root = new AStarPath<Point>();
                 root.point = start;
+                
+//                if(isGoal(start))
+//                	return new LinkedList<Point>();
+                		
                 f(root, start, end);
                 expand(root);
 

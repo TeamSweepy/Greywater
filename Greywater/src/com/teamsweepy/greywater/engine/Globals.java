@@ -23,6 +23,14 @@ public class Globals {
 	public static Point2F toScreenCoord(float xIso, float yIso){
 		return new Point2F(xIso + Camera.getDefault().xOffsetAggregate, yIso + Camera.getDefault().yOffsetAggregate);
 	}
+	
+	/**
+	 * Convert objective coordinates to isometric coordinates
+	 * VERIFIED OUTPUT
+	 */
+	public static Point2F toIsoCoord(Point2F objectiveLocation){
+		return toIsoCoord(objectiveLocation.x, objectiveLocation.y);
+	}
 
 	/**
 	 * Convert objective coordinates to isometric coordinates
@@ -42,6 +50,14 @@ public class Globals {
 		//get actual screen coordinates 
 		return new Point2F(x, y);
 	}
+	
+	/**
+	 * Convert screen coordinates to flatspace/objective coordinates
+	 * VERIFIED OUTPUT
+	 */
+	public static Point2F toNormalCoord(Point2F isoLocation) {
+		return toNormalCoord(isoLocation.x, isoLocation.y);
+	}
 
 	/**
 	 * Convert screen coordinates to flatspace/objective coordinates
@@ -59,6 +75,14 @@ public class Globals {
 		//+- 50 because that is the size of the tile in objective coords
 		return new Point2F(x + 50, y- 50);
 	}
+	
+	/**
+	 * Converts objective coordinates to tile indices
+	 * VERIFIED OUTPUT
+	 */
+	public static Point toTileIndices(Point2F objectiveLocation) {
+		return toTileIndices(objectiveLocation.x, objectiveLocation.y);
+	}
 
 	/**
 	 * Converts objective coordinates to tile indices
@@ -70,7 +94,15 @@ public class Globals {
 	}
 	
 	/**
-	 * Converts objective coordinates to tile indices
+	 * Converts tile indices to  objective coordinates
+	 * VERIFIED OUTPUT
+	 */
+	public static Point2F toNormalCoordFromTileIndices(Point2F objectiveLocation) {
+		return toNormalCoordFromTileIndices(objectiveLocation.x, objectiveLocation.y);
+	}
+	
+	/**
+	 * Converts tile indices to  objective coordinates
 	 * VERIFIED OUTPUT
 	 */
 	public static Point2F toNormalCoordFromTileIndices(float xCoord, float yCoord) {

@@ -65,6 +65,9 @@ public class PotentialField extends Pathfinder<double[][]>
 
     @Override
     public boolean isGoal(Point from) {
+    	if(from == null || end == null){
+    		return false;
+    	}
         return (from.x == end.x) && (from.y == end.y);
     }
 

@@ -1,6 +1,6 @@
 /**
  * If we want different behaviours then this class provide extend it, almost every method is protected/public.
- *
+ * 
  * Copyright Team Sweepy - Robin de Jong 2014 All use outside of the Greywater Project is not permitted unless express permission is
  * granted. Email TeamSweepy@gmail.com to discuss usage.
  */
@@ -13,107 +13,116 @@ import com.teamsweepy.greywater.entities.components.ai.core.PotentialField;
 import com.teamsweepy.greywater.entities.level.Level;
 
 import java.awt.*;
+import java.util.LinkedList;
 
-public class PathfinderMotor
-{
-    private Pathfinder pathfinder;
-    private Method currentMethod;
+public class PathfinderMotor {
 
-    // A* specific
-    private java.util.List<Point> aStarMap;
-    private int pathIndex;
+	private Pathfinder pathfinder;
+	private Method currentMethod;
 
-    // PF specific
-    private double[][] pfMap;
-    private Point curPos;
-    private Point[] nodesDirections;
+	// A* specific
+	private java.util.List<Point> aStarMap;
+	private int pathIndex;
 
-    public PathfinderMotor(Method method) {
-        currentMethod = method;
-        pathIndex = 0;
+	// PF specific
+	private double[][] pfMap;
+	private Point curPos;
+	private Point[] nodesDirections;
 
-        if(method == Method.ASTAR){
-            pathfinder = new AStar();
-        } else if(method == Method.POTENTIAL_FIELD) {
-            pathfinder = new PotentialField();
-        }
-    }
+	public PathfinderMotor(Method method) {
+		currentMethod = method;
+		pathIndex = 0;
 
-    public void createPath(Point from, Point end) {
-        // TODO: Pathfinder classes static, so we won't have to reset it from here
-        pathfinder.reset();
-        pathfinder.setStart(from);
-        pathfinder.setEnd(end);
-        pathIndex = 0;
+		if (method == Method.ASTAR) {
+			pathfinder = new AStar();
+		} else if (method == Method.POTENTIAL_FIELD) {
+			pathfinder = new PotentialField();
+		}
+	}
 
-        if(currentMethod == Method.ASTAR){
-            aStarMap = (java.util.List<Point>)pathfinder.create();
-        }else if(currentMethod == Method.POTENTIAL_FIELD){
-            pfMap = (double[][])pathfinder.create();
-        }
-    }
+	public void createPath(Point from, Point end) {
+		if (pathfinder.isGoal(end)) //no need to find same path twice
+			return;
+		
+		pathfinder.reset();
+		pathfinder.setStart(from);
+		pathfinder.setEnd(end);
+		pathIndex = 0;
 
-    public Point getNextStep(){
-        if(currentMethod == Method.ASTAR) {
-            if (aStarMap != null && pathIndex < aStarMap.size()) {
-                pathIndex++;
-                return aStarMap.get(pathIndex - 1);
-            }
-        } else if(currentMethod == Method.POTENTIAL_FIELD){
-            if(!pathfinder.isGoal(curPos)) {
-                curPos = getBestNode(curPos, nodesDirections, pfMap);
-                return curPos;
-            }
-        }
+		if (pathfinder.isGoal(from)) { //if clicked self, ignore
+			aStarMap = new LinkedList<Point>();
+			aStarMap.add(from);
+			return;
+		}
 
-        return null;
-    }
+		if (currentMethod == Method.ASTAR) {
+			aStarMap = (java.util.List<Point>) pathfinder.create();
+		} else if (currentMethod == Method.POTENTIAL_FIELD) {
+			pfMap = (double[][]) pathfinder.create();
+		}
+	}
 
-    private Point getBestNode(Point pos, Point[] directions, double[][] map){
-        Point node = null;
+	public Point getNextStep() {
+		if (currentMethod == Method.ASTAR) {
+			if (aStarMap != null && pathIndex < aStarMap.size()) {
+				pathIndex++;
+				return aStarMap.get(pathIndex - 1);
+			}
+		} else if (currentMethod == Method.POTENTIAL_FIELD) {
+			if (!pathfinder.isGoal(curPos)) {
+				curPos = getBestNode(curPos, nodesDirections, pfMap);
+				return curPos;
+			}
+		}
 
-        double highestValue = 0;
+		return null;
+	}
 
-        for(Point dir : directions) {
-            int x = pos.x + dir.x;
-            int y = pos.y + dir.y;
-            Point newPos = new Point(x, y);
+	private Point getBestNode(Point pos, Point[] directions, double[][] map) {
+		Point node = null;
 
-            if(pathfinder.isGoal(newPos)) {
-                return newPos;
-            }
+		double highestValue = 0;
 
-            if(x > 0 && x < map.length) {
-                if (y > 0 && y < map[0].length) {
-                    if(map[x][y] > highestValue) {
-                        highestValue = map[x][y];
-                        node = newPos;
-                    }
-                }
-            }
-        }
+		for (Point dir : directions) {
+			int x = pos.x + dir.x;
+			int y = pos.y + dir.y;
+			Point newPos = new Point(x, y);
 
-        return node;
-    }
+			if (pathfinder.isGoal(newPos)) {
+				return newPos;
+			}
 
-    public void updateMap(Level level) {
-        Point dimensions = level.getMapDimensions();
-        int[][] mapCost = new int[dimensions.x][dimensions.y];
-        // Walkable == 0
-        for (int x = 0; x < dimensions.x; x++) {
-            for (int y = 0; y < dimensions.y; y++) {
-                if (level.isTileWalkable(x, y)) {
-                    mapCost[x][y] = 0;
-                } else {
-                    mapCost[x][y] = 1;
-                }
-            }
-        }
+			if (x > 0 && x < map.length) {
+				if (y > 0 && y < map[0].length) {
+					if (map[x][y] > highestValue) {
+						highestValue = map[x][y];
+						node = newPos;
+					}
+				}
+			}
+		}
 
-        pathfinder.setMap(mapCost);
-    }
+		return node;
+	}
 
-    public enum Method {
-        ASTAR, POTENTIAL_FIELD
-    }
+	public void updateMap(Level level) {
+		Point dimensions = level.getMapDimensions();
+		int[][] mapCost = new int[dimensions.x][dimensions.y];
+		// Walkable == 0
+		for (int x = 0; x < dimensions.x; x++) {
+			for (int y = 0; y < dimensions.y; y++) {
+				if (level.isTileWalkable(x, y)) {
+					mapCost[x][y] = 0;
+				} else {
+					mapCost[x][y] = 1;
+				}
+			}
+		}
+
+		pathfinder.setMap(mapCost);
+	}
+
+	public enum Method {
+		ASTAR, POTENTIAL_FIELD
+	}
 }

@@ -76,9 +76,9 @@ public abstract class Entity {
 	}
 
 	/**
-	 * @return the Shape used for collision detection
+	 * @return the Rectangle used for collision detection
 	 */
-	public Rectangle getPhysicsShape() {
+	public Rectangle getHitbox() {
 		return physicsComponent.getHitBox();
 	}
 
@@ -100,13 +100,28 @@ public abstract class Entity {
 
 	public Point2F getLocation() {
 		return new Point2F(getX(), getY());
-
+	}
+	
+	/**
+	 * Used for hitbox interaction
+	 */
+	public boolean checkPhysicalIntersection(Rectangle intersector){
+		return intersector.overlaps(physicsComponent.getHitBox());
+	}
+	
+	/**
+	 * Used for click-interaction
+	 */
+	public boolean checkClickedInteraction(Point2F point){
+		return didPointHitImage(point);
 	}
 
-	public boolean didPointHitImage(Point2F point) {
+	protected boolean didPointHitImage(Point2F point) {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
-		return graphicsComponent.getImageRectangleAtOrigin(p.x, p.y).contains(point.x, point.y);
+		return graphicsComponent.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate, p.y + mainCamera.yOffsetAggregate).contains(point.x, point.y);
 	}
+	
+	
 
 	/**
 	 * @return The approximate depth in Z space of the entity. Used for render sorting.

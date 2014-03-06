@@ -13,6 +13,7 @@ import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entities.Mob;
 import com.teamsweepy.greywater.entities.Player;
+import com.teamsweepy.greywater.entities.Watchman;
 import com.teamsweepy.greywater.entities.components.Entity;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.GUI;
@@ -25,6 +26,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 import java.awt.Point;
 import java.awt.Shape;
@@ -39,11 +41,13 @@ public class Level {
 	private Tile[][] tileList;
 	private Tile[][] wallList;
 	private ArrayList<Mob> mobList;
+	private ArrayList<Entity> interactiveList;
 
 	Camera mainCamera;
 
 	// test variable
 	Mob TestTavishMob;
+	Mob TestAIMob;
 
 	private Comparator<Entity> spriteSorter = new Comparator<Entity>() {
 
@@ -55,7 +59,6 @@ public class Level {
 				return 1;
 			return 0;
 		}
-
 	};
 
 	public Level() {
@@ -67,9 +70,16 @@ public class Level {
 		convertTiledMapToEntities();
 
 		mobList = new ArrayList<Mob>();
+		interactiveList = new ArrayList<Entity>();
 		depthSortList = new ArrayList<Entity>();
-		TestTavishMob = new Player(0, 0, this);
+
+		TestTavishMob = new Player(0, 90, this);
+
 		mobList.add(TestTavishMob);
+		//		for(int i = 0; i < 20; i ++){
+					mobList.add(new Watchman(20, 20, this, TestTavishMob));
+		//		}
+		interactiveList.addAll(mobList);
 		Camera.getDefault().moveTo(Globals.toIsoCoord(TestTavishMob.getX(), TestTavishMob.getY()));
 
 
@@ -147,12 +157,28 @@ public class Level {
 			for (int y = areaY; y < areaYEnd; y++) {
 				if (wallList[x][y] == null)
 					continue;
-				Rectangle r = wallList[x][y].getPhysicsShape();
+				Rectangle r = wallList[x][y].getHitbox();
 				if (collisionVolume.intersects(r.x, r.y, r.width, r.height))
 					return true;
 			}
 		}
 		return false;
+	}
+
+	public Entity getCollidedEntity(Rectangle intersectionArea) {
+		for (Entity e : interactiveList) {
+			if (e.checkPhysicalIntersection(intersectionArea))
+				return e;
+		}
+		return null;
+	}
+
+	public Entity getClickedEntity(Point2F clickLocation) {
+		for (Entity e : interactiveList) {
+			if (e.checkClickedInteraction(clickLocation))
+				return e;
+		}
+		return null;
 	}
 
 	/**
@@ -187,7 +213,8 @@ public class Level {
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = layer.getHeight() - 1; y >= 0; y--) {
 				TiledMapTileLayer.Cell cell = layer.getCell(x, y);
-
+				//IF CELL IS INTERACTIVE
+				//interactiveList.add(cell) TODO
 				if (cell == null)
 					continue;
 
