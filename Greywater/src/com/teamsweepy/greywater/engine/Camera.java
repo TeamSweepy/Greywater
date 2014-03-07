@@ -67,9 +67,6 @@ public class Camera {
 
 		xOffset = -(xMove - (width / 2)); //center the player in the camera view
 		yOffset = -(yMove - (height / 2));
-
-		xOffsetAggregate += xOffset;
-		yOffsetAggregate += yOffset;
 	}
 
 	public void update() {
@@ -85,6 +82,9 @@ public class Camera {
 	}
 
 	public Point2F getTranslatedMatrix() {
+		xOffsetAggregate += xOffset;
+		yOffsetAggregate += yOffset;
+		
 		float x = xOffset;
 		float y = yOffset;
 		xOffset = 0;
