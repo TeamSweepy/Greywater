@@ -61,6 +61,7 @@ package com.teamsweepy.greywater.entities.components.ai.core;
             java.util.List<Point> ret = new LinkedList<Point>();
             int x = node.x;
             int y = node.y;
+            int mx, my;
 
             if (y < map[0].length - 1 && map[x][y+1] != 1)
                 ret.add(new Point(x, y + 1)); // Up
@@ -73,19 +74,27 @@ package com.teamsweepy.greywater.entities.components.ai.core;
 
             if (x < map.length - 1 && y < map[0].length - 1 && map[x + 1][y + 1] != 1)
             {
-                if(map[x + 1][y] != 1 ^ map[x][y + 1] != 1) ret.add(new Point(x + 1, y + 1)); // Up-Right
+                mx = map[x+1][y];
+                my = map[x][y+1];
+                if((mx|my) != 1 || (mx != 1 ^ my != 1)) ret.add(new Point(x+1, y+1)); // Up-Right
             }
             if (x < map.length - 1 && y > 0 && map[x + 1][y - 1] != 1)
             {
-                if(map[x + 1][y] != 1 ^ map[x][y - 1] != 1) ret.add(new Point(x + 1, y - 1)); // Down-Right
+                mx = map[x+1][y];
+                my = map[x][y-1];
+                if((mx|my) != 1 || (mx != 1 ^ my != 1)) ret.add(new Point(x+1, y-1)); // Down-Right
             }
             if (x > 0 && y < map[0].length - 1 && map[x - 1][y + 1] != 1)
             {
-                if(map[x - 1][y] != 1 ^ map[x][y + 1] != 1) ret.add(new Point(x - 1, y + 1)); // Up-Left
+                mx = map[x-1][y];
+                my = map[x][y+1];
+                if((mx|my) != 1 || (mx != 1 ^ my != 1)) ret.add(new Point(x-1, y+1)); // Up-Left
             }
             if (x > 0 && y > 0 && map[x - 1][y - 1] != 1)
             {
-                if(map[x - 1][y] != 1 ^ map[x][y - 1] != 1) ret.add(new Point(x - 1, y - 1)); // Down-Left
+                mx = map[x-1][y];
+                my = map[x][y-1];
+                if((mx|my) != 1 || (mx != 1 ^ my != 1)) ret.add(new Point(x-1, y-1)); // Down-Left
             }
 
             return ret;
