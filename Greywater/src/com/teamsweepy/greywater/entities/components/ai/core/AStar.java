@@ -72,13 +72,21 @@ package com.teamsweepy.greywater.entities.components.ai.core;
                 ret.add(new Point(x + 1, y)); // Right
 
             if (x < map.length - 1 && y < map[0].length - 1 && map[x + 1][y + 1] != 1)
-                ret.add(new Point(x + 1, y + 1)); // Up-Right
+            {
+                if(map[x + 1][y] != 1 ^ map[x][y + 1] != 1) ret.add(new Point(x + 1, y + 1)); // Up-Right
+            }
             if (x < map.length - 1 && y > 0 && map[x + 1][y - 1] != 1)
-                ret.add(new Point(x + 1, y - 1)); // Down-Right
+            {
+                if(map[x + 1][y] != 1 ^ map[x][y - 1] != 1) ret.add(new Point(x + 1, y - 1)); // Down-Right
+            }
             if (x > 0 && y < map[0].length - 1 && map[x - 1][y + 1] != 1)
-                ret.add(new Point(x - 1, y + 1)); // Up-Left
+            {
+                if(map[x - 1][y] != 1 ^ map[x][y + 1] != 1) ret.add(new Point(x - 1, y + 1)); // Up-Left
+            }
             if (x > 0 && y > 0 && map[x - 1][y - 1] != 1)
-                ret.add(new Point(x - 1, y - 1)); // Down-Left
+            {
+                if(map[x - 1][y] != 1 ^ map[x][y - 1] != 1) ret.add(new Point(x - 1, y - 1)); // Down-Left
+            }
 
             return ret;
         }
