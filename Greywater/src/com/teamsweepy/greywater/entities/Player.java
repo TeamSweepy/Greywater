@@ -8,8 +8,6 @@ import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.entities.level.Tile;
 import com.teamsweepy.greywater.math.Point2F;
 
-import com.badlogic.gdx.math.Rectangle;
-
 import java.awt.Point;
 
 
@@ -26,9 +24,8 @@ public class Player extends Mob {
 	public Player(float x, float y, Level level) {
 		super("Tavish", x, y, 35, 35, 1.25f, level, true);
 		currentDirection = "South";
-		this.graphicsComponent = new Sprite(name, "Stand_South");
 		this.walkCycleDuration = 1;
-		graphicsComponent.setImage(.6f, "Walk_South", Sprite.LOOP);
+		graphicsComponent.setImage(3f, "Walk_South", Sprite.LOOP);
 	}
 
 	@Override
@@ -37,7 +34,7 @@ public class Player extends Mob {
 		if (mouseClicked) {
 			mouseClicked = false;
 
-			if (interact()) //no need to walk if you're fighting/talking
+			if (attacking || interact()) //no need to walk if you're fighting/talking
 				return;
 
 			Point startTile = Globals.toTileIndices(getLocation().x, getLocation().y);
@@ -64,21 +61,15 @@ public class Player extends Mob {
 	}
 
 	@Override
-	protected void attack(Mob enemy) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public boolean interact() {
-		Entity interacted = (Entity) world.getClickedEntity(mouseLocation);
-		System.out.println("You clicked on a mob named "  + interacted);
+		Entity interacted = (Entity) world.getClickedEntity(mouseLocation, this);
+
 		focusTarget = null;
 		if (interacted == null) {
 			return false;
 		}
-
-		if (interacted.getClass() == Mob.class) { //deal with mobs
+		System.out.println(interacted.getClass());
+		if (interacted.getClass().getSuperclass() == Mob.class) { //deal with mobs
 			Mob interactedMob = (Mob) interacted;
 			if (interactedMob.isAlive() && !interactedMob.friendly) { //attack the living enemy
 				focusTarget = interactedMob;
@@ -102,6 +93,29 @@ public class Player extends Mob {
 			//someday door logic will go here
 		}
 		return true;
+	}
+
+	@Override
+	protected void attack(Mob enemy) {
+		if (enemy == null || attacking)
+			return;
+
+		if (enemy.getLocation().distance(getLocation()) > getWidth() * 2.5) { //if cant reach
+			pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(enemy.getLocation()));
+			Point newPoint = pather.getNextStep();
+			newPoint = pather.getNextStep();
+
+			if (newPoint != null) {
+				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
+				physicsComponent.moveTo(newLoc.x, newLoc.y);
+			}
+			return;
+		}
+		this.attacking = true;
+		Point2F enemyLoc = enemy.getLocation();
+		this.physicsComponent.stopMovement();
+		this.currentDirection = Globals.getDirectionString(enemyLoc.x - getLocation().x, enemyLoc.y - getLocation().y);
+
 	}
 
 	/**

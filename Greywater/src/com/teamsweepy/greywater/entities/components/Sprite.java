@@ -17,6 +17,8 @@
 
 package com.teamsweepy.greywater.entities.components;
 
+import com.teamsweepy.greywater.engine.AssetLoader;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,7 +28,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
-import com.teamsweepy.greywater.engine.AssetLoader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Sprite {
 
@@ -60,6 +63,8 @@ public class Sprite {
 	private AtlasRegion[] animation;
 	private TextureRegion sprite;
 
+	private List<AnimEventListener> listeners;
+
 	/**
 	 * Constructor for sprite that rely on TextureAtlases
 	 * 
@@ -70,6 +75,7 @@ public class Sprite {
 		this.name = name;
 		currentImageName = imgName;
 		setImage(.5f, imgName, STILL_IMAGE, TextureAtlas.class); // arbitrary default
+		listeners = new ArrayList<AnimEventListener>();
 	}
 
 	/**
@@ -81,6 +87,7 @@ public class Sprite {
 		this.name = imageName;
 		currentImageName = "";
 		setImage(0, name, STILL_IMAGE, Texture.class); // arbitrary default
+		listeners = new ArrayList<AnimEventListener>();
 	}
 
 	/**
@@ -90,6 +97,7 @@ public class Sprite {
 	public Sprite(TextureRegion texture) {
 		sprite = texture;
 		playMode = STILL_IMAGE;
+		listeners = new ArrayList<AnimEventListener>();
 	}
 
 	/**
@@ -169,6 +177,7 @@ public class Sprite {
 			return; // no need to tick static images
 
 		totalAnimTimeMillis += elapsedTimeSeconds * 1000;// seconds -> millis
+		int originalSeriesPosition = seriesPosition;
 
 		if (playMode == FORWARD || playMode == LOOP) {
 			seriesPosition = (totalAnimTimeMillis / frameDurationMillis);
@@ -177,22 +186,29 @@ public class Sprite {
 				if (playMode == LOOP) {
 					seriesPosition = 0; // restart
 					totalAnimTimeMillis = 0;
+					fireEvent(currentImageName, true, false);
+					fireEvent(currentImageName, false, true);
 				} else {
 					seriesPosition = seriesLength - 1; // stay at last position
 					stopAnimating();
+					fireEvent(currentImageName, true, false);
 				}
 			}
 		}// end forward/loop
 
 		if (playMode == REVERSED || playMode == LOOP_REVERSED) {
-			seriesPosition = (seriesLength - (totalAnimTimeMillis / frameDurationMillis));
+			seriesPosition = ((seriesLength - 1) - (totalAnimTimeMillis / frameDurationMillis));
 
 			if (seriesPosition < 0) { // if we've gone past the last image in series
-				if (playMode == LOOP_REVERSED)
-					seriesPosition = seriesLength - 1;
-				else {
+				if (playMode == LOOP_REVERSED) {
+					seriesPosition = seriesLength - 1; //restart
+					totalAnimTimeMillis = 0;
+					fireEvent(currentImageName, true, false);
+					fireEvent(currentImageName, false, true);
+				} else { //stop in last position
 					seriesPosition = 0;
 					stopAnimating();
+					fireEvent(currentImageName, true, false);
 				}
 			}
 		}// end reverseloop/reverse
@@ -209,12 +225,20 @@ public class Sprite {
 				Ping = !Ping; // reverse
 				seriesPosition = seriesLength - 1;
 				totalAnimTimeMillis = 0;
-
+				fireEvent(currentImageName, true, false);
+				fireEvent(currentImageName, false, true);
 			} else if (seriesPosition < 0) {
 				Ping = !Ping; // reverse
 				seriesPosition = 0;
 				totalAnimTimeMillis = 0;
+				fireEvent(currentImageName, true, false);
+				fireEvent(currentImageName, false, true);
 			}
+		}//end pingpong
+
+
+		if (originalSeriesPosition != seriesPosition && (seriesPosition == 3 || seriesPosition == 0)) { //halfway through
+			fireEvent(currentImageName, false, false);
 		}
 	}
 
@@ -225,6 +249,7 @@ public class Sprite {
 		playMode = HALTED_PLAYING;
 		sprite = animation[seriesPosition];
 		totalAnimTimeMillis = 0;
+		fireEvent(currentImageName, true, false);
 	}
 
 	/**
@@ -260,6 +285,7 @@ public class Sprite {
 		currentImageName = currentImageName.toUpperCase();
 		totalAnimTimeMillis = 0;
 		sequenceDurationMillis = (int) (durationSeconds * 1000); // 1000 millisec in 1 sec
+		fireEvent(currentImageName, false, true);
 
 		if (classType == TextureAtlas.class) {
 			// load image from the assetloader/textureatlas, get approriate texture region
@@ -283,6 +309,24 @@ public class Sprite {
 			seriesPosition = 0; // everything starts at the beginning
 		else
 			seriesPosition = (seriesLength - 1); // except reversed/revloop which starts at the end
+	}
+
+	public void addAnimListener(AnimEventListener listener) {
+		listeners.add(listener);
+	}
+
+	public void removeAnimListener(AnimEventListener listener) {
+		listeners.remove(listener);
+	}
+
+	public void fireEvent(String message, boolean ending, boolean starting) {
+		if (listeners == null)
+			return;
+
+		AnimEvent event = new AnimEvent(this, message, ending, starting);
+		for (AnimEventListener listener : listeners) {
+			listener.handleEvent(event);
+		}
 	}
 
 }

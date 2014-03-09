@@ -16,7 +16,6 @@ import com.teamsweepy.greywater.entities.Player;
 import com.teamsweepy.greywater.entities.Watchman;
 import com.teamsweepy.greywater.entities.components.Entity;
 import com.teamsweepy.greywater.math.Point2F;
-import com.teamsweepy.greywater.ui.gui.GUI;
 
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,7 +25,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 
 import java.awt.Point;
 import java.awt.Shape;
@@ -77,7 +75,7 @@ public class Level {
 
 		mobList.add(TestTavishMob);
 		//		for(int i = 0; i < 20; i ++){
-					mobList.add(new Watchman(20, 20, this, TestTavishMob));
+		mobList.add(new Watchman(20, 70, this, TestTavishMob));
 		//		}
 		interactiveList.addAll(mobList);
 		Camera.getDefault().moveTo(Globals.toIsoCoord(TestTavishMob.getX(), TestTavishMob.getY()));
@@ -173,8 +171,10 @@ public class Level {
 		return null;
 	}
 
-	public Entity getClickedEntity(Point2F clickLocation) {
+	public Entity getClickedEntity(Point2F clickLocation, Entity clicker) {
 		for (Entity e : interactiveList) {
+			if (e.equals(clicker))
+				continue;
 			if (e.checkClickedInteraction(clickLocation))
 				return e;
 		}

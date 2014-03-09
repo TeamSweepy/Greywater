@@ -15,7 +15,6 @@ public class Watchman extends Mob {
 	public Watchman(float x, float y, Level level, Entity focus) {
 		super("Tavish", x, y, 35, 35, 1.3f, level, true);
 		currentDirection = "South";
-		this.graphicsComponent = new Sprite(name, "Stand_South");
 		this.walkCycleDuration = 1;
 		graphicsComponent.setImage(.6f, "Walk_South", Sprite.LOOP);
 		focusTarget = focus;

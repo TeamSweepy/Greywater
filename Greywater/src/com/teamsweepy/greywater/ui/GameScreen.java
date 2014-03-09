@@ -22,13 +22,12 @@ public class GameScreen implements Screen {
 
 	private Engine engine;
 
+
 	//testvar
 	Level levelForTesting;
 	SpriteBatch guiBatch;
 
-
 	public GameScreen(Engine eng) {
-
 		engine = eng;
 		levelForTesting = new Level();
 		GUI.initGUI();
@@ -47,7 +46,10 @@ public class GameScreen implements Screen {
 		engine.batch.begin();// start render
 		levelForTesting.render(engine.batch);
 		GUI.render(engine.batch);
+
 		engine.batch.end();// end render
+
+
 	}
 
 	public void tick(float delta) {

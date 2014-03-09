@@ -31,11 +31,11 @@ public class Point2F {
 	}
 
 	public float distance(Point2F p2) {
-		return (float) Math.sqrt(p2.x * x + p2.y * y);
+		return (float) Math.sqrt(Math.pow(p2.x - x, 2) + Math.pow(p2.y - y, 2));
 	}
 
 	public float distance(float x, float y) {
-		return (float) Math.sqrt(this.x * x + this.y * y);
+		return (float) Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2));
 	}
 
 	public String toString() {
