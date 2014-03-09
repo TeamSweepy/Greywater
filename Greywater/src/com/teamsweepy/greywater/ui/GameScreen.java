@@ -17,6 +17,7 @@ import com.teamsweepy.greywater.ui.gui.GUI;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.teamsweepy.greywater.ui.gui.temp.Label;
 
 public class GameScreen implements Screen {
 
@@ -26,13 +27,18 @@ public class GameScreen implements Screen {
 	Level levelForTesting;
 	SpriteBatch guiBatch;
 
+    Label label;
+
 
 	public GameScreen(Engine eng) {
 
-		engine = eng;
-		levelForTesting = new Level();
-		GUI.initGUI();
+        engine = eng;
+        levelForTesting = new Level();
 
+        label = new Label(0, 300, 400, 300);
+        label.setListener(engine.inputs);
+
+        GUI.initGUI();
 	}
 
 	@Override
@@ -47,6 +53,9 @@ public class GameScreen implements Screen {
 		engine.batch.begin();// start render
 		levelForTesting.render(engine.batch);
 		GUI.render(engine.batch);
+
+        label.draw(engine.batch);
+
 		engine.batch.end();// end render
 	}
 

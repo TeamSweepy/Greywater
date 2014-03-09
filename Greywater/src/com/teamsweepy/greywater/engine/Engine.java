@@ -1,12 +1,12 @@
 /**
  * Engine controls the rest of the game - main render/update loop are located here, as is the bulk of the initialization. Very little core
  * game logic should go here, however.
- * 
+ *
  * Copyright Team Sweepy - Jeremy Barnes 2014 All use outside of the Greywater Project is not permitted unless express permission is
  * granted. Email TeamSweepy@gmail.com to discuss usage.
- * 
+ *
  * @author Barnes
- * 
+ *
  */
 
 package com.teamsweepy.greywater.engine;
@@ -42,6 +42,7 @@ public class Engine extends Game {
 
 	//other stuff, will be sorted when there's more
 	public SpriteBatch batch;
+    public InputMultiplexer inputs; // This is not needed, it just makes it easier for the labels to work. This will be removed
 	private InputHandler inputHandlerGUI;
 	private InputGame inputHandlerGame;
 	private GameScreen gs;
@@ -68,13 +69,13 @@ public class Engine extends Game {
 	 * Initilize input as a multiplex. Multiple listeners are added (one for GUI and one for the gameView)
 	 */
 	private void initInput() {
-		InputMultiplexer multiplexer = new InputMultiplexer();
+		inputs = new InputMultiplexer();
 		inputHandlerGUI = new InputGUI();
 		inputHandlerGame = new InputGame();
 		// The event first goes to the GUI input and if needed to the Game input
-		multiplexer.addProcessor(inputHandlerGUI);
-		multiplexer.addProcessor(inputHandlerGame);
-		Gdx.input.setInputProcessor(multiplexer);
+        inputs.addProcessor(inputHandlerGUI);
+        inputs.addProcessor(inputHandlerGame);
+		Gdx.input.setInputProcessor(inputs);
 	}
 
 	/**
@@ -92,7 +93,6 @@ public class Engine extends Game {
 	 */
 	@Override
 	public void render() {
-
 		deltaTime = Gdx.graphics.getDeltaTime();
 		secondsElapsed += deltaTime;
 		excessTime += deltaTime * 1000000000 - ANIMATION_PERIOD_NANOSEC; //nano second accuracy!
