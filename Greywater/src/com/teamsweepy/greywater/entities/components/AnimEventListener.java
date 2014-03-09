@@ -1,6 +1,9 @@
+
 package com.teamsweepy.greywater.entities.components;
 
 
-public class AnimEventListener {
+public interface AnimEventListener {
+
+	public void handleEvent(AnimEvent event);
 
 }

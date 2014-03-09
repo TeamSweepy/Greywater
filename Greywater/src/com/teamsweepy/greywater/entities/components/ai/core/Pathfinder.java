@@ -1,45 +1,46 @@
 /**
  * 'T' stands for the object create returns
- *
+ * 
  * Copyright Team Sweepy - Robin de Jong 2014 All use outside of the Greywater Project is not permitted unless express permission is
  * granted. Email TeamSweepy@gmail.com to discuss usage.
  */
 
 package com.teamsweepy.greywater.entities.components.ai.core;
 
-import java.awt.*;
+import java.awt.Point;
 
 public abstract class Pathfinder<T> {
-    protected int[][] map;
-    protected Point end, start;
 
-    public Pathfinder() {
-        reset();
-    }
+	protected int[][] map;
+	protected Point end, start;
 
-    public void setEnd(Point end) {
-        this.end = end;
-    }
+	public Pathfinder() {
+		reset();
+	}
 
-    public void setStart(Point start) {
-        this.start = start;
-    }
+	public void setEnd(Point end) {
+		this.end = end;
+	}
 
-    public void setMap(int[][] map) {
-        this.map = map;
-    }
+	public void setStart(Point start) {
+		this.start = start;
+	}
 
-    public int[][] getMap() {
-        return map;
-    }
+	public void setMap(int[][] map) {
+		this.map = map;
+	}
 
-    // Used to create the pathfinder
-    public abstract T create();
+	public int[][] getMap() {
+		return map;
+	}
 
-    // Used in the initialization
-    public abstract void reset();
+	// Used to create the pathfinder
+	public abstract T create();
 
-    public abstract boolean isGoal(Point from);
+	// Used in the initialization
+	public abstract void reset();
 
-    protected abstract double h(Point from, Point to);
+	public abstract boolean isGoal(Point from);
+
+	protected abstract double h(Point from, Point to);
 }

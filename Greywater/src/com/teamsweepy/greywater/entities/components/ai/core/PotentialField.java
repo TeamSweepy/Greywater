@@ -9,73 +9,72 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PotentialField extends Pathfinder<double[][]>
-{
-    public PotentialField(){
+public class PotentialField extends Pathfinder<double[][]> {
 
-    }
+	public PotentialField() {
 
-    @Override
-    public double[][] create() {
-        List<Point> obstacles = new ArrayList<Point>();
+	}
 
-        double[][] generateMap = new double[map.length][map[0].length];
+	@Override
+	public double[][] create() {
+		List<Point> obstacles = new ArrayList<Point>();
 
-        for(int x = 0; x < map.length; x ++) {
-            for(int y = 0; y < map[0].length; y ++) {
-                Point currentPos = new Point(x, y);
+		double[][] generateMap = new double[map.length][map[0].length];
 
-                if(map[x][y]==1) {
-                    obstacles.add(currentPos);
-                } else {
-                    double distance = h(currentPos, end);
-                    generateMap[x][y] = cliff(distance);
-                }
-            }
-        }
+		for (int x = 0; x < map.length; x++) {
+			for (int y = 0; y < map[0].length; y++) {
+				Point currentPos = new Point(x, y);
 
-        for(Point obstacle : obstacles){
-            for(int x = 0; x < map.length; x ++) {
-                for(int y = 0; y < map[0].length; y ++) {
-                    double newFloat = Math.pow(0.5, h(new Point(x, y), obstacle))/20;
+				if (map[x][y] == 1) {
+					obstacles.add(currentPos);
+				} else {
+					double distance = h(currentPos, end);
+					generateMap[x][y] = cliff(distance);
+				}
+			}
+		}
 
-                    if(x == obstacle.x && y == obstacle.y){
-                        generateMap[x][y] = 0;
-                    } else {
-                        generateMap[x][y] = generateMap[x][y] - newFloat;
-                    }
-                }
-            }
-        }
+		for (Point obstacle : obstacles) {
+			for (int x = 0; x < map.length; x++) {
+				for (int y = 0; y < map[0].length; y++) {
+					double newFloat = Math.pow(0.5, h(new Point(x, y), obstacle)) / 20;
 
-        return generateMap;
-    }
+					if (x == obstacle.x && y == obstacle.y) {
+						generateMap[x][y] = 0;
+					} else {
+						generateMap[x][y] = generateMap[x][y] - newFloat;
+					}
+				}
+			}
+		}
 
-    private double cliff(double value) {
-        if(value==0){
-            return 80;
-        } else {
-            return 80 / (value * value);
-        }
-    }
+		return generateMap;
+	}
 
-    @Override
-    public void reset() {
-    }
+	private double cliff(double value) {
+		if (value == 0) {
+			return 80;
+		} else {
+			return 80 / (value * value);
+		}
+	}
 
-    @Override
-    public boolean isGoal(Point from) {
-    	if(from == null || end == null){
-    		return false;
-    	}
-        return (from.x == end.x) && (from.y == end.y);
-    }
+	@Override
+	public void reset() {}
 
-    @Override
-    protected double h(Point from, Point to) {
-        float dx = from.x - to.x;
-        float dy = from.y - to.y;
+	@Override
+	public boolean isGoal(Point from) {
+		if (from == null || end == null) {
+			return false;
+		}
+		return (from.x == end.x) && (from.y == end.y);
+	}
 
-        return Math.sqrt(dx*dx+dy*dy);
-    }
+	@Override
+	protected double h(Point from, Point to) {
+		float dx = from.x - to.x;
+		float dy = from.y - to.y;
+
+		return Math.sqrt(dx * dx + dy * dy);
+	}
 }

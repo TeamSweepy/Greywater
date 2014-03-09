@@ -1,7 +1,10 @@
 
 package com.teamsweepy.greywater.entities;
 
+import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Globals;
+import com.teamsweepy.greywater.entities.components.AnimEvent;
+import com.teamsweepy.greywater.entities.components.AnimEventListener;
 import com.teamsweepy.greywater.entities.components.Entity;
 import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
@@ -9,14 +12,16 @@ import com.teamsweepy.greywater.entities.components.ai.PathfinderMotor;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.awt.geom.Line2D;
+import java.util.Random;
 
-public abstract class Mob extends Entity {
+public abstract class Mob extends Entity implements AnimEventListener {
 
 	/* ********* ANIMATION VARIABLES *********** */
-	public String name; //indicates what Atlas to get sprites from
+	private String name; //indicates what Atlas to get sprites from
 	protected String currentDirection = "South";   //used to indicate what direction Mob is facing to get the corresponding sprite
 	protected float walkCycleDuration = 1f; //duration in seconds of animation
 
@@ -43,14 +48,16 @@ public abstract class Mob extends Entity {
 	public Mob(String name, float x, float y, int width, int height, float speed, Level level, boolean isAStar) {
 		this.name = name;
 		physicsComponent = new Hitbox(x * 50 + 25, y * 50 + 25, width, height, speed * 50);
+		this.graphicsComponent = new Sprite(getName(), "Stand_South");
+		graphicsComponent.addAnimListener(this);
 		world = level;
 
 		if (isAStar)
 			pather = new PathfinderMotor(PathfinderMotor.Method.ASTAR);
 		else
 			pather = new PathfinderMotor(PathfinderMotor.Method.POTENTIAL_FIELD);
-		pather.updateMap(level);
 
+		pather.updateMap(level);
 	}
 
 
@@ -68,26 +75,39 @@ public abstract class Mob extends Entity {
 	 * Update graphics and physics components, deal with animation and behavior
 	 */
 	public void tick(float deltaTime) {
-		super.tick(deltaTime);
-		getInput();
-
-		if (HP < 0 && !graphicsComponent.getCurrentImageName().contains("DIE")) {
+		if (HP < 0 && !graphicsComponent.getCurrentImageName().contains("DIE")) { //if dead
 			graphicsComponent.setImage(.4f, "Die", Sprite.FORWARD);
 			attacking = false;
 			return;
-		} else {
-
-
-			if (attacking)
+		} else { //if alive
+			super.tick(deltaTime);
+			getInput();
+			if (attacking) {
 				graphicsComponent.setImage(.25f, "Attack_" + currentDirection, Sprite.FORWARD); // TODO if multiple attacks clicked, pingpong
-			else if (physicsComponent.isMoving()) {
-				String cDir = currentDirection;
+				physicsComponent.stopMovement();
+				return;
+			} else if (physicsComponent.isMoving()) {
 				currentDirection = Globals.getDirectionString(physicsComponent.destination.x - getX(), physicsComponent.destination.y - getY());
 				graphicsComponent.setImage(walkCycleDuration, "Walk_" + currentDirection, Sprite.LOOP);
 			} else {
+				physicsComponent.stopMovement();
 				graphicsComponent.setImage(1f, "Stand_" + currentDirection, Sprite.STILL_IMAGE);
 			}
 		}
+	}
+
+	public void handleEvent(AnimEvent e) {
+		if (e.action.contains("ATTACK") && e.ending && !e.beginning) {
+			attacking = false;
+		} else if (e.action.contains("WALK") && !e.beginning) {
+			
+			((Sound) AssetLoader.getAsset(Sound.class, "TavWalk1V1.wav")).play(); //replace with proper naming convention TODO	
+			
+		} else if (e.action.contains("Die") && e.ending) {
+			System.out.println(name + " died: " + HP);
+			graphicsComponent = new Sprite(this.name, name + "Dead");
+		}
+
 	}
 
 	//	public Inventory getInventory(){ TODO activate when inventories exist
@@ -122,6 +142,16 @@ public abstract class Mob extends Entity {
 
 	public Line2D.Float getSight() {
 		return sightLine;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	protected boolean didPointHitImage(Point2F point) {
+		Point2F p = Globals.toIsoCoord(getX(), getY());
+		return graphicsComponent.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate - graphicsComponent.getImageWidth() / 2,
+			p.y + mainCamera.yOffsetAggregate + Globals.tileImageHeight / 3).contains(point.x, point.y);
 	}
 
 	/**

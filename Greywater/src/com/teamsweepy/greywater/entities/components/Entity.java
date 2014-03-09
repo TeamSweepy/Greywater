@@ -33,11 +33,12 @@
 
 package com.teamsweepy.greywater.entities.components;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.math.Point2F;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 
 
 public abstract class Entity {
@@ -101,18 +102,18 @@ public abstract class Entity {
 	public Point2F getLocation() {
 		return new Point2F(getX(), getY());
 	}
-	
+
 	/**
 	 * Used for hitbox interaction
 	 */
-	public boolean checkPhysicalIntersection(Rectangle intersector){
+	public boolean checkPhysicalIntersection(Rectangle intersector) {
 		return intersector.overlaps(physicsComponent.getHitBox());
 	}
-	
+
 	/**
 	 * Used for click-interaction
 	 */
-	public boolean checkClickedInteraction(Point2F point){
+	public boolean checkClickedInteraction(Point2F point) {
 		return didPointHitImage(point);
 	}
 
@@ -120,8 +121,8 @@ public abstract class Entity {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		return graphicsComponent.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate, p.y + mainCamera.yOffsetAggregate).contains(point.x, point.y);
 	}
-	
-	
+
+
 
 	/**
 	 * @return The approximate depth in Z space of the entity. Used for render sorting.
