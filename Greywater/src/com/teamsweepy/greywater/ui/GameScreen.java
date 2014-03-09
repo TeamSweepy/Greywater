@@ -17,6 +17,7 @@ import com.teamsweepy.greywater.ui.gui.GUI;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.teamsweepy.greywater.ui.gui.temp.Label;
 
 public class GameScreen implements Screen {
 
@@ -26,10 +27,15 @@ public class GameScreen implements Screen {
 	Level levelForTesting;
 	SpriteBatch guiBatch;
 
+    private Label label;
 
 	public GameScreen(Engine eng) {
 
 		engine = eng;
+
+        label = new Label(100, 300, 400, 300);
+        label.setListener(engine.inputs);
+
 		levelForTesting = new Level();
 		GUI.initGUI();
 
@@ -45,8 +51,15 @@ public class GameScreen implements Screen {
 		engine.batch.setProjectionMatrix(engine.batch.getProjectionMatrix().translate(offsetPoint.x, offsetPoint.y, 0));
 
 		engine.batch.begin();// start render
+
+
+
 		levelForTesting.render(engine.batch);
 		GUI.render(engine.batch);
+
+
+        label.draw(engine.batch);
+
 		engine.batch.end();// end render
 	}
 

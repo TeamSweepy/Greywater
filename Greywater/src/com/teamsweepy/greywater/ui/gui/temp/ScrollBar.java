@@ -53,13 +53,6 @@ public class Scrollbar{
         inputHandler = new InputListener()
         {
             @Override
-            public boolean keyDown(int keycode)
-            {
-                System.out.println(keycode);
-                return true;
-            }
-
-            @Override
             public boolean scrolled(int amount)
             {
                 wheelScroll(amount);
@@ -72,7 +65,7 @@ public class Scrollbar{
         if(horizontal) {
             updatePosition(scroller.x + (amount * 5), 0);
         } else  {
-            updatePosition(0, scroller.y + (amount * 5));
+            updatePosition(0, scroller.y + -(amount * 5));
         }
     }
 
@@ -93,15 +86,32 @@ public class Scrollbar{
         } else {
             int dir = scroller.y - y;
             scroller.y = y;
-
+//            System.out.println(scroller.y+", "+);
             if(dir > 0) {
-                if(scroller.y < this.y-h) {
-                    scroller.y = (int)(this.y-h);
-                }
+//                if(scroller.y < (this.y - (h+scroller.height/2))) {
+//                    scroller.y = (int)(this.y - (h+scroller.height/2));
+//                }
+//                {
+//                    scroller.y = (int)(this.y + (h - scroller.height));
+//                }
+//                if(scroller.y > scroller.height) {
+//                    scroller.y = scroller.height;
+//                }
+
+//                if(scroller.y < 0) {
+//                    scroller.y = 0;
+//                }
             } else {
-                if(scroller.y > h - scroller.height) {
-                    scroller.y = (int)(h - scroller.height);
-                }
+//                if(scroller.y > h - scroller.height) {
+//                    scroller.y = (int)(h - scroller.height);
+//                }
+//                if(scroller.y > 0) {
+//                    scroller.y = 0;
+//                }
+//                if(scroller.y > (this.y + (h - scroller.height)))
+//                {
+//                    scroller.y = (int)(this.y + (h - scroller.height));
+//                }
             }
         }
     }
@@ -111,7 +121,7 @@ public class Scrollbar{
             scroller.width = (int)(w * (percentage/100f));
         } else {
             scroller.height = (int)(h * (percentage/100f));
-            float newPos = h * scrollPercentage;
+            float newPos = (h * (percentage/100f));
 
             if(newPos < scroller.height) newPos = scroller.height;
 
@@ -136,7 +146,8 @@ public class Scrollbar{
                     (
                             batch,
                             scroller.x - Camera.getDefault().xOffsetAggregate,
-                            (Gdx.graphics.getHeight()-y-scroller.height-scroller.y)- Camera.getDefault().yOffsetAggregate,
+//                            (scroller.height/2) + scroller.y - Camera.getDefault().yOffsetAggregate,
+                            scroller.y - Camera.getDefault().yOffsetAggregate,
                             scroller.width,
                             scroller.height
                     );

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamsweepy.greywater.engine.Camera;
+import com.teamsweepy.greywater.math.Point2F;
 
 /**
  * Copyright Team Sweepy - Robin de Jong 2014 All use outside of the Greywater Project is not permitted unless express permission is
@@ -38,19 +39,16 @@ public class Label {
         patch = new NinePatch(ninePatch, 8, 8, 8, 8);
         font = new BitmapFont(Gdx.files.internal(fontPath));
         cache = new BitmapFontCache(font);
+        cache.setUseIntegerPositions(false);
 
-
-        float newY = Gdx.graphics.getHeight() - y;
-
-//        scrollbarX = new Scrollbar(true, 0, h-20, w, 20);
-        scrollbarY = new Scrollbar(false, false, w, y, 20, h);
+        scrollbarY = new Scrollbar(false, false, x+w, y, 20, h);
 
         setText(Gdx.files.internal("data/dialog_text.txt").readString());
     }
 
 
     public void setText(String text) {
-        cache.setWrappedText(text, x, y, w);
+        cache.setWrappedText(text, 0, h, w);
 
         BitmapFont.TextBounds bounds = cache.getBounds();
         if(bounds.height > h) {
@@ -71,13 +69,13 @@ public class Label {
 
         patch.draw(batch, newX, newY, w, h);
 
-        float yOffset = scrollbarY.scrollPercentage * (cache.getBounds().height - h);
+        float yOffset = scrollbarY.scrollPercentage * (h - cache.getBounds().height);
 
         batch.end();
         // Disable so whe can cut of the bitmapFont
         // This way whe can use scrollbars
-        Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
-        Gdx.gl.glScissor((int) (x), (int) (y), (int) (w), (int) (h));
+//        Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+//        Gdx.gl.glScissor((int) (x), (int) (y), (int) (w), (int) (h));
         batch.begin();
 
         cache.setPosition(
