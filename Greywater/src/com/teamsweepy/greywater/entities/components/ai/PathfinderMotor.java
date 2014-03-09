@@ -12,7 +12,7 @@ import com.teamsweepy.greywater.entities.components.ai.core.Pathfinder;
 import com.teamsweepy.greywater.entities.components.ai.core.PotentialField;
 import com.teamsweepy.greywater.entities.level.Level;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.LinkedList;
 
 public class PathfinderMotor {
@@ -43,7 +43,7 @@ public class PathfinderMotor {
 	public void createPath(Point from, Point end) {
 		if (pathfinder.isGoal(end)) //no need to find same path twice
 			return;
-		
+
 		pathfinder.reset();
 		pathfinder.setStart(from);
 		pathfinder.setEnd(end);

@@ -1,6 +1,7 @@
 
 package com.teamsweepy.greywater.entities;
 
+import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entities.components.AnimEvent;
 import com.teamsweepy.greywater.entities.components.AnimEventListener;
@@ -11,6 +12,7 @@ import com.teamsweepy.greywater.entities.components.ai.PathfinderMotor;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.awt.geom.Line2D;
@@ -97,10 +99,10 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	public void handleEvent(AnimEvent e) {
 		if (e.action.contains("ATTACK") && e.ending && !e.beginning) {
 			attacking = false;
-		} else if (e.action.contains("Walk") && !e.beginning) {
-			int num = 0;
-			num = new Random().nextInt(6) + 1;
-			//			SoundLoader.playSingle(name + "Walk" + num);
+		} else if (e.action.contains("WALK") && !e.beginning) {
+			
+			((Sound) AssetLoader.getAsset(Sound.class, "TavWalk1V1.wav")).play(); //replace with proper naming convention TODO	
+			
 		} else if (e.action.contains("Die") && e.ending) {
 			System.out.println(name + " died: " + HP);
 			graphicsComponent = new Sprite(this.name, name + "Dead");
