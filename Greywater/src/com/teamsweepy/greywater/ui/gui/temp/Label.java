@@ -1,3 +1,4 @@
+
 package com.teamsweepy.greywater.ui.gui.temp;
 
 import com.badlogic.gdx.Gdx;
@@ -17,78 +18,78 @@ import com.teamsweepy.greywater.math.Point2F;
  */
 
 public class Label {
-    public float x, y, w, h;
-    private NinePatch patch;
-    private BitmapFontCache cache;
-    private BitmapFont font;
 
-    private Scrollbar scrollbarX;
-    private Scrollbar scrollbarY;
+	public float x, y, w, h;
+	private NinePatch patch;
+	private BitmapFontCache cache;
+	private BitmapFont font;
 
-    public Label(float x, float y, float w, float h) {
-        // Use the default font
-        this("font/times.fnt", new Texture("ui/menu.png"), x, y, w, h);
-    }
+	private ScrollBar scrollbarX;
+	private ScrollBar scrollbarY;
 
-    public Label(String fontPath, Texture ninePatch, float x, float y, float w, float h) {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
+	public Label(float x, float y, float w, float h) {
+		// Use the default font
+		this("font/times.fnt", new Texture("ui/menu.png"), x, y, w, h);
+	}
 
-        patch = new NinePatch(ninePatch, 8, 8, 8, 8);
-        font = new BitmapFont(Gdx.files.internal(fontPath));
-        cache = new BitmapFontCache(font);
-        cache.setUseIntegerPositions(false);
+	public Label(String fontPath, Texture ninePatch, float x, float y, float w, float h) {
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
 
-        scrollbarY = new Scrollbar(false, false, x+w, y, 20, h);
+		patch = new NinePatch(ninePatch, 8, 8, 8, 8);
+		font = new BitmapFont(Gdx.files.internal(fontPath));
+		cache = new BitmapFontCache(font);
+		cache.setUseIntegerPositions(false);
 
-        setText(Gdx.files.internal("data/dialog_text.txt").readString());
-    }
+		scrollbarY = new ScrollBar(false, false, x + w, y, 20, h);
 
-
-    public void setText(String text) {
-        cache.setWrappedText(text, 0, h, w);
-
-        BitmapFont.TextBounds bounds = cache.getBounds();
-        if(bounds.height > h) {
-            int difference = (int)((h / bounds.height) * 100);
-            scrollbarY.updatePercentage(difference);
-            scrollbarY.visible = true;
-        }
-    }
-
-    public void setListener(InputMultiplexer inputs) {
-        inputs.addProcessor(scrollbarY.inputHandler);
-    }
+		setText(Gdx.files.internal("data/dialog_text.txt").readString());
+	}
 
 
-    public void draw(SpriteBatch batch) {
-        float newX = x - Camera.getDefault().xOffsetAggregate;
-        float newY = y - Camera.getDefault().yOffsetAggregate;
+	public void setText(String text) {
+		cache.setWrappedText(text, 0, h, w);
 
-        patch.draw(batch, newX, newY, w, h);
+		BitmapFont.TextBounds bounds = cache.getBounds();
+		if (bounds.height > h) {
+			int difference = (int) ((h / bounds.height) * 100);
+			scrollbarY.updatePercentage(difference);
+			scrollbarY.visible = true;
+		}
+	}
 
-        float yOffset = scrollbarY.scrollPercentage * (h - cache.getBounds().height);
+	public void setListener(InputMultiplexer inputs) {
+		inputs.addProcessor(scrollbarY.inputHandler);
+	}
 
-        batch.end();
-        // Disable so whe can cut of the bitmapFont
-        // This way whe can use scrollbars
-//        Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
-//        Gdx.gl.glScissor((int) (x), (int) (y), (int) (w), (int) (h));
-        batch.begin();
 
-        cache.setPosition(
-                newX,
-                yOffset+newY
-        );
+	public void draw(SpriteBatch batch) {
+		float newX = x - Camera.getDefault().xOffsetAggregate;
+		float newY = y - Camera.getDefault().yOffsetAggregate;
 
-        cache.draw(batch);
+		patch.draw(batch, newX, newY, w, h);
 
-        batch.flush();
-        Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
+		float yOffset = scrollbarY.scrollPercentage * (h - cache.getBounds().height);
 
-        if(scrollbarX != null) scrollbarX.draw(batch);
-        if(scrollbarY != null) scrollbarY.draw(batch);
-    }
+		//batch.end();
+		// Disable so we can cut of the bitmapFont
+		// This way we can use scrollbars
+		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+		Gdx.gl.glScissor((int) (x), (int) (y), (int) (w), (int) (h));
+	//	batch.begin();
+
+		cache.setPosition(newX, yOffset + newY);
+
+		cache.draw(batch);
+
+		batch.flush();
+		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
+
+		if (scrollbarX != null)
+			scrollbarX.draw(batch);
+		if (scrollbarY != null)
+			scrollbarY.draw(batch);
+	}
 }

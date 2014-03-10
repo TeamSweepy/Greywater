@@ -16,7 +16,7 @@ import java.awt.Rectangle;
  * User: Robin de Jong
  * Date: 5:37 PM, 3/9/14
  */
-public class Scrollbar{
+public class ScrollBar{
 
     public float x, y, w, h;
 
@@ -32,11 +32,11 @@ public class Scrollbar{
 
     private NinePatch background, scrollerBackground;
 
-    public Scrollbar(boolean horizontal, float x, float y, float w, float h) {
+    public ScrollBar(boolean horizontal, float x, float y, float w, float h) {
         this(horizontal, true, x, y, w, h);
     }
 
-    public Scrollbar(boolean visible, boolean horizontal, float x, float y, float w, float h) {
+    public ScrollBar(boolean visible, boolean horizontal, float x, float y, float w, float h) {
         this.x = x;
         this.y = y;
         this.w = w;
