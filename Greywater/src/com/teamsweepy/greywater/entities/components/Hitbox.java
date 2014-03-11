@@ -22,8 +22,9 @@
 
 package com.teamsweepy.greywater.entities.components;
 
-import com.badlogic.gdx.math.Rectangle;
 import com.teamsweepy.greywater.math.Point2F;
+
+import com.badlogic.gdx.math.Rectangle;
 
 
 public class Hitbox {
@@ -37,6 +38,12 @@ public class Hitbox {
 	// physics object
 	private Rectangle hitBox;
 
+	public Hitbox() {
+		destination = new Point2F();
+		this.speed = 0;
+		hitBox = new Rectangle();
+	}
+
 	/**
 	 * Constructor. Sets up location and square hit space
 	 * @param x- X co-ordinate of hitBox
@@ -45,26 +52,15 @@ public class Hitbox {
 	 * @param hitWidth- width of the hitBox
 	 * @param hitHeight- height of hitBox
 	 */
-
-	public Hitbox() {
-		destination = new Point2F();
-		this.speed = 0;
-		hitBox = new Rectangle();
-	}
-
 	public Hitbox(float x, float y, int hitWidth, int hitHeight, float spd) {
 		destination = new Point2F(x, y);
 		this.speed = spd;
 		hitBox = new Rectangle(x, y, hitWidth, hitHeight);
-
 	}
 
-	/**
-	 * Used to move the object if it has a destination. If not, does nothing.
-	 */
+	/** Used to move the object if it has a destination. If not, does nothing. */
 	public void tick(float deltaTime) {
 		//get direction of movement * speed
-		
 		xDelta = Math.signum((destination.getX() - hitBox.getX())) * speed * deltaTime;
 		yDelta = Math.signum((destination.getY() - hitBox.getY())) * speed * deltaTime;
 		if (Math.abs(xDelta) > Math.abs(destination.getX() - hitBox.getX()))
@@ -75,43 +71,29 @@ public class Hitbox {
 
 		if (xDelta != 0 || yDelta != 0)
 			setLocation(xDelta + hitBox.getX(), yDelta + hitBox.getY());
+
 		xDelta = 0; //clear out for next cycle
 		yDelta = 0;
 	}
 
-	/**
-	 * Checks a point intersection with a Hitbox
-	 * 
-	 * @param Point needed to be checked for intersecting
-	 */
+	/** Checks a point intersection with a Hitbox */
 	public boolean intersects(Point2F point) {
 		boolean intersectsOnX = hitBox.getX() < point.x && hitBox.getX() + hitBox.getWidth() > point.x;
 		boolean intersectsOnY = hitBox.getY() < point.y && hitBox.getY() + hitBox.getHeight() > point.y;
 		return intersectsOnX && intersectsOnY;
 	}
 
-	/**
-	 * Updates the hitspace (teleports)
-	 * 
-	 * @param x- new x co-ordinate
-	 * @param y- new y co-ordinate
-	 */
+	/** Updates the hitspace (teleports) to this given location */
 	public void setLocation(float x, float y) {
 		hitBox.set(x, y, hitBox.width, hitBox.height);
 	}
 
-	/**
-	 * Sets character destination to X,Y
-	 * @param x - where to go in the x direction
-	 * @param y- where to go in the y direction
-	 */
+	/** Sets character destination to X,Y */
 	public void moveTo(float x, float y) {
 		destination.setLocation(x, y);
 	}
 
-	/**
-	 * Stops all movement immediately, by setting destination to current location
-	 */
+	/** Stops all movement immediately, by setting destination to current location */
 	public void stopMovement() {
 		destination.setLocation(hitBox.x, hitBox.y);
 	}
@@ -120,16 +102,18 @@ public class Hitbox {
 		return "{" + hitBox.x + " " + hitBox.y + " || " + hitBox.width + " " + hitBox.height + "}";
 	}
 
+	/** Returns the rectangle used in objective coordinates for collisions */
 	public Rectangle getHitBox() {
 		return hitBox;
 	}
 
+	/** Indicates if there is still any movement left in the X or Y axis */
 	public boolean isMoving() {
 		//check to see if destination = hitbox location
 		if ((destination.getX() - hitBox.x) == 0. && (destination.getX() - hitBox.x) == 0.)
 			if ((destination.getY() - hitBox.y == 0.) && (destination.getY() - hitBox.y) == 0.)
 				return false;
-			
+
 		return true;
 	}
 }

@@ -1,8 +1,13 @@
+/**
+ * Event to be fired off to all listening classes (that implement AnimEventListener interface). Indicates the state of the animation at the
+ * time.
+ * 
+ * @author Barnes
+ */
 
 package com.teamsweepy.greywater.entities.components;
 
 import java.util.EventObject;
-
 
 @SuppressWarnings("serial")
 public class AnimEvent extends EventObject {

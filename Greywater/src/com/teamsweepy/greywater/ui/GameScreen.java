@@ -1,5 +1,5 @@
 /**
- * Used to control logic and rendering for the game.
+ * Used to control logic and rendering for the in-game action.
  * 
  * Copyright Team Sweepy - Jeremy Barnes 2014 All use outside of the Greywater Project is not permitted unless express permission is
  * granted. Email TeamSweepy@gmail.com to discuss usage.
@@ -13,11 +13,11 @@ import com.teamsweepy.greywater.engine.Engine;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.GUI;
+import com.teamsweepy.greywater.ui.gui.temp.Label;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.teamsweepy.greywater.ui.gui.temp.Label;
 
 public class GameScreen implements Screen {
 
@@ -26,15 +26,14 @@ public class GameScreen implements Screen {
 	//testvar
 	Level levelForTesting;
 	SpriteBatch guiBatch;
-
-    private Label label;
+	private Label label;
 
 	public GameScreen(Engine eng) {
 
 		engine = eng;
 
-        label = new Label(100, 300, 400, 300);
-        label.setListener(engine.inputs);
+		label = new Label(100, 300, 400, 300);
+		label.setListener(engine.inputs);
 
 		levelForTesting = new Level();
 		GUI.initGUI();
@@ -46,19 +45,15 @@ public class GameScreen implements Screen {
 		//scale from 1600x900 to whatever user screen is set to and clear graphics
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		//this replaces the camera.translate function that doesn't work. 		
+		//translate sprite batch like camera
 		Point2F offsetPoint = Camera.getDefault().getTranslatedMatrix();
 		engine.batch.setProjectionMatrix(engine.batch.getProjectionMatrix().translate(offsetPoint.x, offsetPoint.y, 0));
 
 		engine.batch.begin();// start render
 
-
-
 		levelForTesting.render(engine.batch);
 		GUI.render(engine.batch);
-
-
-        label.draw(engine.batch);
+		label.draw(engine.batch);
 
 		engine.batch.end();// end render
 	}

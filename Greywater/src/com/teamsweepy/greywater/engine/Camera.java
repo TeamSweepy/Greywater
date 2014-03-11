@@ -11,7 +11,6 @@ package com.teamsweepy.greywater.engine;
 
 import com.teamsweepy.greywater.math.Point2F;
 
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -27,9 +26,7 @@ public class Camera {
 
 
 	// Synchronized so the object won't be initialized in different threads
-	/**
-	 * Sets up or returns the singleton camera object used everywhere
-	 */
+	/** Sets up or returns the singleton camera object used everywhere */
 	public static synchronized Camera getDefault() {
 		if (defaultCamera == null)
 			defaultCamera = new Camera();
@@ -40,6 +37,7 @@ public class Camera {
 		camera = new OrthographicCamera();
 	}
 
+	/** Creates a logical window. Should be 1600 x 900, it doesn't map to user monitor size, but to the "native" resolution */
 	public void setViewPort(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -48,6 +46,7 @@ public class Camera {
 		camera.translate(new Vector3(-camera.position.x, -camera.position.y, -camera.position.z));
 	}
 
+	/** Translates the camera by the given amount. Don't forget to translate the sprite batch using getTranslatedMatrix() */
 	public void move(float x, float y) {
 		xOffset -= x; //subtract so that if the coordinate is positive, the camera moves up/right
 		yOffset -= y;
@@ -56,11 +55,13 @@ public class Camera {
 		yOffsetAggregate -= y;
 	}
 
+	/** Move the camera to be centered at the coordinates given. Don't forget to translate the sprite batch using getTranslatedMatrix()! */
 	public void moveTo(Point2F move) {
 		move = Globals.toScreenCoord(move.x, move.y);
 		moveTo(move.x, move.y);
 	}
 
+	/** Move the camera to be centered at the coordinates given. Don't forget to translate the sprite batch using getTranslatedMatrix()! */
 	public void moveTo(float xMove, float yMove) {
 		if (xMove == (width / 2) && yMove == (height / 2))
 			return;
@@ -69,22 +70,17 @@ public class Camera {
 		yOffset = -(yMove - (height / 2));
 	}
 
-	public void update() {
-		camera.update();
-	}
 
-	public void apply(GL10 gl) {
-		camera.apply(gl);
-	}
-
+	/** Get camera's projection matrix */
 	public Matrix4 getProjectionMatrix() {
 		return camera.combined;
 	}
 
+	/** Get cameras X and Y translation to move other matrixes similarly */
 	public Point2F getTranslatedMatrix() {
 		xOffsetAggregate += xOffset;
 		yOffsetAggregate += yOffset;
-		
+
 		float x = xOffset;
 		float y = yOffset;
 		xOffset = 0;
@@ -93,9 +89,7 @@ public class Camera {
 	}
 
 
-	/**
-	 * Convert user screen coordinates into game viewport coordinates
-	 */
+	/** Convert user screen coordinates into game viewport coordinates */
 	public Point2F unproject(Point2F point) {
 		Vector3 v3f = new Vector3(point.x, point.y, 0);
 		camera.unproject(v3f);

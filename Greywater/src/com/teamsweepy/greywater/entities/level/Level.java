@@ -47,6 +47,7 @@ public class Level {
 	Mob TestTavishMob;
 	Mob TestAIMob;
 
+	/** Used for depth sorting */
 	private Comparator<Entity> spriteSorter = new Comparator<Entity>() {
 
 		@Override
@@ -80,10 +81,9 @@ public class Level {
 		interactiveList.addAll(mobList);
 		Camera.getDefault().moveTo(Globals.toIsoCoord(TestTavishMob.getX(), TestTavishMob.getY()));
 
-
-
 	}
 
+	/** Render all components "in" the world - mobs, doodads, loot, etc */
 	public void render(SpriteBatch batch) {
 		for (int x = 0; x < tileList.length; x++) {
 			for (int y = 0; y < tileList[x].length; y++) {
@@ -107,6 +107,7 @@ public class Level {
 		depthSortList.clear();
 	}
 
+	/** Tick logic of all components in the world - mobs, doodads, loot, etc */
 	public void tick(float deltaTime) {
 		for (int x = 0; x < tileList.length; x++) {
 			for (int y = 0; y < tileList[x].length; y++) {
@@ -123,15 +124,14 @@ public class Level {
 		Camera.getDefault().moveTo(Globals.toIsoCoord(TestTavishMob.getX(), TestTavishMob.getY()));
 	}
 
+	/** Creates 2D grid that indicates if a tile is obstructed with a closed door/ wall/ etc */
 	public boolean isTileWalkable(int x, int y) {
 		if (wallList[x][y] != null)
 			return false;
 		return true;
 	}
 
-	/**
-	 * Check to see if a given shape collides with the level geometry
-	 */
+	/** Check to see if a given shape collides with the level geometry */
 	public boolean checkLevelCollision(Shape collisionVolume) {
 		if (collisionVolume == null)
 			return false;
@@ -163,6 +163,7 @@ public class Level {
 		return false;
 	}
 
+	/** Finds if an entity's logical hitbox collides with another hitbox in objective coordinates */
 	public Entity getCollidedEntity(Rectangle intersectionArea) {
 		for (Entity e : interactiveList) {
 			if (e.checkPhysicalIntersection(intersectionArea))
@@ -171,6 +172,7 @@ public class Level {
 		return null;
 	}
 
+	/** Finds if an entity's sprite is clicked by a given screen location. Will not return the same entity who is searching */
 	public Entity getClickedEntity(Point2F clickLocation, Entity clicker) {
 		for (Entity e : interactiveList) {
 			if (e.equals(clicker))
@@ -181,9 +183,7 @@ public class Level {
 		return null;
 	}
 
-	/**
-	 * Converts map from Tiled Map Editor (TMX) into Entity Objects. You can probably ignore this method.
-	 */
+	/** Converts map from Tiled Map Editor (TMX) into Entity Objects. You can probably ignore this method. */
 	private void convertTiledMapToEntities() {
 		TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
 		tileList = new Tile[layer.getWidth()][layer.getHeight()];
@@ -226,6 +226,7 @@ public class Level {
 		}
 	}
 
+	/** Returns point with map X and Y dimensions */
 	public Point getMapDimensions() {
 		return new Point(tileList.length, tileList[0].length);
 	}

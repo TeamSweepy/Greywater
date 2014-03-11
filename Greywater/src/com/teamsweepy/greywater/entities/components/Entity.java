@@ -6,8 +6,6 @@
  * by calling it's tick/update and render methods it tracks the two disparate aspects (graphics and physics) and makes sure shit gets done.
  * This is much easier.
  * 
- * 
- * 
  * *********** IMPORTANT *************
  * 
  * The graphics component (sprite) is an isometric image, it is a skewed square, rotated 45 degrees. An iso-tile has width:height of 2:1,
@@ -29,6 +27,8 @@
  * 
  * Copyright Team Sweepy - Jeremy Barnes 2014 All use outside of the Greywater Project is not permitted unless express permission is
  * granted. Email TeamSweepy@gmail.com to discuss usage.
+ * 
+ * @author Barnes
  */
 
 package com.teamsweepy.greywater.entities.components;
@@ -52,71 +52,64 @@ public abstract class Entity {
 		mainCamera = Camera.getDefault();
 	}
 
-	/**
-	 * Ticks components (graphics and physics)
-	 */
+	/** Ticks components logic (graphics and physics) */
 	public void tick(float deltaTime) {
 		physicsComponent.tick(deltaTime); // update components
 		graphicsComponent.tick(deltaTime);
 	}
 
-	/**
-	 * Draws the current sprite for this entity.
-	 * @param g - Graphics object
-	 */
+	/** Draws the current sprite for this entity. */
 	public void render(SpriteBatch g) {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		graphicsComponent.render(g, p.x, p.y);
 	}
 
-	/**
-	 * @return the physicsComponent for filthy outsiders
-	 */
+	/** @return the physicsComponent for filthy outsiders */
 	public Hitbox getPhysics() {
 		return physicsComponent;
 	}
 
-	/**
-	 * @return the Rectangle used for collision detection
-	 */
+	/** @return the Rectangle used for collision detection */
 	public Rectangle getHitbox() {
 		return physicsComponent.getHitBox();
 	}
 
+	/** Returns x location in objective coordinates */
 	public float getX() {
 		return physicsComponent.getHitBox().x;
 	}
 
+	/** Returns y location in objective coordinates */
 	public float getY() {
 		return physicsComponent.getHitBox().y;
 	}
 
+	/** Returns hitbox width */
 	public float getWidth() {
 		return physicsComponent.getHitBox().width;
 	}
 
+	/** Returns hitbox height */
 	public float getHeight() {
 		return physicsComponent.getHitBox().height;
 	}
 
+	/** Returns location in objective coordinates */
 	public Point2F getLocation() {
 		return new Point2F(getX(), getY());
 	}
 
-	/**
-	 * Used for hitbox interaction
-	 */
+	/** Used for hitbox interaction, meant to indicate if two entities collide in objective coordinate space */
 	public boolean checkPhysicalIntersection(Rectangle intersector) {
 		return intersector.overlaps(physicsComponent.getHitBox());
 	}
 
-	/**
-	 * Used for click-interaction
-	 */
+	/** Used for click-interaction, meant to indicate if an entity's sprite was clicked */
 	public boolean checkClickedInteraction(Point2F point) {
 		return didPointHitImage(point);
 	}
 
+	/** Finds if given point is within current image's bounding box */
 	protected boolean didPointHitImage(Point2F point) {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		return graphicsComponent.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate, p.y + mainCamera.yOffsetAggregate).contains(point.x, point.y);
@@ -124,9 +117,7 @@ public abstract class Entity {
 
 
 
-	/**
-	 * @return The approximate depth in Z space of the entity. Used for render sorting.
-	 */
+	/** @return The approximate depth in Z space of the entity. Used for render sorting. */
 	public float getDepth() {
 		float x = physicsComponent.getHitBox().width * .5f + getX();
 		float y = physicsComponent.getHitBox().height * .5f + getY();

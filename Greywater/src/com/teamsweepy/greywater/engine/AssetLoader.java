@@ -41,10 +41,7 @@ public class AssetLoader {
 		parseINI("Assets.ini"); // load common assets such as the HUD and menu
 	}
 
-	/**
-	 * Loads all files listed in the given ini file. Note that files are expect to be of the format: LOAD; Filepath; Type
-	 * @param iniName
-	 */
+	/** Loads all files listed in the given ini file. Note that files are expect to be of the format: LOAD; Filepath; Type */
 	public static void parseINI(String iniName) {
 		try {
 			FileHandle setFile = Gdx.files.internal(ASSET_FOLDER + iniName);
@@ -80,6 +77,7 @@ public class AssetLoader {
 			System.exit(1);
 		}
 	}
+
 
 	/**
 	 * Update loaders, create assets if loaders have completed.
@@ -127,9 +125,7 @@ public class AssetLoader {
 		throw new Exception("Invalid Class Specified in AssetLoader! Invalid type - " + type);
 	}
 
-	/**
-	 * Remove all assets that the manager has
-	 */
+	/** Remove all assets that the manager has */
 	public static void disposeAll() {
 		assetManager.dispose();
 	}

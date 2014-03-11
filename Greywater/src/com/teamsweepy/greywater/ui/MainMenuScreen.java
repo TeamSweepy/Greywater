@@ -8,26 +8,29 @@
 
 package com.teamsweepy.greywater.ui;
 
-import com.badlogic.gdx.Screen;
 import com.teamsweepy.greywater.engine.Engine;
+import com.teamsweepy.greywater.ui.gui.subgui.Button;
+
+import com.badlogic.gdx.Screen;
 
 public class MainMenuScreen implements Screen {
 
 	private Engine engine;
+	private Button exit = new Button();
 
 	public MainMenuScreen(Engine eng) {
 		engine = eng;
+		//exit.
 	}
 
 	@Override
 	public void render(float delta) {
 		engine.batch.begin(); // begin rendering
-		// engine.batch.draw(AssetLoader.loadAnimationFromTexture("Tavish.atlas"),500, 500);
 		engine.batch.end();// end rendering
 	}
-	
-	public void tick(float delta){
-		
+
+	public void tick(float delta) {
+
 	}
 
 	public void show() {
@@ -56,11 +59,9 @@ public class MainMenuScreen implements Screen {
 	/* **************** PROBABLY USELESS METHODS ********************* */
 
 	@Override
-	public void resize(int width, int height) {
-	}
+	public void resize(int width, int height) {}
 
 	@Override
-	public void dispose() {
-	}
+	public void dispose() {}
 
 }

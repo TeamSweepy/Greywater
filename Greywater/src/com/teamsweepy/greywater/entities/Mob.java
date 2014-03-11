@@ -1,3 +1,11 @@
+/**
+ * Abstract class that holds logic for all Mobile Units.
+ * 
+ * Copyright Team Sweepy - Jeremy Barnes 2014 All use outside of the Greywater Project is not permitted unless express permission is
+ * granted. Email TeamSweepy@gmail.com to discuss usage.
+ * 
+ * @author Barnes
+ */
 
 package com.teamsweepy.greywater.entities;
 
@@ -16,7 +24,6 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.awt.geom.Line2D;
-import java.util.Random;
 
 public abstract class Mob extends Entity implements AnimEventListener {
 
@@ -44,6 +51,7 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	 * @param width - physics component width
 	 * @param height - - physics component height
 	 * @param speed - tiles per second
+	 * @param isAStar - true = AStar PathFinder, false = PotentialField PathFinder
 	 */
 	public Mob(String name, float x, float y, int width, int height, float speed, Level level, boolean isAStar) {
 		this.name = name;
@@ -61,19 +69,14 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	}
 
 
-	/**
-	 * Draws the sprite for this entity centered on a tile.
-	 * @param g - Graphics object
-	 */
+	/** Draws the sprite for this entity centered on a tile. */
 	public void render(SpriteBatch g) {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		//center on the tile
 		graphicsComponent.render(g, p.x - graphicsComponent.getImageWidth() / 2, p.y + Globals.tileImageHeight / 3);
 	}
 
-	/**
-	 * Update graphics and physics components, deal with animation and behavior
-	 */
+	/** Update graphics and physics components, deal with animation and behavior */
 	public void tick(float deltaTime) {
 		if (HP < 0 && !graphicsComponent.getCurrentImageName().contains("DIE")) { //if dead
 			graphicsComponent.setImage(.4f, "Die", Sprite.FORWARD);
@@ -96,13 +99,14 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		}
 	}
 
+	/** Generic implementation for walk and attack sounds based on Animation Events */
 	public void handleEvent(AnimEvent e) {
 		if (e.action.contains("ATTACK") && e.ending && !e.beginning) {
 			attacking = false;
 		} else if (e.action.contains("WALK") && !e.beginning) {
-			
+
 			((Sound) AssetLoader.getAsset(Sound.class, "TavWalk1V1.wav")).play(); //replace with proper naming convention TODO	
-			
+
 		} else if (e.action.contains("Die") && e.ending) {
 			System.out.println(name + " died: " + HP);
 			graphicsComponent = new Sprite(this.name, name + "Dead");
@@ -114,6 +118,7 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	//		return inventory;
 	//	}
 
+	/** Reduce or increase this mob's health by the given amount (+ for damage, - for buffs/healing) */
 	public void changeHP(int damage) {
 		HP -= damage;
 		System.out.println(name + " took " + damage + " dmg ---> " + HP + " HP");
@@ -122,16 +127,19 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		}
 	}
 
+	/** Indicates if this mob has >0 HP */
 	public boolean isAlive() {
 		if (HP > 0)
 			return true;
 		return false;
 	}
 
+	/** Returns this mob's current HP */
 	public int getHP() {
 		return HP;
 	}
 
+	/** Checks to see if sightline between the mob and its assigned target is unobstructed by level geometry. */
 	public boolean canSeeTarget() {
 		if (sightLine != null && sightLine.getP1().distance(sightLine.getP2()) <= this.maxSightRange && !world.checkLevelCollision(sightLine))
 			canSeeTarget = true;
@@ -140,26 +148,29 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		return canSeeTarget;
 	}
 
+	/** Return the line that indicates the Mobs sightline to its target */
 	public Line2D.Float getSight() {
 		return sightLine;
 	}
 
+	/** Return this mobs name */
 	public String getName() {
 		return name;
 	}
 
+	/** Used to find out if a clicked point intersected Mobs sprite bounding box */
 	protected boolean didPointHitImage(Point2F point) {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		return graphicsComponent.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate - graphicsComponent.getImageWidth() / 2,
 			p.y + mainCamera.yOffsetAggregate + Globals.tileImageHeight / 3).contains(point.x, point.y);
 	}
 
-	/**
-	 * Gets next action for this mob, can be AI logic or player input, subclasses!
-	 */
+	/** Gets next action for this mob, can be AI logic or player input, subclasses can deal with it. */
 	protected abstract void getInput();
 
+	/** Deal damage and pursue clicked Mobs */
 	protected abstract void attack(Mob enemy);
 
+	/** Deal with friendly entities or attack enemy mobs */
 	public abstract boolean interact();
 }

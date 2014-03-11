@@ -1,5 +1,7 @@
 /**
  * Functions and variables needed everywhere.
+ * 
+ * @author - Barnes
  */
 
 package com.teamsweepy.greywater.engine;
@@ -18,24 +20,26 @@ public class Globals {
 	public static float tileImageWidth = 56;
 	public static float tileImageHeight = 112;
 
+	//Width of tile in memory as compared to its size on screen
+	//(world units to pixels)
 	public static float tileRatio = 1.12f;
-	
-	public static Point2F toScreenCoord(float xIso, float yIso){
-		return new Point2F(xIso + Camera.getDefault().xOffsetAggregate, yIso + Camera.getDefault().yOffsetAggregate);
+
+	/** Convert Isometric Coordinates to Screen Coordinates (Accounts for Camera Movement)*/
+	public static Point2F toScreenCoord(Point2F isoLocation) {
+		return toScreenCoord(isoLocation.x, isoLocation.y);
 	}
 	
-	/**
-	 * Convert objective coordinates to isometric coordinates
-	 * VERIFIED OUTPUT
-	 */
-	public static Point2F toIsoCoord(Point2F objectiveLocation){
+	/** Convert Isometric Coordinates to Screen Coordinates (Accounts for Camera Movement)*/
+	public static Point2F toScreenCoord(float xIso, float yIso) {
+		return new Point2F(xIso + Camera.getDefault().xOffsetAggregate, yIso + Camera.getDefault().yOffsetAggregate);
+	}
+
+	/** Convert objective coordinates to isometric coordinates */
+	public static Point2F toIsoCoord(Point2F objectiveLocation) {
 		return toIsoCoord(objectiveLocation.x, objectiveLocation.y);
 	}
 
-	/**
-	 * Convert objective coordinates to isometric coordinates
-	 * VERIFIED OUTPUT
-	 */
+	/** Convert objective coordinates to isometric coordinates */
 	public static Point2F toIsoCoord(float xCoord, float yCoord) {
 		//reverse the x and y because Tiled Map Editor uses a wacky coordinate system
 		//multiply x and y by the ratio of hitbox to sprite size
@@ -50,61 +54,43 @@ public class Globals {
 		//get actual screen coordinates 
 		return new Point2F(x, y);
 	}
-	
-	/**
-	 * Convert screen coordinates to flatspace/objective coordinates
-	 * VERIFIED OUTPUT
-	 */
+
+	/** Convert screen coordinates to flatspace/objective coordinates */
 	public static Point2F toNormalCoord(Point2F isoLocation) {
 		return toNormalCoord(isoLocation.x, isoLocation.y);
 	}
 
-	/**
-	 * Convert screen coordinates to flatspace/objective coordinates
-	 * VERIFIED OUTPUT
-	 */
+	/** Convert screen coordinates to flatspace/objective coordinates */
 	public static Point2F toNormalCoord(float xIso, float yIso) {
 		//reverse the x and y because Tiled Map Editor uses a wacky coordinate system
 		//divide x and y by the ratio of hitbox to sprite size
-		float temp = (xIso  - Camera.getDefault().xOffsetAggregate) / tileRatio;
+		float temp = (xIso - Camera.getDefault().xOffsetAggregate) / tileRatio;
 		xIso = -(yIso - Camera.getDefault().yOffsetAggregate) / tileRatio;
 		yIso = temp;
 
 		float x = xIso + yIso / 2;
 		float y = yIso / 2 - xIso;
 		//+- 50 because that is the size of the tile in objective coords
-		return new Point2F(x + 50, y- 50);
+		return new Point2F(x + 50, y - 50);
 	}
-	
-	/**
-	 * Converts objective coordinates to tile indices
-	 * VERIFIED OUTPUT
-	 */
+
+	/** Converts objective coordinates to tile indices */
 	public static Point toTileIndices(Point2F objectiveLocation) {
 		return toTileIndices(objectiveLocation.x, objectiveLocation.y);
 	}
 
-	/**
-	 * Converts objective coordinates to tile indices
-	 * VERIFIED OUTPUT
-	 */
+	/** Converts objective coordinates to tile indices */
 	public static Point toTileIndices(float xCoord, float yCoord) {
-		Point tileIndex = new Point((int)Math.floor(xCoord / tileGridWidth), (int)Math.floor(yCoord / tileGridHeight));
+		Point tileIndex = new Point((int) Math.floor(xCoord / tileGridWidth), (int) Math.floor(yCoord / tileGridHeight));
 		return tileIndex;
 	}
-	
-	/**
-	 * Converts tile indices to  objective coordinates
-	 * VERIFIED OUTPUT
-	 */
+
+	/** Converts tile indices to objective coordinates */
 	public static Point2F toNormalCoordFromTileIndices(Point2F objectiveLocation) {
 		return toNormalCoordFromTileIndices(objectiveLocation.x, objectiveLocation.y);
 	}
-	
-	/**
-	 * Converts tile indices to  objective coordinates
-	 * VERIFIED OUTPUT
-	 */
+
+	/** Converts tile indices to objective coordinates */
 	public static Point2F toNormalCoordFromTileIndices(float xCoord, float yCoord) {
 		//+25 to indicate the center of a tile
 		Point2F location = new Point2F((xCoord * tileGridWidth) + 25, (yCoord * tileGridHeight) + 25);
@@ -118,7 +104,7 @@ public class Globals {
 	 * @param yDiff - TargetY - CurrentY
 	 */
 	public static String getDirectionString(double xDiff, double yDiff) {
-		double angle =  Math.toDegrees(Math.atan2(yDiff, xDiff)) - 45;
+		double angle = Math.toDegrees(Math.atan2(yDiff, xDiff)) - 45;
 		if (angle < 0)
 			angle += 360;
 		if (angle >= 337.5 || angle < 22.5)
@@ -138,7 +124,6 @@ public class Globals {
 		else if (angle >= 292.5 && angle < 337.5)
 			return "Southeast";
 
-
-		return "666";
+		return "666"; //if the direction cannot be found, Satan.
 	}
 }

@@ -45,9 +45,7 @@ public abstract class InputHandler implements InputProcessor {
 	public abstract boolean keyUp(int keycode);
 
 	@Override
-	/**
-	 * Indicates when a unicode character is produced.
-	 */
+	/** Indicates when a unicode character is produced. */
 	public abstract boolean keyTyped(char character);
 
 	@Override

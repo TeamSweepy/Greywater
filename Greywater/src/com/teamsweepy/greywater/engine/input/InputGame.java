@@ -16,14 +16,13 @@ import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.entities.Player;
 import com.teamsweepy.greywater.math.Point2F;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 
 public class InputGame extends InputHandler {
 
 	@Override
-	/**
-	 * Upon a mouse / pointer click this event occurs. It saves the mouse input data
-	 * */
+	/** Upon a mouse / pointer click this event occurs. It saves the mouse input data */
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		isDown = true;
 		mousePosition = Camera.getDefault().unproject(new Point2F(screenX, screenY));
@@ -32,9 +31,7 @@ public class InputGame extends InputHandler {
 	}
 
 	@Override
-	/**
-	 * Upon a mouse / pointer unclick (release) this event occurs. It saves the mouse input data
-	 * */
+	/** Upon a mouse / pointer unclick (release) this event occurs. It saves the mouse input data */
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		isDown = false;
 		Player.handleInput(mousePosition, isDown, -69);
@@ -42,9 +39,7 @@ public class InputGame extends InputHandler {
 	}
 
 	@Override
-	/**
-	 * Upon a mouse / pointer moved this event occurs. It saves the mouse input data
-	 * */
+	/** Upon a mouse / pointer moved this event occurs. It saves the mouse input data */
 	public boolean mouseMoved(int screenX, int screenY) {
 		mousePosition = Camera.getDefault().unproject(new Point2F(screenX, screenY));
 		Player.handleInput(mousePosition, false, -69);
@@ -67,8 +62,8 @@ public class InputGame extends InputHandler {
 	public boolean keyDown(int keycode) {
 
 		// Exit hotkey //
-		if (keycode == Keys.ESCAPE) {
-			System.exit(0);
+		if (keycode == Keys.BACKSPACE) {
+			Gdx.app.exit();
 		}
 
 		// TODO Implement the keys

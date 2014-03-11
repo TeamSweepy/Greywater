@@ -1,15 +1,21 @@
 /**
  * Engine controls the rest of the game - main render/update loop are located here, as is the bulk of the initialization. Very little core
  * game logic should go here, however.
- *
+ * 
  * Copyright Team Sweepy - Jeremy Barnes 2014 All use outside of the Greywater Project is not permitted unless express permission is
  * granted. Email TeamSweepy@gmail.com to discuss usage.
- *
+ * 
  * @author Barnes
- *
+ * 
  */
 
 package com.teamsweepy.greywater.engine;
+
+import com.teamsweepy.greywater.engine.input.InputGUI;
+import com.teamsweepy.greywater.engine.input.InputGame;
+import com.teamsweepy.greywater.engine.input.InputHandler;
+import com.teamsweepy.greywater.ui.GameScreen;
+import com.teamsweepy.greywater.ui.MainMenuScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -17,11 +23,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.teamsweepy.greywater.engine.input.InputGUI;
-import com.teamsweepy.greywater.engine.input.InputGame;
-import com.teamsweepy.greywater.engine.input.InputHandler;
-import com.teamsweepy.greywater.ui.GameScreen;
-import com.teamsweepy.greywater.ui.MainMenuScreen;
 
 public class Engine extends Game {
 
@@ -42,11 +43,13 @@ public class Engine extends Game {
 
 	//other stuff, will be sorted when there's more
 	public SpriteBatch batch;
-    public InputMultiplexer inputs; // This is not needed, it just makes it easier for the labels to work. This will be removed
+	public InputMultiplexer inputs; // This is not needed, it just makes it easier for the labels to work. This will be removed
 	private InputHandler inputHandlerGUI;
 	private InputGame inputHandlerGame;
 	private GameScreen gs;
 	private MainMenuScreen ms;
+
+	public static boolean inGame = false;
 
 	/**
 	 * Initialize core assets, automatically called by LibGDX
@@ -62,25 +65,22 @@ public class Engine extends Game {
 
 		initInput();
 		gs = new GameScreen(this);
-		this.setScreen(gs);
+		ms = new MainMenuScreen(this);
+		this.setScreen(ms);
 	}
 
-	/**
-	 * Initilize input as a multiplex. Multiple listeners are added (one for GUI and one for the gameView)
-	 */
+	/** Initialize input as a multiplex. Multiple listeners are added (one for GUI and one for the gameView) */
 	private void initInput() {
 		inputs = new InputMultiplexer();
 		inputHandlerGUI = new InputGUI();
 		inputHandlerGame = new InputGame();
 		// The event first goes to the GUI input and if needed to the Game input
-        inputs.addProcessor(inputHandlerGUI);
-        inputs.addProcessor(inputHandlerGame);
+		inputs.addProcessor(inputHandlerGUI);
+		inputs.addProcessor(inputHandlerGame);
 		Gdx.input.setInputProcessor(inputs);
 	}
 
-	/**
-	 * Dispose of unmanaged assets such as the spritebatch and all textures
-	 */
+	/** Dispose of unmanaged assets such as the spritebatch and all textures */
 	@Override
 	public void dispose() {
 		batch.dispose();
@@ -93,6 +93,11 @@ public class Engine extends Game {
 	 */
 	@Override
 	public void render() {
+		if (inGame && this.getScreen() != gs) {
+			this.setScreen(gs);
+		} else if (!inGame && this.getScreen() != ms) {
+			this.setScreen(ms);
+		}
 		deltaTime = Gdx.graphics.getDeltaTime();
 		secondsElapsed += deltaTime;
 		excessTime += deltaTime * 1000000000 - ANIMATION_PERIOD_NANOSEC; //nano second accuracy!
@@ -123,9 +128,7 @@ public class Engine extends Game {
 
 	}
 
-	/**
-	 * Called by libGDX's render method - update physics and logic components
-	 */
+	/** Called by libGDX's render method - update physics and logic components */
 	public void tick(float deltaTime) {
 		if (this.getScreen() == gs) {
 			gs.tick(deltaTime);
@@ -143,9 +146,7 @@ public class Engine extends Game {
 	@Override
 	public void resume() {}
 
-	/**
-	 * Print Frames per second and Updates per second data and reset their counters.
-	 */
+	/** Print Frames per second and Updates per second data and reset their counters. */
 	private void printStats() {
 		System.out.println();
 		System.out.println();

@@ -13,10 +13,10 @@
 package com.teamsweepy.greywater.engine.input;
 
 import com.teamsweepy.greywater.engine.Camera;
+import com.teamsweepy.greywater.engine.Engine;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.GUI;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 
 public class InputGUI extends InputHandler {
@@ -24,9 +24,7 @@ public class InputGUI extends InputHandler {
 	public static Point2F position = new Point2F();
 
 	@Override
-	/**
-	 * Upon a mouse / pointer click this event occurs. It saves the mouse input data
-	 * */
+	/** Upon a mouse / pointer click this event occurs. It saves the mouse input data */
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		isDown = true;
 		mousePosition = new Point2F(screenX, screenY);
@@ -38,9 +36,7 @@ public class InputGUI extends InputHandler {
 	}
 
 	@Override
-	/**
-	 * Upon a mouse / pointer unclick (release) this event occurs. It saves the mouse input data
-	 * */
+	/** Upon a mouse / pointer unclick (release) this event occurs. It saves the mouse input data */
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		isDown = false;
 		mousePosition = new Point2F(screenX, screenY);
@@ -52,9 +48,7 @@ public class InputGUI extends InputHandler {
 	}
 
 	@Override
-	/**
-	 * Upon a mouse / pointer moved this event occurs. It saves the mouse input data
-	 * */
+	/** Upon a mouse / pointer moved this event occurs. It saves the mouse input data */
 	public boolean mouseMoved(int screenX, int screenY) {
 		mousePosition = new Point2F(screenX, screenY);
 
@@ -66,6 +60,11 @@ public class InputGUI extends InputHandler {
 
 	@Override
 	public boolean keyDown(int keycode) {
+		if (keycode == Keys.ESCAPE) {
+			Engine.inGame = !Engine.inGame; //go to main menu
+		}
+
+		//move the camera for testing, TODO remove later
 		if (keycode == Keys.W) {
 			Camera.getDefault().move(0, 200);
 		}
@@ -78,8 +77,6 @@ public class InputGUI extends InputHandler {
 		if (keycode == Keys.D) {
 			Camera.getDefault().move(200, 0);
 		}
-
-
 		// TODO Implement the keys
 		return false;
 	}

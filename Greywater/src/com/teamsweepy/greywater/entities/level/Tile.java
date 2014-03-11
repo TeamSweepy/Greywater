@@ -1,10 +1,20 @@
+/**
+ * Special entity that doesn't move. Used to indicate the floor. Floor needs hitboxes for things like tile activated traps or slower moving
+ * terrain (mud).
+ * 
+ * Copyright Team Sweepy - Jeremy Barnes 2014 All use outside of the Greywater Project is not permitted unless express permission is
+ * granted. Email TeamSweepy@gmail.com to discuss usage.
+ * 
+ * @author Barnes
+ */
 
 package com.teamsweepy.greywater.entities.level;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.teamsweepy.greywater.entities.components.Entity;
 import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
+
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 
 public class Tile extends Entity {

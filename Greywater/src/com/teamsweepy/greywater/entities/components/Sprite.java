@@ -1,7 +1,7 @@
 /**
  * Holds animation data for a given character.
  * 
- * *********Important note on the name system in this class.********************
+ * ********* Important note on the name system in this class.************
  * 
  * Some string variables are used, primarily "name" and "ident"
  * 
@@ -67,7 +67,6 @@ public class Sprite {
 
 	/**
 	 * Constructor for sprite that rely on TextureAtlases
-	 * 
 	 * @param name - The name of the character/entity (Such as Tavish) This should match the name of their .atlas file!
 	 * @param imgName - image to start with (Such as Stand_South). It will be added to the name to find the image - Tavish + Stand_South
 	 */
@@ -80,7 +79,6 @@ public class Sprite {
 
 	/**
 	 * Constructor for sprites that use single, unatlased textures.
-	 * 
 	 * @param imageName - the name of the image to use, such as "HUD-1600" (no file extension needed, it had better be PNG)
 	 */
 	public Sprite(String imageName) {
@@ -90,23 +88,19 @@ public class Sprite {
 		listeners = new ArrayList<AnimEventListener>();
 	}
 
-	/**
-	 * Constructor for sprites that use a single, unatlased texture that was loaded elsewhere.
-	 * 
-	 */
+	/** Constructor for sprites that use a single, unatlased texture that was loaded elsewhere. */
 	public Sprite(TextureRegion texture) {
 		sprite = texture;
 		playMode = STILL_IMAGE;
 		listeners = new ArrayList<AnimEventListener>();
 	}
 
-	/**
-	 * @return the current Name + Ident to let you know what animation is active currently
-	 */
+	/** Returns the current Name + Ident to let you know what animation is active currently */
 	public String getCurrentImageName() {
 		return currentImageName;
 	}
 
+	/** Returns the current sprite's width */
 	public float getImageWidth() {
 		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING)
 			return sprite.getRegionWidth();
@@ -114,6 +108,7 @@ public class Sprite {
 			return animation[seriesPosition].getRegionWidth();
 	}
 
+	/** Returns the current sprite's height */
 	public float getImageHeight() {
 		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING)
 			return sprite.getRegionHeight();
@@ -121,14 +116,13 @@ public class Sprite {
 			return animation[seriesPosition].getRegionHeight();
 	}
 
+	/** Returns the current sprite's bounding box with its lower left corner at x,y */
 	public Rectangle getImageRectangleAtOrigin(float x, float y) {
 		return new Rectangle(x, y, getImageWidth(), getImageWidth());
 	}
 
 	/**
-	 * Calls the other method with width and height params Renders at default width and height
-	 * 
-	 * @param g - graphics object for rendering
+	 * Calls the other method with width and height params Renders at default width and height.
 	 * @param x - x co-ordinate to render at
 	 * @param y - y co-ordinate to render at
 	 */
@@ -138,8 +132,6 @@ public class Sprite {
 
 	/**
 	 * Draws the sprite with a specific size
-	 * 
-	 * @param g - graphics object for rendering
 	 * @param x - x co-ordinate to render at
 	 * @param y - y co-ordinate to render at
 	 * @param w - w is the width of the drawing place
@@ -155,8 +147,6 @@ public class Sprite {
 
 	/**
 	 * Draw an image rotated around the center of the image.
-	 * 
-	 * @param g - graphics object for rendering
 	 * @param x - x co-ordinate to render at
 	 * @param y - y co-ordinate to render at
 	 * @param rotationDegCCW - degrees to rotate the image. To go clockwise, use a negative value.
@@ -169,9 +159,7 @@ public class Sprite {
 				animation[seriesPosition].getRegionWidth(), animation[seriesPosition].getRegionHeight(), 1, 1, rotationDegCCW);
 	}
 
-	/**
-	 * Updates the image if it is animated, assumed to be called once every anim-period.
-	 */
+	/** Updates the image if it is animated, should to be called once every anim-period. */
 	public void tick(float elapsedTimeSeconds) {
 		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING)
 			return; // no need to tick static images
@@ -236,15 +224,12 @@ public class Sprite {
 			}
 		}//end pingpong
 
-
 		if (originalSeriesPosition != seriesPosition && (seriesPosition == 3 || seriesPosition == 0)) { //halfway through
 			fireEvent(currentImageName, false, false);
 		}
 	}
 
-	/**
-	 * Halts animation immediately and freezes it to whatever frame its on currently
-	 */
+	/** Halts animation immediately and freezes it to whatever frame its on currently */
 	public void stopAnimating() {
 		playMode = HALTED_PLAYING;
 		sprite = animation[seriesPosition];
@@ -254,27 +239,22 @@ public class Sprite {
 
 	/**
 	 * Sets sprites image/animation
-	 * 
 	 * @param duration_seconds - length of time to loop/play in seconds
 	 * @param ident - Images are loaded as name+ident (Tavish + Walk_North)
-	 * @param playMode - how the images should play. Static enum ints of this class.
+	 * @param playMode - how the images should play. Static ints of this class.
 	 */
 	public void setImage(float durationSeconds, String ident, int playMode) {
 		setImage(durationSeconds, ident, playMode, TextureAtlas.class); // arbitrary default
 	}
 
-	/**
-	 * Sets a sprite to a single still image. Image name should be the filename without extension. Case sensitive.
-	 */
+	/** Sets a sprite to a single still image. Image name should be the filename without extension. Case sensitive. */
 	public void setImage(String imageName) {
 		this.name = imageName;
 		currentImageName = "";
 		setImage(0, name, STILL_IMAGE, Texture.class); // arbitrary default
 	}
 
-	/**
-	 * Actually handles the logic of setting up the sprite image.
-	 */
+	/** Actually handles the logic of setting up the sprite image. */
 	private void setImage(float durationSeconds, String ident, int playMode, Class<?> classType) {
 		this.playMode = playMode;
 		if (currentImageName.equalsIgnoreCase(name + "_" + ident))
@@ -311,14 +291,17 @@ public class Sprite {
 			seriesPosition = (seriesLength - 1); // except reversed/revloop which starts at the end
 	}
 
+	/** Add a class that implements AnimEventListener Interface who wants to listen to this sprite */
 	public void addAnimListener(AnimEventListener listener) {
 		listeners.add(listener);
 	}
 
+	/** Remove a class that implements AnimEventListener Interface who no longer wants to listen to this sprite */
 	public void removeAnimListener(AnimEventListener listener) {
 		listeners.remove(listener);
 	}
 
+	/** Fire an event for all listeners to hear */
 	public void fireEvent(String message, boolean ending, boolean starting) {
 		if (listeners == null)
 			return;
