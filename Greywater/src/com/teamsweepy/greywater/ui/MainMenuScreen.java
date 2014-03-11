@@ -9,6 +9,7 @@
 package com.teamsweepy.greywater.ui;
 
 import com.teamsweepy.greywater.engine.Engine;
+import com.teamsweepy.greywater.ui.gui.GUI;
 import com.teamsweepy.greywater.ui.gui.subgui.Button;
 
 import com.badlogic.gdx.Screen;
@@ -16,16 +17,17 @@ import com.badlogic.gdx.Screen;
 public class MainMenuScreen implements Screen {
 
 	private Engine engine;
-	private Button exit = new Button();
+	private Button exit = new Button(600, 600, "EXIT");
 
 	public MainMenuScreen(Engine eng) {
 		engine = eng;
-		//exit.
+		//GUI.addGUIComponent(exit);
 	}
 
 	@Override
 	public void render(float delta) {
 		engine.batch.begin(); // begin rendering
+		
 		engine.batch.end();// end rendering
 	}
 

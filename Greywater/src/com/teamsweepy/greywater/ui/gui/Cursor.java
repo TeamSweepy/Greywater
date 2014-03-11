@@ -15,6 +15,7 @@ public class Cursor extends GUIComponent {
 		super();
 		//item = new HealthPotion();
 		item = null;
+		visible = true;
 	}
 
 	@Override

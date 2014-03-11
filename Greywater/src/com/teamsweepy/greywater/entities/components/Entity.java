@@ -109,7 +109,7 @@ public abstract class Entity {
 		return didPointHitImage(point);
 	}
 
-	/** Finds if given point is within current image's bounding box */
+	/** Finds if given point is within current image's bounding box, meant for Ziga to override for items */
 	protected boolean didPointHitImage(Point2F point) {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		return graphicsComponent.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate, p.y + mainCamera.yOffsetAggregate).contains(point.x, point.y);

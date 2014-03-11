@@ -26,7 +26,7 @@ public class Point2F {
 	}
 
 
-	public float lenght() {
+	public float length() {
 		return (float) Math.sqrt(x * x + y * y);
 	}
 

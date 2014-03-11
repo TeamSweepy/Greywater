@@ -1,4 +1,6 @@
-
+/**
+ * 
+ */
 package com.teamsweepy.greywater.ui.gui;
 
 import com.teamsweepy.greywater.engine.Camera;
@@ -26,6 +28,7 @@ public class GUIComponent {
 	public GUIComponent() {
 		pos = new Point2F();
 		size = new Point2F();
+		visible = false; // no need for empty render method, just flag imageless components
 	}
 
 	protected void initSubComponents() {}

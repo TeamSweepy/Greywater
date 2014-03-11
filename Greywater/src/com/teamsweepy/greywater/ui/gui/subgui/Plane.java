@@ -1,4 +1,6 @@
-
+/**
+ * 
+ */
 package com.teamsweepy.greywater.ui.gui.subgui;
 
 import com.teamsweepy.greywater.entities.components.Sprite;
@@ -15,12 +17,10 @@ public class Plane extends SubGUIComponent {
 
 	public Plane(float x, float y, float w, float h) {
 		super(x, y, w, h);
-		sprite = new Sprite("healthpotion");
 	}
 
 	protected void clicked() {}
 
-	public void render(SpriteBatch g) {}
 
 	@Override
 	public boolean intersects(Point2F mousePosition) {

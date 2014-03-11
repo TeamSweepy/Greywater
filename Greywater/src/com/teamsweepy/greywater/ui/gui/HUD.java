@@ -1,4 +1,6 @@
-
+/**
+ * 
+ */
 package com.teamsweepy.greywater.ui.gui;
 
 import com.badlogic.gdx.Gdx;
@@ -22,7 +24,7 @@ public class HUD extends GUIComponent {
 	}
 
 	protected void initSubComponents() {
-		subComponents.add(new Plane(0, 0, 1600, 180));// 160 is the aproximate height of the HUD - it is the background of the HUD
+		subComponents.add(new Plane(0, 0, 1600, 180));// 1600 is the aproximate height of the HUD - it is the background of the HUD
 
 		subComponents.add(new ButtonCircular(800, 290 - 39, 37) {
 

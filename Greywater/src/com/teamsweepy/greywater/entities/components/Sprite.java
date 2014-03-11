@@ -271,6 +271,9 @@ public class Sprite {
 			// load image from the assetloader/textureatlas, get approriate texture region
 			TextureAtlas ta = ((TextureAtlas) AssetLoader.getAsset(TextureAtlas.class, name + ".atlas"));
 			Array<AtlasRegion> ar = ta.findRegions(currentImageName);
+			if(ar.size < 1){
+				ar = ta.findRegions(ident);
+			}
 			animation = ar.toArray(AtlasRegion.class);
 			seriesLength = animation.length;
 			frameDurationMillis = sequenceDurationMillis / seriesLength;

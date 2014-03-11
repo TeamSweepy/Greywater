@@ -1,3 +1,8 @@
+/**
+ * Static class, manages GUIComponents. GUIComponents have their sub-elements as children.
+ * 
+ * @author Ziga
+ */
 
 package com.teamsweepy.greywater.ui.gui;
 
@@ -29,12 +34,14 @@ public class GUI {
 		}
 	}
 
+	/** Creates HUD, Player Inventory, and Cursor */
 	public static void initGUI() {
 		addGUIComponent(new HUD());
 		addGUIComponent(new Inventory());
 		addGUIComponent(new Cursor());
 	}
 
+	/** Passes input to all GUIComponents. If they do not handle it, returns false to indicate the game needs to deal with it */
 	public static boolean handleInput(int event, Point2F mousePosition) {
 		for (GUIComponent guiC : guiComponents) {
 			if (guiC.intersects(mousePosition)) {

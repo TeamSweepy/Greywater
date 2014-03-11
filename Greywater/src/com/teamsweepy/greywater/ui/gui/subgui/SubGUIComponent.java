@@ -1,4 +1,6 @@
-
+/**
+ * 
+ */
 package com.teamsweepy.greywater.ui.gui.subgui;
 
 import com.teamsweepy.greywater.engine.input.InputGUI;
@@ -13,12 +15,14 @@ public class SubGUIComponent extends GUIComponent {
 
 	public SubGUIComponent() {
 		super();
+		visible = false; // no need for empty render method, just flag imageless components
 	}
 
 	public SubGUIComponent(float x, float y, float w, float h) {
 		pos = new Point2F(x, y);
 		size = new Point2F(w, h);
 		hitbox = new Hitbox((int) x, (int) y, (int) w, (int) h, 0f);
+		visible = false; // no need for empty render method, just flag imageless components
 	}
 
 	public void handleInput(Point2F mousePosition, int event) {
