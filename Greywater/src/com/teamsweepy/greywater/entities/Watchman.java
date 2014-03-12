@@ -73,7 +73,7 @@ public class Watchman extends Mob {
 		int chanceToHit = Globals.D(20); //20 sided dice, bitch
 		System.out.println(this.name + " rolled " + chanceToHit + " to hit " + enemy.name);
 		if (chanceToHit > 8) {
-			damage += Globals.D(100);
+			damage += Globals.D(8);
 			enemy.changeHP(damage);
 			System.out.println(name + " hit " + enemy.name + " for " + damage + " damage...");
 			System.out.println(enemy.getHP());

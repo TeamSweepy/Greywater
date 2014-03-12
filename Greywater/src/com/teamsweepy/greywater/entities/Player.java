@@ -8,6 +8,8 @@ import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.entities.level.Tile;
 import com.teamsweepy.greywater.math.Point2F;
 
+import com.badlogic.gdx.math.Vector2;
+
 import java.awt.Point;
 
 
@@ -45,7 +47,6 @@ public class Player extends Mob {
 
 	@Override
 	protected void getInput() {
-		System.out.println(inventory.getWeapon());
 		//PATHFINDING CODE
 		if (mouseClicked) {
 			mouseClicked = false;
@@ -115,7 +116,10 @@ public class Player extends Mob {
 	protected void attack(Mob enemy) {
 		if (enemy == null || attacking)
 			return;
-
+		
+		System.out.println(name + " attacked " + (enemy).name);
+		physicsComponent.stopMovement();
+		
 		if (enemy.getLocation().distance(getLocation()) > getWidth() * 2.5) { //if cant reach
 			pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(enemy.getLocation()));
 			Point newPoint = pather.getNextStep();
@@ -127,11 +131,31 @@ public class Player extends Mob {
 			}
 			return;
 		}
-		this.attacking = true;
-		Point2F enemyLoc = enemy.getLocation();
-		this.physicsComponent.stopMovement();
-		this.currentDirection = Globals.getDirectionString(enemyLoc.x - getLocation().x, enemyLoc.y - getLocation().y);
 
+		attacking = true;
+		Vector2 centerLoc = new Vector2();
+		enemy.getHitbox().getCenter(centerLoc);
+		float tX = centerLoc.x; //targetX
+		float tY = centerLoc.y;
+		getHitbox().getCenter(centerLoc);
+
+		float x = centerLoc.x;
+		float y = centerLoc.y;
+
+		this.currentDirection = Globals.getDirectionString(tX - x, tY - y);
+		attacking = true;
+
+		int damage = 0;
+
+		int chanceToHit = Globals.D(20); //20 sided dice, bitch
+		System.out.println(this.name + " rolled " + chanceToHit + " to hit " + enemy.name);
+		
+		if (chanceToHit > 8) {
+			damage += Globals.D(10);
+			enemy.changeHP(damage);
+			System.out.println(name + " hit " + enemy.name + " for " + damage + " damage...");
+			System.out.println(enemy.getHP());
+		}
 	}
 
 	/**
