@@ -72,7 +72,7 @@ public class Level {
 		interactiveList = new ArrayList<Entity>();
 		depthSortList = new ArrayList<Entity>();
 
-		TestTavishMob = new Player(0, 90, this);
+		TestTavishMob = Player.initLocalPlayer(0f, 90f, this);
 
 		mobList.add(TestTavishMob);
 		//		for(int i = 0; i < 20; i ++){

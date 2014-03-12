@@ -7,6 +7,8 @@ import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
 
+import com.badlogic.gdx.math.Vector2;
+
 import java.awt.Point;
 
 
@@ -22,7 +24,10 @@ public class Watchman extends Mob {
 
 	@Override
 	protected void getInput() {
-		if (!physicsComponent.isMoving()) {
+		if (attacking || interact())
+			return;
+
+		if (!physicsComponent.isMoving() && canSeeTarget()) {
 			pather.createPath(Globals.toTileIndices(getLocation()), Globals.toTileIndices(focusTarget.getLocation()));
 
 			Point newPoint = pather.getNextStep();
@@ -39,18 +44,55 @@ public class Watchman extends Mob {
 				}
 			}
 		}
-
 	}
 
 	@Override
 	protected void attack(Mob enemy) {
-		// TODO Auto-generated method stub
+
+		if (enemy == null || attacking)
+			return;
+
+		System.out.println(name + " attacked " + (enemy).name);
+
+		physicsComponent.stopMovement();
+
+		Vector2 centerLoc = new Vector2();
+		enemy.getHitbox().getCenter(centerLoc);
+		float tX = centerLoc.x; //targetX
+		float tY = centerLoc.y;
+		getHitbox().getCenter(centerLoc);
+
+		float x = centerLoc.x;
+		float y = centerLoc.y;
+
+		this.currentDirection = Globals.getDirectionString(tX - x, tY - y);
+		attacking = true;
+
+		int damage = 0;
+
+		int chanceToHit = Globals.D(20); //20 sided dice, bitch
+		System.out.println(this.name + " rolled " + chanceToHit + " to hit " + enemy.name);
+		if (chanceToHit > 8) {
+			damage += Globals.D(100);
+			enemy.changeHP(damage);
+			System.out.println(name + " hit " + enemy.name + " for " + damage + " damage...");
+			System.out.println(enemy.getHP());
+		}
 
 	}
 
 	@Override
 	public boolean interact() {
-		// TODO Auto-generated method stub
+		// Point2D p = Globals.getIsoCoords(getX() + spriteXOff, getY() + spriteYOff);
+		if (focusTarget.getLocation().distance(getLocation()) < 60 && ((Mob) focusTarget).isAlive()) {
+			if (!attacking) {
+				attack((Mob) focusTarget);
+				return true;
+			} else {
+				System.out.println("already attacking");//TODO QUEUE UP NEXT ATTACK
+			}
+		}
+
 		return false;
 	}
 

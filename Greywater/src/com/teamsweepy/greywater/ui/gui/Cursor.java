@@ -13,7 +13,6 @@ public class Cursor extends GUIComponent {
 
 	public Cursor() {
 		super();
-		//item = new HealthPotion();
 		item = null;
 		visible = true;
 	}

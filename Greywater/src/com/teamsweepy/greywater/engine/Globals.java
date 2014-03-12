@@ -9,6 +9,7 @@ package com.teamsweepy.greywater.engine;
 import com.teamsweepy.greywater.math.Point2F;
 
 import java.awt.Point;
+import java.util.Random;
 
 public class Globals {
 
@@ -24,12 +25,14 @@ public class Globals {
 	//(world units to pixels)
 	public static float tileRatio = 1.12f;
 
-	/** Convert Isometric Coordinates to Screen Coordinates (Accounts for Camera Movement)*/
+	public static Random rand = new Random(); //used for dicerolls
+
+	/** Convert Isometric Coordinates to Screen Coordinates (Accounts for Camera Movement) */
 	public static Point2F toScreenCoord(Point2F isoLocation) {
 		return toScreenCoord(isoLocation.x, isoLocation.y);
 	}
-	
-	/** Convert Isometric Coordinates to Screen Coordinates (Accounts for Camera Movement)*/
+
+	/** Convert Isometric Coordinates to Screen Coordinates (Accounts for Camera Movement) */
 	public static Point2F toScreenCoord(float xIso, float yIso) {
 		return new Point2F(xIso + Camera.getDefault().xOffsetAggregate, yIso + Camera.getDefault().yOffsetAggregate);
 	}
@@ -125,5 +128,12 @@ public class Globals {
 			return "Southeast";
 
 		return "666"; //if the direction cannot be found, Satan.
+	}
+
+	/**
+	 * Roll a dice with the specified number of sides. Returns an integer from 1 to "dice", inclusive.
+	 */
+	public static int D(int dice) {
+		return rand.nextInt(dice) + 1;
 	}
 }

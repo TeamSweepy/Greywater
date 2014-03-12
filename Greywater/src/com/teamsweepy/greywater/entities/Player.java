@@ -15,13 +15,28 @@ public class Player extends Mob {
 
 	private static Point2F mouseLocation;
 	private static boolean mouseClicked;
+	private static Player localPlayer;
+
+	public static Player getLocalPlayer() {
+		return localPlayer;
+	}
 
 	/**
 	 * Creates a new player standing in the center of the tile specified.
 	 * @param x - Tile X Position, not objective position
 	 * @param y - Tile Y Position, not objective position
 	 */
-	public Player(float x, float y, Level level) {
+	public static Player initLocalPlayer(float x, float y, Level level) {
+		localPlayer = new Player(x, y, level);
+		return localPlayer;
+	}
+
+	/**
+	 * Creates a new player standing in the center of the tile specified.
+	 * @param x - Tile X Position, not objective position
+	 * @param y - Tile Y Position, not objective position
+	 */
+	private Player(float x, float y, Level level) {
 		super("Tavish", x, y, 35, 35, 1.25f, level, true);
 		currentDirection = "South";
 		this.walkCycleDuration = 1;
@@ -30,6 +45,7 @@ public class Player extends Mob {
 
 	@Override
 	protected void getInput() {
+		System.out.println(inventory.getWeapon());
 		//PATHFINDING CODE
 		if (mouseClicked) {
 			mouseClicked = false;
@@ -129,7 +145,5 @@ public class Player extends Mob {
 			return; //TODO deal with key input when needed
 		}
 	}
-
-
 
 }

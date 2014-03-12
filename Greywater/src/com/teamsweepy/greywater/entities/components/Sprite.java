@@ -276,6 +276,7 @@ public class Sprite {
 			}
 			animation = ar.toArray(AtlasRegion.class);
 			seriesLength = animation.length;
+			
 			frameDurationMillis = sequenceDurationMillis / seriesLength;
 			animation[0].getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 			if (playMode == STILL_IMAGE) {

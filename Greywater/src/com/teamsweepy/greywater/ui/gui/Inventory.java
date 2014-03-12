@@ -9,6 +9,7 @@ import com.teamsweepy.greywater.ui.gui.subgui.ItemSlot;
 import com.teamsweepy.greywater.ui.gui.subgui.OutputSlot;
 import com.teamsweepy.greywater.ui.gui.subgui.Plane;
 import com.teamsweepy.greywater.ui.gui.subgui.WeaponSlot;
+import com.teamsweepy.greywater.ui.item.Item;
 import com.teamsweepy.greywater.ui.item.misc.VoltCell;
 import com.teamsweepy.greywater.ui.item.potions.HealthPotion;
 import com.teamsweepy.greywater.ui.item.potions.Mercury;
@@ -88,6 +89,7 @@ public class Inventory extends GUIComponent {
 		subComponents.add(outputSlot);
 
 		WeaponSlot weaponSlot = new WeaponSlot(this, pos.x + 65, pos.y + 400 + slotSize * 0.5f, slotSize, slotSize);
+		weaponSlots.add(weaponSlot);
 		subComponents.add(weaponSlot);
 	}
 
@@ -116,6 +118,13 @@ public class Inventory extends GUIComponent {
 	@Override
 	public void render(SpriteBatch batch) {
 		super.render(batch);
+	}
+	
+	public Item getWeapon(){
+		if(weaponSlots.size() != 1){
+			return null;
+		}
+		return weaponSlots.get(0).getItem();
 	}
 
 }

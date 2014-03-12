@@ -26,7 +26,6 @@ public class Crafting {
 		if (temp.isEmpty())
 			return null;
 
-		System.out.println(recipies.size());
 		for (ShapelessRecipe recipie : recipies) {
 
 			ArrayList<Item> items = getItemsFromSlots(craftingSlots);

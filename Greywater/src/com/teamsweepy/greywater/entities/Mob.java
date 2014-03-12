@@ -19,6 +19,7 @@ import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.entities.components.ai.PathfinderMotor;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.Inventory;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -28,7 +29,7 @@ import java.awt.geom.Line2D;
 public abstract class Mob extends Entity implements AnimEventListener {
 
 	/* ********* ANIMATION VARIABLES *********** */
-	private String name; //indicates what Atlas to get sprites from
+	protected String name; //indicates what Atlas to get sprites from
 	protected String currentDirection = "South";   //used to indicate what direction Mob is facing to get the corresponding sprite
 	protected float walkCycleDuration = 1f; //duration in seconds of animation
 
@@ -38,12 +39,12 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	private int HP = 100;
 	protected Line2D.Float sightLine;
 	protected boolean canSeeTarget;
-	protected int maxSightRange = 20;//in tiles
+	protected int maxSightRange = 20 * 50;//in tiles
 	protected Level world;
 	protected Entity focusTarget;
 	protected PathfinderMotor pather;
 
-	//protected Inventory inventory;
+	protected Inventory inventory;
 
 	/**
 	 * @param x - tile location x
@@ -74,16 +75,22 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		//center on the tile
 		graphicsComponent.render(g, p.x - graphicsComponent.getImageWidth() / 2, p.y + Globals.tileImageHeight / 3);
+		if (inventory != null) {
+			inventory.render(g);
+		}
 	}
 
 	/** Update graphics and physics components, deal with animation and behavior */
 	public void tick(float deltaTime) {
-		if (HP < 0 && !graphicsComponent.getCurrentImageName().contains("DIE")) { //if dead
-			graphicsComponent.setImage(.4f, "Die", Sprite.FORWARD);
+		super.tick(deltaTime);
+
+		if (HP <= 0) { //if dead
+			physicsComponent.stopMovement();
+			if (!graphicsComponent.getCurrentImageName().contains("DIE")) {
+				graphicsComponent.setImage(.4f, "Die", Sprite.FORWARD);
+			}
 			attacking = false;
-			return;
 		} else { //if alive
-			super.tick(deltaTime);
 			getInput();
 			if (attacking) {
 				graphicsComponent.setImage(.25f, "Attack_" + currentDirection, Sprite.FORWARD); // TODO if multiple attacks clicked, pingpong
@@ -123,7 +130,7 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		HP -= damage;
 		System.out.println(name + " took " + damage + " dmg ---> " + HP + " HP");
 		if (HP <= 0) {
-			graphicsComponent.setImage(0.4f, "Die", Sprite.FORWARD);
+			graphicsComponent.setImage(0.7f, "Die", Sprite.FORWARD);
 		}
 	}
 
@@ -141,6 +148,9 @@ public abstract class Mob extends Entity implements AnimEventListener {
 
 	/** Checks to see if sightline between the mob and its assigned target is unobstructed by level geometry. */
 	public boolean canSeeTarget() {
+		if (sightLine == null)
+			sightLine = new Line2D.Float();
+		sightLine.setLine(focusTarget.getX(), focusTarget.getY(), getX(), getY());
 		if (sightLine != null && sightLine.getP1().distance(sightLine.getP2()) <= this.maxSightRange && !world.checkLevelCollision(sightLine))
 			canSeeTarget = true;
 		else
@@ -163,6 +173,10 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		return graphicsComponent.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate - graphicsComponent.getImageWidth() / 2,
 			p.y + mainCamera.yOffsetAggregate + Globals.tileImageHeight / 3).contains(point.x, point.y);
+	}
+
+	public void setInventory(Inventory i) {
+		inventory = i;
 	}
 
 	/** Gets next action for this mob, can be AI logic or player input, subclasses can deal with it. */

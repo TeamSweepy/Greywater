@@ -55,7 +55,7 @@ public abstract class Item {
 		if (crafted == IDs.TAZER_WRENCH.getID())
 			return new TazerWrench();
 
-		System.out.println("Hello");
+		System.out.println("No ID Found in Item.java getByID");
 		return null;
 	}
 

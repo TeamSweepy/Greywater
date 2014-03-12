@@ -6,6 +6,7 @@
 
 package com.teamsweepy.greywater.ui.gui;
 
+import com.teamsweepy.greywater.entities.Player;
 import com.teamsweepy.greywater.math.Point2F;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -37,8 +38,11 @@ public class GUI {
 	/** Creates HUD, Player Inventory, and Cursor */
 	public static void initGUI() {
 		addGUIComponent(new HUD());
-		addGUIComponent(new Inventory());
+		Inventory i = new Inventory();
+		addGUIComponent(i);
+		//addGUIComponent(new Inventory());
 		addGUIComponent(new Cursor());
+		Player.getLocalPlayer().setInventory(i);
 	}
 
 	/** Passes input to all GUIComponents. If they do not handle it, returns false to indicate the game needs to deal with it */
