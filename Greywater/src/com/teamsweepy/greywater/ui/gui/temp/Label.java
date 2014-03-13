@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.math.Point2F;
+import net.biodiscus.debug.Debug;
 
 /**
  * Copyright Team Sweepy - Robin de Jong 2014 All use outside of the Greywater Project is not permitted unless express permission is
@@ -71,14 +72,13 @@ public class Label {
 
 		patch.draw(batch, newX, newY, w, h);
 
-		float yOffset = scrollbarY.scrollPercentage * (h - cache.getBounds().height);
+//		float yOffset = scrollbarY.scrollPercentage * (h - cache.getBounds().height);
+        float yOffset = scrollbarY.scrollPercentage * (cache.getBounds().height - h);
 
-		//batch.end();
 		// Disable so we can cut of the bitmapFont
 		// This way we can use scrollbars
 		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 		Gdx.gl.glScissor((int) (x), (int) (y), (int) (w), (int) (h));
-	//	batch.begin();
 
 		cache.setPosition(newX, yOffset + newY);
 

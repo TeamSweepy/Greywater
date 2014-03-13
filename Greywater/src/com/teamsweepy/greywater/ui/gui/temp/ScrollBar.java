@@ -8,14 +8,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.*;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.input.InputHandler;
+import net.biodiscus.debug.Debug;
 
 import java.awt.Rectangle;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Robin de Jong
- * Date: 5:37 PM, 3/9/14
+ * TODO: Implement horizontal scrollbar
+ * Copyright Team Sweepy - Robin de Jong 2014 All use outside of the Greywater Project is not permitted unless express permission is
+ * granted. Email TeamSweepy@gmail.com to discuss usage.
  */
+
+
 public class ScrollBar{
 
     public float x, y, w, h;
@@ -42,6 +45,8 @@ public class ScrollBar{
         this.w = w;
         this.h = h;
 
+        System.out.println("X: "+x+", Y: "+y);
+
         this.visible = visible;
         this.horizontal = horizontal;
 
@@ -65,7 +70,7 @@ public class ScrollBar{
         if(horizontal) {
             updatePosition(scroller.x + (amount * 5), 0);
         } else  {
-            updatePosition(0, scroller.y + -(amount * 5));
+            updatePosition(0, scroller.y + (amount * 5));
         }
     }
 
@@ -86,32 +91,14 @@ public class ScrollBar{
         } else {
             int dir = scroller.y - y;
             scroller.y = y;
-//            System.out.println(scroller.y+", "+);
             if(dir > 0) {
-//                if(scroller.y < (this.y - (h+scroller.height/2))) {
-//                    scroller.y = (int)(this.y - (h+scroller.height/2));
-//                }
-//                {
-//                    scroller.y = (int)(this.y + (h - scroller.height));
-//                }
-//                if(scroller.y > scroller.height) {
-//                    scroller.y = scroller.height;
-//                }
-
-//                if(scroller.y < 0) {
-//                    scroller.y = 0;
-//                }
+                if(scroller.y < 0) {
+                    scroller.y = 0;
+                }
             } else {
-//                if(scroller.y > h - scroller.height) {
-//                    scroller.y = (int)(h - scroller.height);
-//                }
-//                if(scroller.y > 0) {
-//                    scroller.y = 0;
-//                }
-//                if(scroller.y > (this.y + (h - scroller.height)))
-//                {
-//                    scroller.y = (int)(this.y + (h - scroller.height));
-//                }
+                if(scroller.y > h - scroller.height) {
+                    scroller.y = (int)(h - scroller.height);
+                }
             }
         }
     }
@@ -132,7 +119,7 @@ public class ScrollBar{
     public void draw(SpriteBatch batch) {
         if(visible) {
             if(horizontal) {
-                scrollPercentage = scroller.x / (x - scroller.width);
+//                scrollPercentage = scroller.x / (w - scroller.width);
             } else {
                 scrollPercentage = scroller.y / (h - scroller.height);
             }
@@ -146,8 +133,7 @@ public class ScrollBar{
                     (
                             batch,
                             scroller.x - Camera.getDefault().xOffsetAggregate,
-//                            (scroller.height/2) + scroller.y - Camera.getDefault().yOffsetAggregate,
-                            scroller.y - Camera.getDefault().yOffsetAggregate,
+                            y - (scroller.y - h + (scroller.height)) - Camera.getDefault().yOffsetAggregate,
                             scroller.width,
                             scroller.height
                     );
