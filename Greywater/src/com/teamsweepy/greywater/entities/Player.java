@@ -43,6 +43,7 @@ public class Player extends Mob {
 	 */
 	private Player(float x, float y, Level level) {
 		super("Tavish", x, y, 35, 35, 1.25f, level, true);
+//		super("Tavish", x, y, 35, 35, 10f, level, true);
 		currentDirection = "South";
 		this.walkCycleDuration = 1;
 		killList = new ArrayList<Entity>();
@@ -97,11 +98,11 @@ public class Player extends Mob {
 				attack(interactedMob);
 
 			} else if (interactedMob.friendly) { //interact with friends
-				if(interactedMob.getClass() == Sweepy.class){
-					
-				} else{
-					((NPC)interactedMob).interact(this);
-				}
+//				if(interactedMob.getClass() == Sweepy.class){
+//
+//				} else{
+//					((NPC)interactedMob).interact(this);
+//				}
 
 			} else { //clicked a dead guy
 				return false;

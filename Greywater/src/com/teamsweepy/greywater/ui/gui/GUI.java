@@ -10,6 +10,7 @@ import com.teamsweepy.greywater.entities.Player;
 import com.teamsweepy.greywater.math.Point2F;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.teamsweepy.greywater.ui.gui.subgui.Dialog;
 
 import java.util.ArrayList;
 
@@ -43,6 +44,9 @@ public class GUI {
 		//addGUIComponent(new Inventory());
 		addGUIComponent(new Cursor());
 		Player.getLocalPlayer().setInventory(i);
+
+
+        addGUIComponent(new Dialog(500, 500, 200, 200));
 	}
 
 	/** Passes input to all GUIComponents. If they do not handle it, returns false to indicate the game needs to deal with it */

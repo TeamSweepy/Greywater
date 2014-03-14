@@ -32,8 +32,8 @@ public class GameScreen implements Screen {
 
 		engine = eng;
 
-		label = new Label(100, 300, 400, 300);
-		label.setListener(engine.inputs);
+//		label = new Label(200, 800, 400, 300);
+//		label.setListener(engine.inputs);
 
 		levelForTesting = new Level();
 		GUI.initGUI();
@@ -53,7 +53,7 @@ public class GameScreen implements Screen {
 
 		levelForTesting.render(engine.batch);
 		GUI.render(engine.batch);
-		label.draw(engine.batch);
+//		label.draw(engine.batch);
 
 		engine.batch.end();// end render
 	}

@@ -76,7 +76,8 @@ public class Sprite {
 	public Sprite(String name, String ident) {
 		this.name = name;
 		currentImageName = ident;
-		setImage(.5f, ident, STILL_IMAGE, TextureAtlas.class); // arbitrary default
+//		setImage(.5f, ident, STILL_IMAGE, TextureAtlas.class); // arbitrary default
+		setImage(.5f, ident, STILL_IMAGE, Texture.class); // arbitrary default
 		listeners = new ArrayList<AnimEventListener>();
 	}
 
@@ -95,9 +96,10 @@ public class Sprite {
 	 * Constructor for ninepatch sprites that use an indeterminate filetype
 	 * @param fileName - name of the image file (.PNG) or Atlas file (.ATLAS) - Do not include extension
 	 * @param ident - name of subimage if from an Atlas file. Pass null otherwise.
-	 * @param playMode - Texture or TextureAtlas .class
+	 * @param fileType - Texture or TextureAtlas .class
 	 */
 	public Sprite(String fileName, String ident, Class<?> fileType) {
+        currentImageName = fileName;
 		this.name = fileName;
 		if (ident != null)
 			setImage(0, ident, NINEPATCH, fileType);
@@ -304,10 +306,18 @@ public class Sprite {
 				return; // no further processing needed on static images
 			}
 
-		} else if (classType == Texture.class) {
-			sprite = new TextureRegion((Texture) AssetLoader.getAsset(Texture.class, name + ".png"));
-			sprite.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		}
+//		} else if (classType == Texture.class) {
+//			sprite = new TextureRegion((Texture) AssetLoader.getAsset(Texture.class, name + ".png"));
+//			sprite.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+//		}
+        } else if (classType == Texture.class) {
+            sprite = new TextureRegion((Texture) AssetLoader.getAsset(Texture.class, name + ".png"));
+            sprite.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+            if(playMode == NINEPATCH) {
+                int divisorLine = sprite.getRegionHeight() / 3;//ninepatches must be square!
+                ninePatch = new NinePatch(sprite, divisorLine, divisorLine, divisorLine, divisorLine);
+            }//end if
+        }//end elseif
 
 		if (playMode != LOOP_REVERSED && playMode != REVERSED)
 			seriesPosition = 0; // everything starts at the beginning
@@ -335,17 +345,4 @@ public class Sprite {
 			listener.handleEvent(event);
 		}
 	}
-
-	public Class<?> findType(String assetName) {
-		TextureAtlas ta = ((TextureAtlas) AssetLoader.getAsset(TextureAtlas.class, assetName + ".atlas"));
-		Texture tex = (Texture) AssetLoader.getAsset(Texture.class, assetName + ".png");
-		if (ta != null) {
-			return TextureAtlas.class;
-		}
-		if (tex != null) {
-			return Texture.class;
-		}
-		return null;
-	}
-
 }
