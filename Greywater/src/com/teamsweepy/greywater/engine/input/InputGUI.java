@@ -23,7 +23,15 @@ public class InputGUI extends InputHandler {
 
 	public static Point2F position = new Point2F();
 
-	@Override
+    /** When the mouse wheel get's scroller **/
+    @Override
+    public boolean scrolled(int amount)
+    {
+        // TODO: Shift scrolling, on trackpads you have 2 scroll direction. This behaviour also happends when pressing shift
+        return GUI.handleInput(WHEEL_SCROLL, position);
+    }
+
+    @Override
 	/** Upon a mouse / pointer click this event occurs. It saves the mouse input data */
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		isDown = true;
@@ -31,6 +39,8 @@ public class InputGUI extends InputHandler {
 
 		Point2F mousePositionInGame = Camera.getDefault().unproject(mousePosition);
 		position = mousePositionInGame;
+
+        System.out.println("");
 
 		return GUI.handleInput(MOUSE_DOWN, mousePositionInGame);
 	}
@@ -57,6 +67,17 @@ public class InputGUI extends InputHandler {
 
 		return GUI.handleInput(MOUSE_MOVED, mousePositionInGame);
 	}
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer)
+    {
+        mousePosition = new Point2F(screenX, screenY);
+
+        Point2F mousePositionInGame = Camera.getDefault().unproject(mousePosition);
+        position = mousePositionInGame;
+
+        return GUI.handleInput(MOUSE_DRAGGED, mousePositionInGame);
+    }
 
 	@Override
 	public boolean keyDown(int keycode) {
@@ -91,6 +112,5 @@ public class InputGUI extends InputHandler {
 	public boolean keyTyped(char character) {
 		// TODO Implement the keys
 		return false;
-	}
-
+    }
 }

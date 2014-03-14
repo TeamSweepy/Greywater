@@ -1,6 +1,5 @@
 package com.teamsweepy.greywater.ui.gui.subgui;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,6 +18,7 @@ public class Text extends SubGUIComponent {
     private TextStyle style;
     private BitmapFontCache cache;
     private BitmapFont.TextBounds bounds;
+    private Point2F textPosition = new Point2F();
 
     // TODO: Add an background
     // TODO: Singleline!
@@ -66,6 +66,14 @@ public class Text extends SubGUIComponent {
         cache = new BitmapFontCache(style.font);
     }
 
+    public void setTextPosition(Point2F point) {
+        textPosition = point;
+    }
+
+    public void setTextPosition(float x, float y) {
+        setTextPosition(new Point2F(x, y));
+    }
+
     @Override
     public boolean intersects(Point2F mousePosition) {
         return getHitbox().intersects(mousePosition);
@@ -78,7 +86,7 @@ public class Text extends SubGUIComponent {
         float offsetX = pos.x - Camera.getDefault().xOffsetAggregate;
         float offsetY = pos.y - Camera.getDefault().yOffsetAggregate;
 
-        cache.setPosition(offsetX, offsetY);
+        cache.setPosition(textPosition.x + offsetX, textPosition.y + offsetY);
         cache.draw(batch);
     }
 }

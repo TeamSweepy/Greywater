@@ -36,14 +36,15 @@ public class GUIComponent {
 
 	public void handleInput(Point2F mousePosition, int event) {
 		SubGUIComponent childOnTop = null;
+
 		for (SubGUIComponent child : subComponents) {
 			if (child.intersects(mousePosition)) {
 				childOnTop = child;
 			}
 		}
-		if (childOnTop == null) // shouldn't ever happen
-			return;
-		childOnTop.handleInput(mousePosition, event);
+		if (childOnTop == null) return; // shouldn't ever happen
+
+        childOnTop.handleInput(mousePosition, event);
 	}
 
 	public void tick() {
@@ -56,8 +57,7 @@ public class GUIComponent {
 		if (!visible)
 			return;
 
-		sprite.render(batch, pos.x - Camera.getDefault().xOffsetAggregate, pos.y - Camera.getDefault().yOffsetAggregate);
-
+        sprite.render(batch, pos.x - Camera.getDefault().xOffsetAggregate, pos.y - Camera.getDefault().yOffsetAggregate);
 
 		// Render all the subcomponents
 		for (SubGUIComponent child : subComponents) {

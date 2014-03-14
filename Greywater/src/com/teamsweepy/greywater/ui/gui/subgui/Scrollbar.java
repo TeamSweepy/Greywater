@@ -5,13 +5,13 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.*;
 import com.teamsweepy.greywater.engine.Camera;
+import com.teamsweepy.greywater.engine.input.InputHandler;
 import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.temp.InputListener;
-
-import java.awt.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,30 +30,33 @@ public class Scrollbar extends SubGUIComponent {
         sprite = new Sprite("ui/scroller", null, Texture.class);
         scrollerGraphic = new Sprite("ui/scroller_button", null, Texture.class);
 
-        scroller = new Rectangle((int) x, (int) y, (int) w, (int) h);
+        scroller = new Rectangle(x, y, w, h);
 
         this.horizontal = horizontal;
         visible = true;
-//
-//        inputHandler = new InputListener() {
-//
-//            @Override
-//            public boolean scrolled(int amount) {
-//                wheelScroll(amount);
-//                return true;
-//            }
-//        };
     }
 
     @Override
-    public void handleInput(Point2F mousePosition, int event) {
+    public void handleInput(Point2F mousePosition, int event)
+    {
+        if(event == InputHandler.MOUSE_DRAGGED || event == InputHandler.MOUSE_DOWN) {
+            float offsetY = (pos.y + size.y) - mousePosition.y;
+            updatePosition(0, offsetY);
+        }
+
         super.handleInput(mousePosition, event);
     }
 
-    @Override
-    public boolean intersects(Point2F mousePosition) {
-        System.out.println("Intersecting with the scrollbar");
-        return getHitbox().intersects(mousePosition);
+    public void scroll(int amount) {
+        wheelScroll(amount);
+    }
+
+    public void wheelScroll(int amount) {
+        if (horizontal) {
+            updatePosition(scroller.x + (amount * 5), 0);
+        } else {
+            updatePosition(0, scroller.y + (amount * 5));
+        }
     }
 
     public void updateBounds(float width, float height) {
@@ -65,13 +68,11 @@ public class Scrollbar extends SubGUIComponent {
         }
 
         updatePercentage(difference);
-
-        System.out.println("Difference: "+difference);
     }
 
-    public void updatePosition(int x, int y) {
+    public void updatePosition(float x, float y) {
         if (horizontal) {
-            int dir = scroller.x - x;
+            float dir = scroller.x - x;
             scroller.x = x;
 
             if (dir > 0) {
@@ -80,11 +81,11 @@ public class Scrollbar extends SubGUIComponent {
                 }
             } else {
                 if (scroller.x > size.x - scroller.width) {
-                    scroller.x = (int) (size.x - scroller.width);
+                    scroller.x = (size.x - scroller.width);
                 }
             }
         } else {
-            int dir = scroller.y - y;
+            float dir = scroller.y - y;
             scroller.y = y;
             if (dir > 0) {
                 if (scroller.y < 0) {
@@ -92,7 +93,7 @@ public class Scrollbar extends SubGUIComponent {
                 }
             } else {
                 if (scroller.y > size.y - scroller.height) {
-                    scroller.y = (int) (size.y - scroller.height);
+                    scroller.y = (size.y - scroller.height);
                 }
             }
         }
@@ -114,6 +115,11 @@ public class Scrollbar extends SubGUIComponent {
     }
 
     @Override
+    public boolean intersects(Point2F mousePosition) {
+        return getHitbox().intersects(mousePosition);
+    }
+
+    @Override
     public void render(SpriteBatch batch) {
         if (!visible)
             return;
@@ -126,16 +132,17 @@ public class Scrollbar extends SubGUIComponent {
         if (horizontal) {
             scrollPercentage = scroller.x / (size.x - scroller.width);
         } else {
-            scrollPercentage = scroller.y / (size.x - scroller.height);
+            scrollPercentage = scroller.y / (size.y - scroller.height);
         }
 
         sprite.render(batch, currentX, currentY, size.x, size.y);
         scrollerGraphic.render(
                 batch,
                 scroller.x - offsetX,
+                //y - (scroller.y - h + (scroller.height))
                 pos.y - (scroller.y - size.y + scroller.height) - offsetY,
-                size.x,
-                size.y
+                scroller.width,
+                scroller.height
         );
 
         // Render all the subcomponents

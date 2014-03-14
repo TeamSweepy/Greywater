@@ -20,9 +20,11 @@ import com.badlogic.gdx.InputProcessor;
 public abstract class InputHandler implements InputProcessor {
 
 	/* ********************* MOUSE INPUT CONSTANTS ************************ */
-	public static final int MOUSE_DOWN = 0;
-	public static final int MOUSE_UP = 1;
-	public static final int MOUSE_MOVED = 2;
+	public static final int MOUSE_DOWN      = 0;
+	public static final int MOUSE_UP        = 1;
+	public static final int MOUSE_MOVED     = 2;
+	public static final int MOUSE_DRAGGED   = 3;
+    public static final int WHEEL_SCROLL    = 4;
 
 
 	/* ********************* MOUSE INPUT VARIABLES ************************ */

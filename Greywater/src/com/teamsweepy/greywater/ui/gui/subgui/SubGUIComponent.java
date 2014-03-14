@@ -35,6 +35,8 @@ public class SubGUIComponent extends GUIComponent {
 			case InputGUI.MOUSE_UP:
 				break;
 		}
+
+        super.handleInput(mousePosition, event);
 	}
 	
 	@Override

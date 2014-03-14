@@ -76,8 +76,8 @@ public class Sprite {
 	public Sprite(String name, String ident) {
 		this.name = name;
 		currentImageName = ident;
-//		setImage(.5f, ident, STILL_IMAGE, TextureAtlas.class); // arbitrary default
-		setImage(.5f, ident, STILL_IMAGE, Texture.class); // arbitrary default
+		setImage(.5f, ident, STILL_IMAGE, TextureAtlas.class); // arbitrary default
+//		setImage(.5f, ident, STILL_IMAGE, Texture.class); // arbitrary default
 		listeners = new ArrayList<AnimEventListener>();
 	}
 
