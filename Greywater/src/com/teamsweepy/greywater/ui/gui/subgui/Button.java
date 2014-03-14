@@ -4,37 +4,30 @@
 
 package com.teamsweepy.greywater.ui.gui.subgui;
 
+import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 
 public class Button extends SubGUIComponent {
-	
-	//Commented out  logic here because it is literally the exact same as the superconstructor.
-	//Please remove commented code if I was right to do this
+
+
 	public Button() {
-		super(0,0,100,100);
-//		pos = new Point2F(0, 0);
-//		size = new Point2F(100, 100);
-//
-//		hitbox = new Hitbox((int) pos.x, (int) pos.y, (int) size.x, (int) size.y, 0f);
+		super(0, 0, 100, 100);
 	}
 
-//Commented out  logic here because it is literally the exact same as the superconstructor.
-//Please remove commented code if I was right to do this
 	public Button(float x, float y, float w, float h) {
-		super(x,y,w,h);
-//		pos = new Point2F(x, y);
-//		size = new Point2F(w, h);
-//		hitbox = new Hitbox((int) pos.x, (int) pos.y, (int) size.x, (int) size.y, 0f);
+		super(x, y, w, h);
 	}
 
 	/** Constructor for visible buttons! */
-	public Button(float x, float y, String imageName) {
-		pos = new Point2F(x,y);
+	public Button(float x, float y, float w, float h, String imageName) {
+		super(x, y, w, h);// I (Žiga) added this for hitbox initialization.
+
 		this.sprite = new Sprite("MenuItems", imageName);
-		this.hitbox = new Hitbox();//sprite.get
 		visible = true;
 	}
 
@@ -53,5 +46,10 @@ public class Button extends SubGUIComponent {
 			}
 		}
 		return getHitbox().intersects(mousePosition);
+	}
+
+	@Override
+	public void render(SpriteBatch batch) {
+		sprite.render(batch, pos.x - Camera.getDefault().xOffsetAggregate, pos.y - Camera.getDefault().yOffsetAggregate, size.x, size.y);
 	}
 }

@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package com.teamsweepy.greywater.ui.gui;
 
 import com.teamsweepy.greywater.engine.Camera;
@@ -45,7 +46,11 @@ public class GUIComponent {
 		childOnTop.handleInput(mousePosition, event);
 	}
 
-	public void tick() {}
+	public void tick() {
+		for (SubGUIComponent child : subComponents) {
+			child.tick();
+		}
+	}
 
 	public void render(SpriteBatch batch) {
 		if (!visible)
@@ -77,4 +82,6 @@ public class GUIComponent {
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
+
+
 }

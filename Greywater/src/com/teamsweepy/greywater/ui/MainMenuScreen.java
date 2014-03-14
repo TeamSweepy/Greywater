@@ -17,7 +17,8 @@ import com.badlogic.gdx.Screen;
 public class MainMenuScreen implements Screen {
 
 	private Engine engine;
-	private Button exit = new Button(600, 600, "EXIT");
+	private Button exit = new Button(600, 600, 50, 50, "EXIT");
+	// I added a width and a height since I changed some stuff in the button class. You now need to specify the w and h. Žiga
 
 	public MainMenuScreen(Engine eng) {
 		engine = eng;
@@ -27,7 +28,7 @@ public class MainMenuScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		engine.batch.begin(); // begin rendering
-		
+
 		engine.batch.end();// end rendering
 	}
 
