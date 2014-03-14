@@ -11,6 +11,7 @@ import com.teamsweepy.greywater.math.Point2F;
 import com.badlogic.gdx.math.Vector2;
 
 import java.awt.Point;
+import java.util.ArrayList;
 
 
 public class Player extends Mob {
@@ -18,6 +19,8 @@ public class Player extends Mob {
 	private static Point2F mouseLocation;
 	private static boolean mouseClicked;
 	private static Player localPlayer;
+	
+	private ArrayList<Entity> killList;
 
 	public static Player getLocalPlayer() {
 		return localPlayer;
@@ -42,6 +45,7 @@ public class Player extends Mob {
 		super("Tavish", x, y, 35, 35, 1.25f, level, true);
 		currentDirection = "South";
 		this.walkCycleDuration = 1;
+		killList = new ArrayList<Entity>();
 		graphicsComponent.setImage(3f, "Walk_South", Sprite.LOOP);
 	}
 
@@ -93,7 +97,11 @@ public class Player extends Mob {
 				attack(interactedMob);
 
 			} else if (interactedMob.friendly) { //interact with friends
-				//NPC AND SWEEPY LOGIC HERE
+				if(interactedMob.getClass() == Sweepy.class){
+					
+				} else{
+					((NPC)interactedMob).interact(this);
+				}
 
 			} else { //clicked a dead guy
 				return false;
@@ -151,10 +159,12 @@ public class Player extends Mob {
 		System.out.println(this.name + " rolled " + chanceToHit + " to hit " + enemy.name);
 		
 		if (chanceToHit > 8) {
-			damage += Globals.D(10);
+			damage += Globals.D(100);
 			enemy.changeHP(damage);
 			System.out.println(name + " hit " + enemy.name + " for " + damage + " damage...");
-			System.out.println(enemy.getHP());
+			if(!enemy.isAlive()){
+				killList.add(enemy);
+			}
 		}
 	}
 

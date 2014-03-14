@@ -21,6 +21,7 @@ import com.teamsweepy.greywater.engine.AssetLoader;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -40,9 +41,10 @@ public class Sprite {
 	public static final int LOOP_REVERSED = 3;
 	public static final int LOOP_PINGPONG = 4;
 	public static final int STILL_IMAGE = 5;
+	private static final int HALTED_PLAYING = 6; // for an ended animation
+	public static final int NINEPATCH = 7;
 
 	// not used externally, used for internal record keeping
-	private static final int HALTED_PLAYING = 6; // for an ended animation
 	private static boolean Ping = true;// used to indicated direction of a ping ponging loop animation
 
 	// image identifiers
@@ -62,18 +64,19 @@ public class Sprite {
 	// image references
 	private AtlasRegion[] animation;
 	private TextureRegion sprite;
+	private NinePatch ninePatch;
 
 	private List<AnimEventListener> listeners;
 
 	/**
 	 * Constructor for sprite that rely on TextureAtlases
 	 * @param name - The name of the character/entity (Such as Tavish) This should match the name of their .atlas file!
-	 * @param imgName - image to start with (Such as Stand_South). It will be added to the name to find the image - Tavish + Stand_South
+	 * @param ident - image to start with (Such as Stand_South). It will be added to the name to find the image - Tavish + Stand_South
 	 */
-	public Sprite(String name, String imgName) {
+	public Sprite(String name, String ident) {
 		this.name = name;
-		currentImageName = imgName;
-		setImage(.5f, imgName, STILL_IMAGE, TextureAtlas.class); // arbitrary default
+		currentImageName = ident;
+		setImage(.5f, ident, STILL_IMAGE, TextureAtlas.class); // arbitrary default
 		listeners = new ArrayList<AnimEventListener>();
 	}
 
@@ -88,7 +91,22 @@ public class Sprite {
 		listeners = new ArrayList<AnimEventListener>();
 	}
 
-	/** Constructor for sprites that use a single, unatlased texture that was loaded elsewhere. */
+	/**
+	 * Constructor for ninepatch sprites that use an indeterminate filetype
+	 * @param fileName - name of the image file (.PNG) or Atlas file (.ATLAS) - Do not include extension
+	 * @param ident - name of subimage if from an Atlas file. Pass null otherwise.
+	 * @param playMode - Texture or TextureAtlas .class
+	 */
+	public Sprite(String fileName, String ident, Class<?> fileType) {
+		this.name = fileName;
+		if (ident != null)
+			setImage(0, ident, NINEPATCH, fileType);
+		else
+			setImage(0, fileName, NINEPATCH, fileType);
+		listeners = new ArrayList<AnimEventListener>();
+	}
+
+	/** Constructor for sprites that use a single, unatlased textureregion that was loaded elsewhere. */
 	public Sprite(TextureRegion texture) {
 		sprite = texture;
 		playMode = STILL_IMAGE;
@@ -138,7 +156,9 @@ public class Sprite {
 	 * @param h - h is the height of the drawing place
 	 */
 	public void render(SpriteBatch g, float x, float y, float w, float h) {
-		if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING) {
+		if (playMode == NINEPATCH) {
+			ninePatch.draw(g, x, y, w, h);
+		} else if (playMode == STILL_IMAGE || playMode == HALTED_PLAYING) {
 			g.draw(sprite, x, y, w, h);
 		} else {
 			g.draw(animation[seriesPosition], x, y, w, h);
@@ -271,16 +291,16 @@ public class Sprite {
 			// load image from the assetloader/textureatlas, get approriate texture region
 			TextureAtlas ta = ((TextureAtlas) AssetLoader.getAsset(TextureAtlas.class, name + ".atlas"));
 			Array<AtlasRegion> ar = ta.findRegions(currentImageName);
-			if(ar.size < 1){
-				ar = ta.findRegions(ident);
-			}
 			animation = ar.toArray(AtlasRegion.class);
 			seriesLength = animation.length;
-			
 			frameDurationMillis = sequenceDurationMillis / seriesLength;
 			animation[0].getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-			if (playMode == STILL_IMAGE) {
+			if (playMode == STILL_IMAGE || playMode == NINEPATCH) {
 				sprite = animation[0];
+				if (playMode == NINEPATCH) {
+					int divisorLine = sprite.getRegionHeight() / 3;//ninepatches must be square!
+					ninePatch = new NinePatch(sprite, divisorLine, divisorLine, divisorLine, divisorLine);
+				}
 				return; // no further processing needed on static images
 			}
 
@@ -314,6 +334,18 @@ public class Sprite {
 		for (AnimEventListener listener : listeners) {
 			listener.handleEvent(event);
 		}
+	}
+
+	public Class<?> findType(String assetName) {
+		TextureAtlas ta = ((TextureAtlas) AssetLoader.getAsset(TextureAtlas.class, assetName + ".atlas"));
+		Texture tex = (Texture) AssetLoader.getAsset(Texture.class, assetName + ".png");
+		if (ta != null) {
+			return TextureAtlas.class;
+		}
+		if (tex != null) {
+			return Texture.class;
+		}
+		return null;
 	}
 
 }

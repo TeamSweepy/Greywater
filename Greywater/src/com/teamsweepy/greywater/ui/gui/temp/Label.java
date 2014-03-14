@@ -1,6 +1,8 @@
 
 package com.teamsweepy.greywater.ui.gui.temp;
 
+import com.teamsweepy.greywater.engine.Camera;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL10;
@@ -9,9 +11,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.teamsweepy.greywater.engine.Camera;
-import com.teamsweepy.greywater.math.Point2F;
-import net.biodiscus.debug.Debug;
 
 /**
  * Copyright Team Sweepy - Robin de Jong 2014 All use outside of the Greywater Project is not permitted unless express permission is
@@ -72,8 +71,8 @@ public class Label {
 
 		patch.draw(batch, newX, newY, w, h);
 
-//		float yOffset = scrollbarY.scrollPercentage * (h - cache.getBounds().height);
-        float yOffset = scrollbarY.scrollPercentage * (cache.getBounds().height - h);
+		//	float yOffset = scrollbarY.scrollPercentage * (h - cache.getBounds().height);
+		float yOffset = scrollbarY.scrollPercentage * (cache.getBounds().height - h);
 
 		// Disable so we can cut of the bitmapFont
 		// This way we can use scrollbars

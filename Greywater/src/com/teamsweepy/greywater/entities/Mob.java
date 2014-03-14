@@ -86,9 +86,6 @@ public abstract class Mob extends Entity implements AnimEventListener {
 
 		if (HP <= 0) { //if dead
 			physicsComponent.stopMovement();
-			if (!graphicsComponent.getCurrentImageName().contains("DIE")) {
-				graphicsComponent.setImage(.4f, "Die", Sprite.FORWARD);
-			}
 			attacking = false;
 		} else { //if alive
 			getInput();
@@ -111,12 +108,11 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		if (e.action.contains("ATTACK") && e.ending && !e.beginning) {
 			attacking = false;
 		} else if (e.action.contains("WALK") && !e.beginning) {
-
 			((Sound) AssetLoader.getAsset(Sound.class, "TavWalk1V1.wav")).play(); //replace with proper naming convention TODO	
-
 		} else if (e.action.contains("Die") && e.ending) {
 			System.out.println(name + " died: " + HP);
 			graphicsComponent = new Sprite(this.name, name + "Dead");
+			attacking = false;
 		}
 
 	}
@@ -177,6 +173,10 @@ public abstract class Mob extends Entity implements AnimEventListener {
 
 	public void setInventory(Inventory i) {
 		inventory = i;
+	}
+	
+	public Inventory getInventory(){
+		return inventory;
 	}
 
 	/** Gets next action for this mob, can be AI logic or player input, subclasses can deal with it. */
