@@ -27,17 +27,19 @@ public class MainMenuScreen implements Screen {
 
 		mainMenu = new GUIComponent();
 		mainMenu.sprite = new Sprite("MenuBG");
-		Button startButton = new Button(0, 0, "NEWGAME"){
+		Button startButton = new Button(0, 0, "MenuItems", "NEWGAME") {
+
 			@Override
-			protected void clicked(){
+			protected void clicked() {
 				Engine.inGame = true;
 			}
 		};
 
 		startButton.centerImage(800, 425);
-		Button exitButton = new Button(0, 0, "EXIT"){
+		Button exitButton = new Button(0, 0, "MenuItems", "EXIT") {
+
 			@Override
-			protected void clicked(){
+			protected void clicked() {
 				Gdx.app.exit();
 			}
 		};
@@ -46,7 +48,7 @@ public class MainMenuScreen implements Screen {
 		mainMenu.addGUIComponent(exitButton);
 		mainMenu.setVisible(true);
 		GUI.addGUIComponent(mainMenu);
-		
+
 	}
 
 	@Override

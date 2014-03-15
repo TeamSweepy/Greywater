@@ -23,16 +23,26 @@ public class Button extends SubGUIComponent {
 		super(x, y, w, h);
 	}
 
-	/** Constructor for visible buttons! */
-	public Button(float x, float y, String imageName) {
+	/** Constructor for visible buttons using texture atlases! */
+	public Button(float x, float y, String atlasName, String imageName) {
 		// iéiga added this for hitbox initialization.
 		//the new iéiga, the next big thing from Apple
-		this.sprite = new Sprite("MenuItems", imageName);
+		this.sprite = new Sprite(atlasName, imageName);
 		visible = true;
 		pos = new Point2F(x, y);
 		size = new Point2F(sprite.getImageWidth(), sprite.getImageHeight());
 		hitbox = new Hitbox(x, y, (int) sprite.getImageWidth(), (int) sprite.getImageHeight(), 0f);
 	}
+	
+	/** Constructor for visible buttons using textures! */
+	public Button(float x, float y, String imageName) {
+		this.sprite = new Sprite(imageName);
+		visible = true;
+		pos = new Point2F(x, y);
+		size = new Point2F(sprite.getImageWidth(), sprite.getImageHeight());
+		hitbox = new Hitbox(x, y, (int) sprite.getImageWidth(), (int) sprite.getImageHeight(), 0f);
+	}
+
 
 	/** The method should be overridden when creating the button */
 	protected void clicked() {
