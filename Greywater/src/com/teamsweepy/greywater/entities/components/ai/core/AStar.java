@@ -15,7 +15,7 @@ import java.util.PriorityQueue;
 public class AStar extends Pathfinder<java.util.List<Point>> {
 
 	private PriorityQueue<AStarPath<Point>> paths;
-	private Map<Point, Double> mindists; // Map<K, V> needs two objects
+	private Map<Point, Float> mindists; // Map<K, V> needs two objects
 	private double lastCost;
 	private int expandedCounter;
 
@@ -30,7 +30,7 @@ public class AStar extends Pathfinder<java.util.List<Point>> {
 	public void reset() {
 		paths = new PriorityQueue<AStarPath<Point>>();
 		nodes = new LinkedList<Point>();
-		mindists = new HashMap<Point, Double>();
+		mindists = new HashMap<Point, Float>();
 		expandedCounter = 0;
 		lastCost = 0.0;
 	}
@@ -43,21 +43,21 @@ public class AStar extends Pathfinder<java.util.List<Point>> {
 		return (from.x == end.x) && (from.y == end.y);
 	}
 
-	private double g(int x, int y) {
+	private float g(int x, int y) {
 		int posX = Math.abs(x);
 		int posY = Math.abs(y);
 		if ((posX > 1 && posY == 0) || (posY > 1 && posX == 0)) {
-			return 10.0; // Straight
+			return 10.0f; // Straight
 		} else {
-			return 14.0; // Diagonal
+			return 14.0f; // Diagonal
 		}
 	}
 
 	@Override
-	protected double h(Point from, Point to) {
-		double dx = from.x - to.x;
-		double dy = from.y - to.y;
-		return 10.0 * (Math.abs(dx) + Math.abs(dy));
+	protected float h(Point from, Point to) {
+        float dx = from.x - to.x;
+        float dy = from.y - to.y;
+		return 10.0f * (Math.abs(dx) + Math.abs(dy));
 	}
 
 	private java.util.List<Point> generateSuccesor(Point node) {
@@ -103,8 +103,8 @@ public class AStar extends Pathfinder<java.util.List<Point>> {
 		return ret;
 	}
 
-	private double f(AStarPath p, Point from, Point to) {
-		double g;
+	private float f(AStarPath p, Point from, Point to) {
+        float g;
 		if (p.parent != null) {
 			Point parent = (Point) p.parent.point;
 			g = g(parent.x - from.x, parent.y - from.y) + p.parent.g;
@@ -112,7 +112,7 @@ public class AStar extends Pathfinder<java.util.List<Point>> {
 			g = g(from.x, from.y);
 		}
 
-		double h = h(from, to);
+		float h = h(from, to);
 
 		p.g = g;
 		p.f = g + h;
@@ -122,9 +122,9 @@ public class AStar extends Pathfinder<java.util.List<Point>> {
 
 	private void expand(AStarPath<Point> path) {
 		Point p = path.point;
-		Double min = mindists.get(path.point);
+		Float min = mindists.get(path.point);
 
-		if (min == null || min.doubleValue() > path.f) {
+		if (min == null || min.floatValue() > path.f) {
 			mindists.put(path.point, path.f);
 		} else {
 			return;
@@ -203,14 +203,14 @@ public class AStar extends Pathfinder<java.util.List<Point>> {
 class AStarPath<T> implements Comparable {
 
 	public T point;
-	public double f; // Objects are faster
-	public double g;
+	public float f; // Objects are faster
+	public float g;
 	public AStarPath parent;
 
 	public AStarPath() {
 		parent = null;
 		point = null;
-		g = f = 0.0;
+		g = f = 0.0f;
 	}
 
 	public AStarPath(AStarPath p) {

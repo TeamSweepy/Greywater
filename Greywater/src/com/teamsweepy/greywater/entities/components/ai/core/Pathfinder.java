@@ -42,5 +42,5 @@ public abstract class Pathfinder<T> {
 
 	public abstract boolean isGoal(Point from);
 
-	protected abstract double h(Point from, Point to);
+	protected abstract float h(Point from, Point to);
 }

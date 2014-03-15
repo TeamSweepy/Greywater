@@ -9,17 +9,17 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PotentialField extends Pathfinder<double[][]> {
+public class PotentialField extends Pathfinder<float[][]> {
 
 	public PotentialField() {
 
 	}
 
 	@Override
-	public double[][] create() {
+	public float[][] create() {
 		List<Point> obstacles = new ArrayList<Point>();
 
-		double[][] generateMap = new double[map.length][map[0].length];
+        float[][] generateMap = new float[map.length][map[0].length];
 
 		for (int x = 0; x < map.length; x++) {
 			for (int y = 0; y < map[0].length; y++) {
@@ -28,7 +28,7 @@ public class PotentialField extends Pathfinder<double[][]> {
 				if (map[x][y] == 1) {
 					obstacles.add(currentPos);
 				} else {
-					double distance = h(currentPos, end);
+					float distance = h(currentPos, end);
 					generateMap[x][y] = cliff(distance);
 				}
 			}
@@ -37,7 +37,7 @@ public class PotentialField extends Pathfinder<double[][]> {
 		for (Point obstacle : obstacles) {
 			for (int x = 0; x < map.length; x++) {
 				for (int y = 0; y < map[0].length; y++) {
-					double newFloat = Math.pow(0.5, h(new Point(x, y), obstacle)) / 20;
+                    float newFloat = (float)Math.pow(0.5, h(new Point(x, y), obstacle)) / 20;
 
 					if (x == obstacle.x && y == obstacle.y) {
 						generateMap[x][y] = 0;
@@ -51,7 +51,7 @@ public class PotentialField extends Pathfinder<double[][]> {
 		return generateMap;
 	}
 
-	private double cliff(double value) {
+	private float cliff(float value) {
 		if (value == 0) {
 			return 80;
 		} else {
@@ -71,10 +71,10 @@ public class PotentialField extends Pathfinder<double[][]> {
 	}
 
 	@Override
-	protected double h(Point from, Point to) {
+	protected float h(Point from, Point to) {
 		float dx = from.x - to.x;
 		float dy = from.y - to.y;
 
-		return Math.sqrt(dx * dx + dy * dy);
+		return (float)Math.sqrt(dx * dx + dy * dy);
 	}
 }

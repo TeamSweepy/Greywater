@@ -20,6 +20,7 @@ public class Dialog extends SubGUIComponent {
     private TextStyle style;
     private Text text;
     private Scrollbar scrollBar;
+    private Button closeButton;
 
     public Dialog() {
         this(0, 0, 100, 100);
@@ -31,9 +32,9 @@ public class Dialog extends SubGUIComponent {
         sprite = new Sprite("ui/menu", null, Texture.class);
         visible = true;
 
-        style = new TextStyle("font/times.fnt", 0xFF0000FF, TextStyle.WordStyle.WRAPPING);
+        style = new TextStyle("data/font/times.fnt", 0xFF0000FF, TextStyle.WordStyle.WRAPPING);
 
-        text = new Text(x, y + h, w, h);
+        text = new Text(x + 4, y + 4, w - 8, h - 20);
         text.setStyle(style);
         subComponents.add(text);
 
@@ -41,6 +42,16 @@ public class Dialog extends SubGUIComponent {
         subComponents.add(scrollBar);
 
         setText(Gdx.files.internal("data/dialog_text.txt").readString());
+
+        final Dialog dialog = this; // Used for the button
+
+        closeButton = new Button(x, y + h - 15, "ui/cross"){
+            @Override
+            protected void clicked() {
+                dialog.visible = false;
+            }
+        };
+        subComponents.add(closeButton);
     }
 
     public void appendText(String text) {
@@ -59,8 +70,19 @@ public class Dialog extends SubGUIComponent {
     }
 
     @Override
+    public void handleInput(Point2F mousePosition, int event) {
+        float yOffset = scrollBar.scrollPercentage * (text.getBounds().height - size.y);
+        text.setTextPosition(0, yOffset);
+        super.handleInput(mousePosition, event);
+    }
+
+    @Override
     public boolean intersects(Point2F mousePosition) {
-        return getHitbox().intersects(mousePosition);
+        if(visible){
+            return getHitbox().intersects(mousePosition);
+        } else {
+            return false;
+        }
     }
 
     // Override it so we can use a glScissor
@@ -71,23 +93,11 @@ public class Dialog extends SubGUIComponent {
 
         float currentX = pos.x - Camera.getDefault().xOffsetAggregate;
         float currentY = pos.y - Camera.getDefault().yOffsetAggregate;
-
-        batch.end();
-        Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
-        Gdx.gl.glScissor((int) (pos.x), (int) (pos.y), (int) (size.x), (int) (size.y));
-        batch.begin();
-
-        float yOffset = scrollBar.scrollPercentage * (text.getBounds().height - size.y);
-        text.setTextPosition(0, yOffset);
-
         sprite.render(batch, currentX, currentY, size.x, size.y);
 
         // Render all the subcomponents
         for (SubGUIComponent child : subComponents) {
             child.render(batch);
         }
-
-        batch.flush(); // Save the data
-        Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
     }
 }
