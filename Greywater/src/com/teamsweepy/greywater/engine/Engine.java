@@ -148,7 +148,6 @@ public class Engine extends Game {
 
 	/** Print Frames per second and Updates per second data and reset their counters. */
 	private void printStats() {
-        // THIS IS REALLY ANNOYING WHEN DEBUGGING
 		System.out.println();
 		System.out.println();
 		System.out.println("*******************************");

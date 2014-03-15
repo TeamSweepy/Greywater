@@ -1,6 +1,7 @@
 
 package com.teamsweepy.greywater.ui.gui;
 
+import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.crafting.Crafting;
@@ -32,11 +33,15 @@ public class Inventory extends GUIComponent {
 	/** Currently only a weapon slot, but this will later include armor slots */
 	protected ArrayList<WeaponSlot> weaponSlots = new ArrayList<WeaponSlot>();
 
+    /** Add a hitbox so the Inventory can be placed on top of the screen when clicked on it **/
+    private Hitbox hitbox;
 
 	public Inventory() {
 		sprite = new Sprite("inventory");
 		pos = new Point2F(1000, 250);
 		size = new Point2F(437, 608);
+        hitbox = new Hitbox((int) pos.x, (int) pos.y, (int) size.x, (int) size.y, 0f);
+
 
 		initSubComponents();
 
@@ -93,7 +98,7 @@ public class Inventory extends GUIComponent {
 		subComponents.add(weaponSlot);
 	}
 
-	@Override
+    @Override
 	/**
 	 * Attempt to craft stuff
 	 * */
@@ -109,6 +114,11 @@ public class Inventory extends GUIComponent {
 			cs.setItem(null);
 		}
 	}
+
+    @Override
+    public boolean intersects(Point2F mousePosition) {
+        return hitbox.intersects(mousePosition);
+    }
 
 	@Override
 	public void handleInput(Point2F mousePosition, int event) {

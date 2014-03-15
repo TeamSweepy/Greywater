@@ -35,7 +35,9 @@ public class HUD extends GUIComponent {
 
 			@Override
 			protected void clicked() {
-				GUI.getInventory().visible = !GUI.getInventory().visible;
+                boolean visible = Player.getLocalPlayer().getInventory().visible;
+
+                Player.getLocalPlayer().getInventory().visible = !visible;
 			}
 		});// The inventory open button
 
