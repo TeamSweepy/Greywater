@@ -23,7 +23,7 @@ public class InputGUI extends InputHandler {
 
 	public static Point2F position = new Point2F();
 
-    /** When the mouse wheel get's scroller **/
+    /** When the mouse wheel get's scrolled **/
     @Override
     public boolean scrolled(int amount)
     {
@@ -39,8 +39,6 @@ public class InputGUI extends InputHandler {
 
 		Point2F mousePositionInGame = Camera.getDefault().unproject(mousePosition);
 		position = mousePositionInGame;
-
-        System.out.println("");
 
 		return GUI.handleInput(MOUSE_DOWN, mousePositionInGame);
 	}

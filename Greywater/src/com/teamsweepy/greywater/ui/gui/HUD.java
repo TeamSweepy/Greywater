@@ -27,7 +27,7 @@ public class HUD extends GUIComponent {
 	}
 
 	protected void initSubComponents() {
-		subComponents.add(new Plane(0, 0, 1600, 180));// 1600 is the aproximate height of the HUD - it is the background of the HUD
+		subComponents.add(new Plane(0, 0, 1600, 180));// 1600 is the approximate height of the HUD - it is the background of the HUD
 
 		subComponents.add(new ButtonCircular(800, 290 - 39, 37) {
 
@@ -50,24 +50,10 @@ public class HUD extends GUIComponent {
 		manaBar.setMinRotation(270);
 		manaBar.setMaxValue(100);
 		manaBar.setMinValue(0);
-
-		/*Button button = new Button(100, 100, 100, 100, "EXIT") {
-
-			@Override
-			protected void clicked() {
-				System.out.println("JeremySucks");
-			}
-		};
-		subComponents.add(button);*/
 	}
 
 	@Override
-	public void tick() {
-		super.tick();
-	}
-
-	@Override
-	public void render(SpriteBatch batch) {
-		super.render(batch); //unnecessary unless you plan to add to this
+	public void tick(float deltaTime) {
+		super.tick(deltaTime);
 	}
 }

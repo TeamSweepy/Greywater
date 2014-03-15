@@ -24,25 +24,35 @@ public class Button extends SubGUIComponent {
 	}
 
 	/** Constructor for visible buttons! */
-	public Button(float x, float y, float w, float h, String imageName) {
-		super(x, y, w, h);// I (éiga) added this for hitbox initialization.
-
+	public Button(float x, float y, String imageName) {
+		// iéiga added this for hitbox initialization.
+		//the new iéiga, the next big thing from Apple
 		this.sprite = new Sprite("MenuItems", imageName);
 		visible = true;
+		pos = new Point2F(x, y);
+		size = new Point2F(sprite.getImageWidth(), sprite.getImageHeight());
+		hitbox = new Hitbox(x, y, (int) sprite.getImageWidth(), (int) sprite.getImageHeight(), 0f);
 	}
 
 	/** The method should be overridden when creating the button */
 	protected void clicked() {
 		System.out.println("Button clicked");
 	}
+	
+	public void centerImage(float x, float y){
+		float xLoc = x - size.x/2;
+		float yLoc = y - size.y/2;
+		pos = new Point2F(xLoc, yLoc);
+		hitbox.setLocation(xLoc, yLoc);
+		
+	}
 
-	//TODO this method doesn't yet work.
 	public boolean intersects(Point2F mousePosition) {
 		if (sprite != null) { //animate buttons with sprites
 			if (getHitbox().intersects(mousePosition)) {
-				sprite.setImage(.6f, "", Sprite.LOOP);
+				sprite.changeSeriesPosition(100, -1);
 			} else {
-				sprite.setImage(.6f, "", Sprite.STILL_IMAGE);
+				sprite.changeSeriesPosition(-100, -1);
 			}
 		}
 		return getHitbox().intersects(mousePosition);
@@ -51,5 +61,10 @@ public class Button extends SubGUIComponent {
 	@Override
 	public void render(SpriteBatch batch) {
 		sprite.render(batch, pos.x - Camera.getDefault().xOffsetAggregate, pos.y - Camera.getDefault().yOffsetAggregate, size.x, size.y);
+	}
+	
+	@Override
+	public void tick(float deltaTime){
+		sprite.tick(deltaTime);
 	}
 }

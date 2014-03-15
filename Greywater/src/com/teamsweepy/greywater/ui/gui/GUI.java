@@ -6,11 +6,9 @@
 
 package com.teamsweepy.greywater.ui.gui;
 
-import com.teamsweepy.greywater.entities.Player;
 import com.teamsweepy.greywater.math.Point2F;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.teamsweepy.greywater.ui.gui.subgui.Dialog;
 
 import java.util.ArrayList;
 
@@ -23,9 +21,9 @@ public class GUI {
 	}
 
 	/** Updates all the guicomponents */
-	public static void tick() {
+	public static void tick(float deltaTime) {
 		for (int i = 0; i < guiComponents.size(); i++) {
-			guiComponents.get(i).tick();
+			guiComponents.get(i).tick(deltaTime);
 		}
 	}
 
@@ -34,19 +32,6 @@ public class GUI {
 		for (int i = 0; i < guiComponents.size(); i++) {
 			guiComponents.get(i).render(batch);
 		}
-	}
-
-	/** Creates HUD, Player Inventory, and Cursor */
-	public static void initGUI() {
-		addGUIComponent(new HUD());
-		Inventory i = new Inventory();
-		addGUIComponent(i);
-		//addGUIComponent(new Inventory());
-		addGUIComponent(new Cursor());
-		Player.getLocalPlayer().setInventory(i);
-
-
-        addGUIComponent(new Dialog(500, 500, 200, 200));
 	}
 
 	/** Passes input to all GUIComponents. If they do not handle it, returns false to indicate the game needs to deal with it */

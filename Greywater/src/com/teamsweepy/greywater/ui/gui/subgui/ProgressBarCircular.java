@@ -35,7 +35,7 @@ public class ProgressBarCircular extends SubGUIComponent {
 	}
 
 	@Override
-	public void tick() {
+	public void tick(float deltaTime) {
 		if (maxValue == 0) {
 			System.out.println("[ERROR] ProgressBar division MAX VALUE IS 0");
 			return;

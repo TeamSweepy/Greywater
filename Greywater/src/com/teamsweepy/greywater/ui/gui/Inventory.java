@@ -66,7 +66,7 @@ public class Inventory extends GUIComponent {
 	 * Create all the comopnents of the inventory, such as background and itemslots
 	 * */
 	protected void initSubComponents() {
-		subComponents.add(new Plane(pos.x, pos.y, size.x, size.y));
+		//subComponents.add(new Plane(pos.x, pos.y, size.x, size.y));
 
 		int slotSize = 62;
 		for (int x = 0; x < 6; x++) {
@@ -97,7 +97,7 @@ public class Inventory extends GUIComponent {
 	/**
 	 * Attempt to craft stuff
 	 * */
-	public void tick() {
+	public void tick(float deltaTime) {
 		outputSlot.setItem(Crafting.checkCrafting(craftingSlots));
 	}
 

@@ -10,10 +10,14 @@ package com.teamsweepy.greywater.ui;
 
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Engine;
+import com.teamsweepy.greywater.entities.Player;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.Cursor;
 import com.teamsweepy.greywater.ui.gui.GUI;
-import com.teamsweepy.greywater.ui.gui.temp.Label;
+import com.teamsweepy.greywater.ui.gui.HUD;
+import com.teamsweepy.greywater.ui.gui.Inventory;
+import com.teamsweepy.greywater.ui.gui.subgui.Dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -26,18 +30,25 @@ public class GameScreen implements Screen {
 	//testvar
 	Level levelForTesting;
 	SpriteBatch guiBatch;
-	private Label label;
+
+	HUD playerHUD;
+	Inventory playerInventory;
+	Cursor playerCursor;
+	boolean ticking = true;
 
 	public GameScreen(Engine eng) {
-
 		engine = eng;
 
-//		label = new Label(200, 800, 400, 300);
-//		label.setListener(engine.inputs);
-
 		levelForTesting = new Level();
-		GUI.initGUI();
-
+		playerInventory = new Inventory();
+		playerHUD = new HUD();
+		playerCursor = new Cursor();
+		Player.getLocalPlayer().setInventory(playerInventory);
+		GUI.addGUIComponent(playerHUD);
+		GUI.addGUIComponent(playerInventory);
+		GUI.addGUIComponent(playerCursor);
+		GUI.addGUIComponent(new Dialog(500, 500, 600, 200));
+		this.hide();
 	}
 
 	@Override
@@ -53,38 +64,48 @@ public class GameScreen implements Screen {
 
 		levelForTesting.render(engine.batch);
 		GUI.render(engine.batch);
-//		label.draw(engine.batch);
 
 		engine.batch.end();// end render
 	}
 
 	public void tick(float delta) {
+		if (!ticking)
+			return;
 		levelForTesting.tick(delta);
-		GUI.tick();
+		GUI.tick(delta);
 	}
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
+		playerCursor.setVisible(true);
+		playerHUD.setVisible(true);
+		playerInventory.setVisible(true);
 
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
+		playerCursor.setVisible(false);
+		playerHUD.setVisible(false);
+		playerInventory.setVisible(false);
 
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
+		ticking = false;
+		playerCursor.setTicking(false);
+		playerHUD.setTicking(false);
+		playerInventory.setTicking(false);
 
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
+		ticking = true;
+		playerCursor.setTicking(true);
+		playerHUD.setTicking(true);
+		playerInventory.setTicking(true);
 	}
 
 	/* **************** PROBABLY USELESS METHODS ********************* */

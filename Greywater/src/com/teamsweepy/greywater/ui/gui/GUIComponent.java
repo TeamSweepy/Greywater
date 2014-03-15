@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class GUIComponent {
 
 	protected boolean visible = true; // GUIComponents can be hidden - they are visible by default
-
+	protected boolean ticking = true;
 	protected Point2F pos;
 	protected Point2F size;
 
@@ -42,22 +42,23 @@ public class GUIComponent {
 				childOnTop = child;
 			}
 		}
-		if (childOnTop == null) return; // shouldn't ever happen
+		if (childOnTop == null)
+			return; // shouldn't ever happen
 
-        childOnTop.handleInput(mousePosition, event);
+		childOnTop.handleInput(mousePosition, event);
 	}
 
-	public void tick() {
+	public void tick(float deltaTime) {
 		for (SubGUIComponent child : subComponents) {
-			child.tick();
+			child.tick(deltaTime);
 		}
 	}
 
 	public void render(SpriteBatch batch) {
 		if (!visible)
 			return;
-
-        sprite.render(batch, pos.x - Camera.getDefault().xOffsetAggregate, pos.y - Camera.getDefault().yOffsetAggregate);
+		if (sprite != null)
+			sprite.render(batch, pos.x - Camera.getDefault().xOffsetAggregate, pos.y - Camera.getDefault().yOffsetAggregate);
 
 		// Render all the subcomponents
 		for (SubGUIComponent child : subComponents) {
@@ -81,6 +82,24 @@ public class GUIComponent {
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+		for (SubGUIComponent child : subComponents) {
+			child.setVisible(visible);
+		}
+	}
+
+	public boolean isTicking() {
+		return ticking;
+	}
+
+	public void setTicking(boolean ticking) {
+		this.ticking = ticking;
+		for (SubGUIComponent child : subComponents) {
+			child.setTicking(ticking);
+		}
+	}
+
+	public void addGUIComponent(SubGUIComponent component) {
+		subComponents.add(component);
 	}
 
 

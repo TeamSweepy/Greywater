@@ -9,53 +9,75 @@
 package com.teamsweepy.greywater.ui;
 
 import com.teamsweepy.greywater.engine.Engine;
+import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.ui.gui.GUI;
+import com.teamsweepy.greywater.ui.gui.GUIComponent;
 import com.teamsweepy.greywater.ui.gui.subgui.Button;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 
 public class MainMenuScreen implements Screen {
 
 	private Engine engine;
-	private Button exit = new Button(600, 600, 50, 50, "EXIT");
-	// I added a width and a height since I changed some stuff in the button class. You now need to specify the w and h. �iga
+	private GUIComponent mainMenu;
 
 	public MainMenuScreen(Engine eng) {
 		engine = eng;
-		//GUI.addGUIComponent(exit);
+
+		mainMenu = new GUIComponent();
+		mainMenu.sprite = new Sprite("MenuBG");
+		Button startButton = new Button(0, 0, "NEWGAME"){
+			@Override
+			protected void clicked(){
+				Engine.inGame = true;
+			}
+		};
+
+		startButton.centerImage(800, 425);
+		Button exitButton = new Button(0, 0, "EXIT"){
+			@Override
+			protected void clicked(){
+				Gdx.app.exit();
+			}
+		};
+		exitButton.centerImage(800, 250);
+		mainMenu.addGUIComponent(startButton);
+		mainMenu.addGUIComponent(exitButton);
+		mainMenu.setVisible(true);
+		GUI.addGUIComponent(mainMenu);
+		
 	}
 
 	@Override
 	public void render(float delta) {
 		engine.batch.begin(); // begin rendering
-		
+		GUI.render(engine.batch);
 		engine.batch.end();// end rendering
 	}
 
 	public void tick(float delta) {
-
+		GUI.tick(delta);
 	}
 
 	public void show() {
-		// TODO Auto-generated method stub
-
+		mainMenu.setVisible(true);
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
+		mainMenu.setVisible(false);
 
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
+		mainMenu.setTicking(false);
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
+		mainMenu.setTicking(true);
 
 	}
 

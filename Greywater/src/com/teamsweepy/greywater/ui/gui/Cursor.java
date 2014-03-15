@@ -18,7 +18,7 @@ public class Cursor extends GUIComponent {
 	}
 
 	@Override
-	public void tick() {
+	public void tick(float deltaTime) {
 		pos = InputGUI.position.sub(31);
 	}
 

@@ -77,7 +77,6 @@ public class Sprite {
 		this.name = name;
 		currentImageName = ident;
 		setImage(.5f, ident, STILL_IMAGE, TextureAtlas.class); // arbitrary default
-//		setImage(.5f, ident, STILL_IMAGE, Texture.class); // arbitrary default
 		listeners = new ArrayList<AnimEventListener>();
 	}
 
@@ -99,7 +98,7 @@ public class Sprite {
 	 * @param fileType - Texture or TextureAtlas .class
 	 */
 	public Sprite(String fileName, String ident, Class<?> fileType) {
-        currentImageName = fileName;
+		currentImageName = fileName;
 		this.name = fileName;
 		if (ident != null)
 			setImage(0, ident, NINEPATCH, fileType);
@@ -279,7 +278,7 @@ public class Sprite {
 	/** Actually handles the logic of setting up the sprite image. */
 	private void setImage(float durationSeconds, String ident, int playMode, Class<?> classType) {
 		this.playMode = playMode;
-		if (currentImageName.equalsIgnoreCase(name + "_" + ident))
+		if (currentImageName.equalsIgnoreCase(name + "_" + ident) && durationSeconds * 1000 == sequenceDurationMillis && playMode == this.playMode)
 			return;
 
 		Ping = true;
@@ -305,24 +304,39 @@ public class Sprite {
 				}
 				return; // no further processing needed on static images
 			}
-
-//		} else if (classType == Texture.class) {
-//			sprite = new TextureRegion((Texture) AssetLoader.getAsset(Texture.class, name + ".png"));
-//			sprite.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-//		}
-        } else if (classType == Texture.class) {
-            sprite = new TextureRegion((Texture) AssetLoader.getAsset(Texture.class, name + ".png"));
-            sprite.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-            if(playMode == NINEPATCH) {
-                int divisorLine = sprite.getRegionHeight() / 3;//ninepatches must be square!
-                ninePatch = new NinePatch(sprite, divisorLine, divisorLine, divisorLine, divisorLine);
-            }//end if
-        }//end elseif
+		} else if (classType == Texture.class) {
+			sprite = new TextureRegion((Texture) AssetLoader.getAsset(Texture.class, name + ".png"));
+			sprite.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			if (playMode == NINEPATCH) {
+				int divisorLine = sprite.getRegionHeight() / 3;//ninepatches must be square!
+				ninePatch = new NinePatch(sprite, divisorLine, divisorLine, divisorLine, divisorLine);
+			}//end if
+		}//end elseif
 
 		if (playMode != LOOP_REVERSED && playMode != REVERSED)
 			seriesPosition = 0; // everything starts at the beginning
 		else
 			seriesPosition = (seriesLength - 1); // except reversed/revloop which starts at the end
+	}
+
+	/**
+	 * Increment or decrement the animation by adjustment frames. Very large numbers will go to the end, Very negative goes to the
+	 * beginning. Also change the playMode if you want. -1 will leave the current playmode in effect.
+	 */
+	public void changeSeriesPosition(int adjustment, int playMode) {
+		if (animation != null && animation.length > 0) {
+			if (adjustment + seriesPosition > animation.length) {
+				seriesPosition = animation.length - 1;
+			} else if (adjustment + seriesPosition < 0) {
+				seriesPosition = 0;
+			} else {
+				seriesPosition += adjustment;
+			}
+			sprite = animation[seriesPosition];
+		}
+		if (playMode != -1) {
+			this.playMode = playMode;
+		}
 	}
 
 	/** Add a class that implements AnimEventListener Interface who wants to listen to this sprite */
