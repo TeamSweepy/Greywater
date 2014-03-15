@@ -3,6 +3,7 @@ package com.teamsweepy.greywater.entities;
 
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entities.components.Entity;
+import com.teamsweepy.greywater.entities.components.KillEvent;
 import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.entities.level.Tile;
@@ -20,8 +21,6 @@ public class Player extends Mob {
 	private static Point2F mouseLocation;
 	private static boolean mouseClicked;
 	private static Player localPlayer;
-
-	private ArrayList<Entity> killList;
 
 	private ProgressBarCircular healthBar;
 	private ProgressBarCircular manaBar;
@@ -59,7 +58,6 @@ public class Player extends Mob {
 		super.tick(deltaTime);
 
 		if (healthBar != null && manaBar != null) {
-			System.out.println(HP );
 			healthBar.setValue(HP);
 			manaBar.setValue(0);
 		}
@@ -175,11 +173,12 @@ public class Player extends Mob {
 		System.out.println(this.name + " rolled " + chanceToHit + " to hit " + enemy.name);
 
 		if (chanceToHit > 8) {
-			damage += Globals.D(100);
+			damage += Globals.D(11100);
 			enemy.changeHP(damage);
 			System.out.println(name + " hit " + enemy.name + " for " + damage + " damage...");
 			if (!enemy.isAlive()) {
 				killList.add(enemy);
+				fireEvent(new KillEvent(this, enemy));
 			}
 		}
 	}

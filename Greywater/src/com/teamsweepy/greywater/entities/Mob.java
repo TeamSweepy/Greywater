@@ -14,6 +14,8 @@ import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entities.components.AnimEvent;
 import com.teamsweepy.greywater.entities.components.AnimEventListener;
 import com.teamsweepy.greywater.entities.components.Entity;
+import com.teamsweepy.greywater.entities.components.GameEvent;
+import com.teamsweepy.greywater.entities.components.GameEventListener;
 import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.entities.components.ai.PathfinderMotor;
@@ -25,6 +27,8 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.awt.geom.Line2D;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Mob extends Entity implements AnimEventListener {
 
@@ -45,6 +49,8 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	protected PathfinderMotor pather;
 
 	protected Inventory inventory;
+	protected ArrayList<Entity> killList;
+	private List<GameEventListener> listeners;
 
 	/**
 	 * @param x - tile location x
@@ -182,6 +188,32 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	public int maxHP(){
 		return 100;
 	}
+	
+	/** Add a class that implements GameEventListener Interface who wants to listen to this mob */
+	public void addGameListener(GameEventListener listener) {
+		if(listeners == null){
+			listeners = new ArrayList<GameEventListener>();
+		}
+		listeners.add(listener);
+	}
+
+	/** Remove a class that implements GameEventListener Interface who no longer wants to listen to this mob */
+	public void removeGameListener(GameEventListener listener) {
+		if(listeners == null || listeners.size() < 1)
+			return;
+		listeners.remove(listener);
+	}
+
+	/** Fire an event for all listeners to hear */
+	public void fireEvent(GameEvent e) {
+		if (listeners == null || listeners.size() < 1)
+			return;
+
+		for (GameEventListener listener : listeners) {
+			listener.handleGameEvent(e);
+		}
+	}
+	
 
 	/** Gets next action for this mob, can be AI logic or player input, subclasses can deal with it. */
 	protected abstract void getInput();
