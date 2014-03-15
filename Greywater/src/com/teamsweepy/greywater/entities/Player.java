@@ -7,6 +7,7 @@ import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.entities.level.Tile;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.subgui.ProgressBarCircular;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -19,8 +20,11 @@ public class Player extends Mob {
 	private static Point2F mouseLocation;
 	private static boolean mouseClicked;
 	private static Player localPlayer;
-	
+
 	private ArrayList<Entity> killList;
+
+	private ProgressBarCircular healthBar;
+	private ProgressBarCircular manaBar;
 
 	public static Player getLocalPlayer() {
 		return localPlayer;
@@ -43,11 +47,22 @@ public class Player extends Mob {
 	 */
 	private Player(float x, float y, Level level) {
 		super("Tavish", x, y, 35, 35, 1.25f, level, true);
-//		super("Tavish", x, y, 35, 35, 10f, level, true);
+		//		super("Tavish", x, y, 35, 35, 10f, level, true);
 		currentDirection = "South";
 		this.walkCycleDuration = 1;
 		killList = new ArrayList<Entity>();
 		graphicsComponent.setImage(3f, "Walk_South", Sprite.LOOP);
+	}
+
+	@Override
+	public void tick(float deltaTime) {
+		super.tick(deltaTime);
+
+		if (healthBar != null && manaBar != null) {
+			System.out.println(HP );
+			healthBar.setValue(HP);
+			manaBar.setValue(0);
+		}
 	}
 
 	@Override
@@ -98,11 +113,11 @@ public class Player extends Mob {
 				attack(interactedMob);
 
 			} else if (interactedMob.friendly) { //interact with friends
-//				if(interactedMob.getClass() == Sweepy.class){
-//
-//				} else{
-//					((NPC)interactedMob).interact(this);
-//				}
+				//				if(interactedMob.getClass() == Sweepy.class){
+				//
+				//				} else{
+				//					((NPC)interactedMob).interact(this);
+				//				}
 
 			} else { //clicked a dead guy
 				return false;
@@ -125,10 +140,10 @@ public class Player extends Mob {
 	protected void attack(Mob enemy) {
 		if (enemy == null || attacking)
 			return;
-		
+
 		System.out.println(name + " attacked " + (enemy).name);
 		physicsComponent.stopMovement();
-		
+
 		if (enemy.getLocation().distance(getLocation()) > getWidth() * 2.5) { //if cant reach
 			pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(enemy.getLocation()));
 			Point newPoint = pather.getNextStep();
@@ -158,12 +173,12 @@ public class Player extends Mob {
 
 		int chanceToHit = Globals.D(20); //20 sided dice, bitch
 		System.out.println(this.name + " rolled " + chanceToHit + " to hit " + enemy.name);
-		
+
 		if (chanceToHit > 8) {
 			damage += Globals.D(100);
 			enemy.changeHP(damage);
 			System.out.println(name + " hit " + enemy.name + " for " + damage + " damage...");
-			if(!enemy.isAlive()){
+			if (!enemy.isAlive()) {
 				killList.add(enemy);
 			}
 		}
@@ -179,6 +194,11 @@ public class Player extends Mob {
 		if (mouseLocation != null || keyCode != -69) {
 			return; //TODO deal with key input when needed
 		}
+	}
+
+	public void setBars(ProgressBarCircular hp, ProgressBarCircular mana) {
+		this.healthBar = hp;
+		this.manaBar = mana;
 	}
 
 }

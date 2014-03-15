@@ -36,7 +36,7 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	/* *********** WORLD INTERACTION VARIABLES ************ */
 	protected boolean attacking = false;
 	public boolean friendly; //indicates if this is a friend of the Player.
-	private int HP = 100;
+	protected int HP = 100;
 	protected Line2D.Float sightLine;
 	protected boolean canSeeTarget;
 	protected int maxSightRange = 20 * 50;//in tiles

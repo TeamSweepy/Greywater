@@ -72,5 +72,9 @@ public class ProgressBarCircular extends SubGUIComponent {
 		this.maxValue = maxValue;
 	}
 
+	public void setValue(int value) {
+		this.value = value;
+	}
+
 
 }
