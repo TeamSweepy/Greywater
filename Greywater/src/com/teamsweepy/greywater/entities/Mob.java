@@ -178,6 +178,10 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	public Inventory getInventory(){
 		return inventory;
 	}
+	
+	public int maxHP(){
+		return 100;
+	}
 
 	/** Gets next action for this mob, can be AI logic or player input, subclasses can deal with it. */
 	protected abstract void getInput();
