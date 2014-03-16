@@ -48,6 +48,20 @@ public class GUIComponent {
 		childOnTop.handleInput(mousePosition, event);
 	}
 
+    public void handleInput(Point2F mousePosition, int amount, int event) {
+        SubGUIComponent childOnTop = null;
+
+        for (SubGUIComponent child : subComponents) {
+            if (child.intersects(mousePosition)) {
+                childOnTop = child;
+            }
+        }
+        if (childOnTop == null)
+            return; // shouldn't ever happen
+
+        childOnTop.handleInput(mousePosition, amount, event);
+    }
+
 	public void tick(float deltaTime) {
 		for (SubGUIComponent child : subComponents) {
 			child.tick(deltaTime);

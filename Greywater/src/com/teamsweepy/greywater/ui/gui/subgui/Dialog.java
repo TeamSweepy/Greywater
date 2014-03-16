@@ -63,16 +63,19 @@ public class Dialog extends SubGUIComponent {
 
         float width = this.text.getBounds().width;
         float height = this.text.getBounds().height;
+        scrollBar.updateBounds(width, height);
+    }
 
-        if (height > size.y) {
-            scrollBar.updateBounds(width, height);
-        }
+    @Override
+    public void handleInput(Point2F mousePosition, int amount, int event) {
+        scrollBar.scroll(amount * 5);
+
+        super.handleInput(mousePosition, amount, event);
     }
 
     @Override
     public void handleInput(Point2F mousePosition, int event) {
-        float yOffset = scrollBar.scrollPercentage * (text.getBounds().height - size.y);
-        text.setTextPosition(0, yOffset);
+
         super.handleInput(mousePosition, event);
     }
 
@@ -93,6 +96,10 @@ public class Dialog extends SubGUIComponent {
 
         float currentX = pos.x - Camera.getDefault().xOffsetAggregate;
         float currentY = pos.y - Camera.getDefault().yOffsetAggregate;
+
+        float yOffset = scrollBar.scrollPercentage * (text.getBounds().height - size.y);
+        text.setTextPosition(0, yOffset);
+
         sprite.render(batch, currentX, currentY, size.x, size.y);
 
         // Render all the subcomponents

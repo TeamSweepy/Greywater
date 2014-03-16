@@ -87,6 +87,7 @@ public class Text extends SubGUIComponent {
                 cache.setColor(colorFromLong(hex), node.startPos, node.endPos);
             }
         }
+
         bounds = cache.getBounds();
     }
 

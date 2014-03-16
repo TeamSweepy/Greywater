@@ -55,6 +55,25 @@ public class GUI {
             guiC.render(batch);
         }
 	}
+    /** Used when dealinh with different types of input **/
+    public static boolean handleInput(int event, Point2F mousePosition, int amount) {
+        // guiC.visible is protected, how can we reference it from here....
+        for (GUIComponent guiC : topGuiComponents) {
+            if (guiC.isVisible() && guiC.intersects(mousePosition)) {
+                guiC.handleInput(mousePosition, amount, event);
+                return true;
+            }
+        }
+        // Try to invert the loop
+        for(int i = midGuiComponents.size() - 1; i >= 0; i --) {
+            GUIComponent guiC = midGuiComponents.get(i);
+            if (guiC.isVisible() && guiC.intersects(mousePosition)) {
+                guiC.handleInput(mousePosition, amount, event);
+                return true;
+            }
+        }
+        return false;
+    }
 
 	/** Passes input to all GUIComponents. If they do not handle it, returns false to indicate the game needs to deal with it */
 	public static boolean handleInput(int event, Point2F mousePosition) {
@@ -64,6 +83,9 @@ public class GUI {
                 guiC.handleInput(mousePosition, event);
                 return true;
             }
+        }
+        if(event == InputHandler.WHEEL_SCROLL) {
+            System.out.println("Scrolling");
         }
         // Try to invert the loop
         for(int i = midGuiComponents.size() - 1; i >= 0; i --) {

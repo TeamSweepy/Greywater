@@ -28,7 +28,7 @@ public class InputGUI extends InputHandler {
     public boolean scrolled(int amount)
     {
         // TODO: Shift scrolling, on trackpads you have 2 scroll direction. This behaviour also happends when pressing shift
-        return GUI.handleInput(WHEEL_SCROLL, position);
+        return GUI.handleInput(WHEEL_SCROLL, position, amount);
     }
 
     @Override

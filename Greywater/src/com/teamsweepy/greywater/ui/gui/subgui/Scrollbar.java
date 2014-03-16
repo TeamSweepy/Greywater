@@ -33,7 +33,7 @@ public class Scrollbar extends SubGUIComponent {
         scroller = new Rectangle(x, y, w, h);
 
         this.horizontal = horizontal;
-        visible = true;
+//        visible = true;
     }
 
     @Override
@@ -60,11 +60,18 @@ public class Scrollbar extends SubGUIComponent {
     }
 
     public void updateBounds(float width, float height) {
-        int difference;
+        int difference = 100;
+        setVisible(false);
         if(horizontal) {
-            difference = (int)((size.x / width) * 100);
+            if(width > size.x) {
+                difference = (int)((size.x / width) * 100);
+                setVisible(true);
+            }
         } else {
-            difference = (int)((size.y / height) * 100);
+            if(height > size.y) {
+                difference = (int)((size.y / height) * 100);
+                setVisible(true); // This is not working...
+            }
         }
 
         updatePercentage(difference);
@@ -126,20 +133,18 @@ public class Scrollbar extends SubGUIComponent {
 
         float offsetX = Camera.getDefault().xOffsetAggregate;
         float offsetY = Camera.getDefault().yOffsetAggregate;
-        float currentX = pos.x - offsetX;
-        float currentY = pos.y - offsetY;
 
         if (horizontal) {
             scrollPercentage = scroller.x / (size.x - scroller.width);
         } else {
             scrollPercentage = scroller.y / (size.y - scroller.height);
         }
+        if(Float.isNaN(scrollPercentage)) scrollPercentage = 0f;
 
-        sprite.render(batch, currentX, currentY, size.x, size.y);
+        sprite.render(batch, pos.x - offsetX, pos.y - offsetY, size.x, size.y);
         scrollerGraphic.render(
                 batch,
                 scroller.x - offsetX,
-                //y - (scroller.y - h + (scroller.height))
                 pos.y - (scroller.y - size.y + scroller.height) - offsetY,
                 scroller.width,
                 scroller.height
