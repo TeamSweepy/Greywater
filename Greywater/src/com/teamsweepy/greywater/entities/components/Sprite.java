@@ -18,6 +18,8 @@
 package com.teamsweepy.greywater.entities.components;
 
 import com.teamsweepy.greywater.engine.AssetLoader;
+import com.teamsweepy.greywater.entities.components.events.AnimEvent;
+import com.teamsweepy.greywater.entities.components.events.AnimEventListener;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;

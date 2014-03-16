@@ -6,7 +6,10 @@
 
 package com.teamsweepy.greywater.engine;
 
+import com.teamsweepy.greywater.entities.Mob;
 import com.teamsweepy.greywater.math.Point2F;
+
+import com.badlogic.gdx.math.Vector2;
 
 import java.awt.Point;
 import java.util.Random;
@@ -98,6 +101,18 @@ public class Globals {
 		//+25 to indicate the center of a tile
 		Point2F location = new Point2F((xCoord * tileGridWidth) + 25, (yCoord * tileGridHeight) + 25);
 		return location;
+	}
+	
+	public static String getDirectionString(Mob target, Mob directionGetter){
+		Vector2 centerLoc = new Vector2();
+		target.getHitbox().getCenter(centerLoc);
+		float tX = centerLoc.x; //targetX
+		float tY = centerLoc.y;
+		directionGetter.getHitbox().getCenter(centerLoc);
+
+		float x = centerLoc.x;
+		float y = centerLoc.y;
+		return getDirectionString(tX - x, tY - y);
 	}
 
 	/**

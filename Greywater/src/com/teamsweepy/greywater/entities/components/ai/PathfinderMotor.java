@@ -40,6 +40,16 @@ public class PathfinderMotor {
 		}
 	}
 
+	public void reset() {
+		if (pathfinder != null)
+			pathfinder.reset();
+		if (aStarMap != null)
+			aStarMap.clear();
+		pathIndex = 0;
+		curPos = null;
+		pathIndex = 0;
+	}
+
 	public void createPath(Point from, Point end) {
 		if (pathfinder.isGoal(end)) //no need to find same path twice
 			return;

@@ -13,6 +13,7 @@ import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entities.Mob;
+import com.teamsweepy.greywater.entities.NPC;
 import com.teamsweepy.greywater.entities.Player;
 import com.teamsweepy.greywater.entities.Watchman;
 import com.teamsweepy.greywater.entities.components.Entity;
@@ -80,6 +81,7 @@ public class Level {
 		mobList.add(TestTavishMob);
 		//		for(int i = 0; i < 20; i ++){
 		mobList.add(new Watchman(20, 70, this, TestTavishMob));
+		mobList.add(new NPC(4, 93, this));
 		//		}
 		interactiveList.addAll(mobList);
 		Camera.getDefault().moveTo(Globals.toIsoCoord(TestTavishMob.getX(), TestTavishMob.getY()));

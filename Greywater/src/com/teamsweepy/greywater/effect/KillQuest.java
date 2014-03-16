@@ -2,8 +2,8 @@
 package com.teamsweepy.greywater.effect;
 
 import com.teamsweepy.greywater.entities.Mob;
-import com.teamsweepy.greywater.entities.components.GameEvent;
-import com.teamsweepy.greywater.entities.components.KillEvent;
+import com.teamsweepy.greywater.entities.components.events.GameEvent;
+import com.teamsweepy.greywater.entities.components.events.KillEvent;
 
 import java.util.HashMap;
 import java.util.List;

@@ -11,14 +11,14 @@ package com.teamsweepy.greywater.entities;
 
 import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Globals;
-import com.teamsweepy.greywater.entities.components.AnimEvent;
-import com.teamsweepy.greywater.entities.components.AnimEventListener;
 import com.teamsweepy.greywater.entities.components.Entity;
-import com.teamsweepy.greywater.entities.components.GameEvent;
-import com.teamsweepy.greywater.entities.components.GameEventListener;
 import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.entities.components.ai.PathfinderMotor;
+import com.teamsweepy.greywater.entities.components.events.AnimEvent;
+import com.teamsweepy.greywater.entities.components.events.AnimEventListener;
+import com.teamsweepy.greywater.entities.components.events.GameEvent;
+import com.teamsweepy.greywater.entities.components.events.GameEventListener;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.Inventory;
@@ -51,6 +51,9 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	protected Inventory inventory;
 	protected ArrayList<Entity> killList;
 	private List<GameEventListener> listeners;
+	
+	public Mob() {
+	}
 
 	/**
 	 * @param x - tile location x

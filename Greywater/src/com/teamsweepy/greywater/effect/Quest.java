@@ -3,7 +3,7 @@ package com.teamsweepy.greywater.effect;
 
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entities.Mob;
-import com.teamsweepy.greywater.entities.components.GameEventListener;
+import com.teamsweepy.greywater.entities.components.events.GameEventListener;
 
 import java.util.ArrayList;
 import java.util.List;

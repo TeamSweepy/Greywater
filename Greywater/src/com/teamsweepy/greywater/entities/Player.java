@@ -3,14 +3,15 @@ package com.teamsweepy.greywater.entities;
 
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entities.components.Entity;
-import com.teamsweepy.greywater.entities.components.KillEvent;
 import com.teamsweepy.greywater.entities.components.Sprite;
+import com.teamsweepy.greywater.entities.components.events.KillEvent;
 import com.teamsweepy.greywater.entities.level.Level;
 import com.teamsweepy.greywater.entities.level.Tile;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.subgui.ProgressBarCircular;
 
 import com.badlogic.gdx.math.Vector2;
+import com.sun.org.apache.xml.internal.utils.StopParseException;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -45,8 +46,7 @@ public class Player extends Mob {
 	 * @param y - Tile Y Position, not objective position
 	 */
 	private Player(float x, float y, Level level) {
-		super("Tavish", x, y, 35, 35, 1.25f, level, true);
-		//		super("Tavish", x, y, 35, 35, 10f, level, true);
+		super("Vagrant", x, y, 35, 35, 1.25f, level, true);
 		currentDirection = "South";
 		this.walkCycleDuration = 1;
 		killList = new ArrayList<Entity>();
@@ -77,8 +77,8 @@ public class Player extends Mob {
 			Point clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
 			System.out.println("Player starts at " + startTile);
 			System.out.println("Clicked to move to " + clickedTile);
+			pather.reset();
 			pather.createPath(startTile, clickedTile);
-
 			Point newPoint = pather.getNextStep();
 			if (newPoint != null) {
 				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
@@ -103,7 +103,6 @@ public class Player extends Mob {
 		if (interacted == null) {
 			return false;
 		}
-		System.out.println(interacted.getClass());
 		if (interacted.getClass().getSuperclass() == Mob.class) { //deal with mobs
 			Mob interactedMob = (Mob) interacted;
 			if (interactedMob.isAlive() && !interactedMob.friendly) { //attack the living enemy
@@ -111,12 +110,17 @@ public class Player extends Mob {
 				attack(interactedMob);
 
 			} else if (interactedMob.friendly) { //interact with friends
+				if (interactedMob.getLocation().distance(getLocation()) > getWidth() * 4.5)
+					return false;
+
+				physicsComponent.stopMovement();
+				pather.reset();
+				this.currentDirection = Globals.getDirectionString(interactedMob, this); //face target
 				//				if(interactedMob.getClass() == Sweepy.class){
 				//
 				//				} else{
 				//					((NPC)interactedMob).interact(this);
 				//				}
-
 			} else { //clicked a dead guy
 				return false;
 			}
@@ -141,6 +145,7 @@ public class Player extends Mob {
 
 		System.out.println(name + " attacked " + (enemy).name);
 		physicsComponent.stopMovement();
+		pather.reset();
 
 		if (enemy.getLocation().distance(getLocation()) > getWidth() * 2.5) { //if cant reach
 			pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(enemy.getLocation()));
@@ -155,17 +160,7 @@ public class Player extends Mob {
 		}
 
 		attacking = true;
-		Vector2 centerLoc = new Vector2();
-		enemy.getHitbox().getCenter(centerLoc);
-		float tX = centerLoc.x; //targetX
-		float tY = centerLoc.y;
-		getHitbox().getCenter(centerLoc);
-
-		float x = centerLoc.x;
-		float y = centerLoc.y;
-
-		this.currentDirection = Globals.getDirectionString(tX - x, tY - y);
-		attacking = true;
+		this.currentDirection = Globals.getDirectionString(enemy, this);
 
 		int damage = 0;
 
@@ -173,7 +168,7 @@ public class Player extends Mob {
 		System.out.println(this.name + " rolled " + chanceToHit + " to hit " + enemy.name);
 
 		if (chanceToHit > 8) {
-			damage += Globals.D(11100);
+			damage += Globals.D(11);
 			enemy.changeHP(damage);
 			System.out.println(name + " hit " + enemy.name + " for " + damage + " damage...");
 			if (!enemy.isAlive()) {

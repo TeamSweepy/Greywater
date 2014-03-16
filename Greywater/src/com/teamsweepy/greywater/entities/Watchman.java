@@ -15,7 +15,7 @@ import java.awt.Point;
 public class Watchman extends Mob {
 
 	public Watchman(float x, float y, Level level, Entity focus) {
-		super("Tavish", x, y, 35, 35, 1.3f, level, true);
+		super("Watchman", x, y, 35, 35, 1.3f, level, true);
 		currentDirection = "South";
 		this.walkCycleDuration = 1;
 		graphicsComponent.setImage(.6f, "Walk_South", Sprite.LOOP);
@@ -55,17 +55,8 @@ public class Watchman extends Mob {
 		System.out.println(name + " attacked " + (enemy).name);
 
 		physicsComponent.stopMovement();
-
-		Vector2 centerLoc = new Vector2();
-		enemy.getHitbox().getCenter(centerLoc);
-		float tX = centerLoc.x; //targetX
-		float tY = centerLoc.y;
-		getHitbox().getCenter(centerLoc);
-
-		float x = centerLoc.x;
-		float y = centerLoc.y;
-
-		this.currentDirection = Globals.getDirectionString(tX - x, tY - y);
+		pather.reset();
+		this.currentDirection = Globals.getDirectionString(enemy, this);
 		attacking = true;
 
 		int damage = 0;

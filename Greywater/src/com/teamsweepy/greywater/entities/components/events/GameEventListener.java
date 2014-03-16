@@ -7,7 +7,7 @@
  * @author Barnes
  */
 
-package com.teamsweepy.greywater.entities.components;
+package com.teamsweepy.greywater.entities.components.events;
 
 
 public interface GameEventListener {
