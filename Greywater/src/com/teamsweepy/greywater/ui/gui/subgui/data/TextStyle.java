@@ -1,13 +1,13 @@
+/**
+ * Copyright Team Sweepy - Robin de Jong 2014 All use outside of the Greywater Project is not permitted unless express permission is
+ * granted. Email TeamSweepy@gmail.com to discuss usage.
+ */
 package com.teamsweepy.greywater.ui.gui.subgui.data;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
-/**
- * Copyright Team Sweepy - Robin de Jong 2014 All use outside of the Greywater Project is not permitted unless express permission is
- * granted. Email TeamSweepy@gmail.com to discuss usage.
- */
 
 public class TextStyle {
     public enum WordStyle

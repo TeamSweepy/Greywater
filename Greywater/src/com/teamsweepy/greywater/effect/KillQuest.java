@@ -6,7 +6,6 @@ import com.teamsweepy.greywater.entities.components.events.GameEvent;
 import com.teamsweepy.greywater.entities.components.events.KillEvent;
 
 import java.util.HashMap;
-import java.util.List;
 
 
 public class KillQuest extends Quest {
@@ -14,47 +13,39 @@ public class KillQuest extends Quest {
 	public HashMap<Class, Integer> winConditions;
 	public HashMap<Class, Integer> currentConditions;
 
-	public KillQuest(List<String> intro, List<String> waiting, List<String> completed, List<Quest> children, Mob doer, Mob giver) {
-		super(intro, waiting, completed, children, doer, giver);
+	public KillQuest() {
+		super();
 		winConditions = new HashMap<Class, Integer>();
 		currentConditions = new HashMap<Class, Integer>();
-	}
-
-	public KillQuest(Mob doer, Mob giver) {
-		super(doer, giver);
-		winConditions = new HashMap<Class, Integer>();
-		currentConditions = new HashMap<Class, Integer>();
-	}
-
-	@Override
-	public boolean finished() {
-		boolean isFinished = true;
-		for (Class<Mob> kv : winConditions.keySet()) {
-			if (!currentConditions.containsKey(kv) || winConditions.get(kv) > currentConditions.get(kv)) {
-				isFinished = false;
-				break;
-			}
-		}
-		if(isFinished){
-			super.questState = QUEST_STATUS_TURNIN;
-		}
-		return isFinished;
 	}
 
 	@Override
 	public void handleGameEvent(GameEvent ge) {
-		if (ge.getClass() == KillEvent.class) {
+		if (ge.getClass() == KillEvent.class && winConditions.containsKey(((KillEvent) ge).deadVictim.getClass())) {
 			KillEvent ke = (KillEvent) ge;
 			if (currentConditions.containsKey(ke.deadVictim.getClass())) {
 				currentConditions.put(ke.deadVictim.getClass(), currentConditions.get(ke.deadVictim.getClass()) + 1);
 			} else {
 				currentConditions.put(ke.deadVictim.getClass(), 1);
 			}
+			super.completeObjective();
 		}
 	}
 
-	public void addWinCondition(Class<Mob> c, int count) {
+	public void addWinCondition( Class<? extends Mob> c, int count) {
 		winConditions.put(c, count);
+	}
+
+	@Override
+	public boolean isQuestActionOver() {
+		boolean finished = true;
+		for (Class condition : winConditions.keySet()) {
+			if (currentConditions.get(condition) != winConditions.get(condition)) {
+				finished = false;
+			}
+		}
+		System.out.println("This quest is done = " + finished );
+		return finished;
 	}
 
 

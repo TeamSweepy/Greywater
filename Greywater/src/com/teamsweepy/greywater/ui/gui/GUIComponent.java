@@ -31,7 +31,7 @@ public class GUIComponent {
 		size = new Point2F();
 		visible = false; // no need for empty render method, just flag imageless components
 	}
-
+	
 	protected void initSubComponents() {}
 
 	public void handleInput(Point2F mousePosition, int event) {
@@ -98,6 +98,13 @@ public class GUIComponent {
 		this.visible = visible;
 		for (SubGUIComponent child : subComponents) {
 			child.setVisible(visible);
+		}
+	}
+	
+	public void toggleVisibility(){
+		visible = !visible;
+		for (SubGUIComponent child : subComponents) {
+			child.toggleVisibility();
 		}
 	}
 

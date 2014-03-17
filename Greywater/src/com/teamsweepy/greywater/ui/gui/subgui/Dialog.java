@@ -1,110 +1,125 @@
-package com.teamsweepy.greywater.ui.gui.subgui;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.teamsweepy.greywater.engine.Camera;
-import com.teamsweepy.greywater.entities.components.Hitbox;
-import com.teamsweepy.greywater.entities.components.Sprite;
-import com.teamsweepy.greywater.math.Point2F;
-import com.teamsweepy.greywater.ui.gui.GUIComponent;
-import com.teamsweepy.greywater.ui.gui.subgui.data.TextStyle;
-//import net.biodiscus.debug.Debug;
-
 /**
  * Copyright Team Sweepy - Robin de Jong 2014 All use outside of the Greywater Project is not permitted unless express permission is
  * granted. Email TeamSweepy@gmail.com to discuss usage.
  */
+
+package com.teamsweepy.greywater.ui.gui.subgui;
+
+import com.teamsweepy.greywater.engine.Camera;
+import com.teamsweepy.greywater.entities.components.Sprite;
+import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.subgui.data.TextStyle;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+// import net.biodiscus.debug.Debug;
+
+
 public class Dialog extends SubGUIComponent {
-    private TextStyle style;
-    private Text text;
-    private Scrollbar scrollBar;
-    private Button closeButton;
 
-    public Dialog() {
-        this(0, 0, 100, 100);
-    }
+	private TextStyle style;
+	private Text text;
+	private Text titleText;
+	private Scrollbar scrollBar;
+	private Button closeButton;
+	private int titleOffset = 90; //default size of title area
 
-    public Dialog(float x, float y, float w, float h) {
-        super(x, y, w, h);
+	public Dialog() {
+		this(0, 0, 100, 100);
+	}
 
-        sprite = new Sprite("ui/menu", null, Texture.class);
-        visible = true;
+	public Dialog(float x, float y, float w, float h) {
+		super(x, y, w, h);
 
-        style = new TextStyle("data/font/times.fnt", 0xFF0000FF, TextStyle.WordStyle.WRAPPING);
+		sprite = new Sprite("ui/menu", null, Texture.class);
+		visible = true;
 
-        text = new Text(x + 4, y + 4, w - 8, h - 20);
-        text.setStyle(style);
-        subComponents.add(text);
+		style = new TextStyle("data/font/times.fnt", 0xFF0000FF, TextStyle.WordStyle.WRAPPING);
 
-        scrollBar = new Scrollbar(false, x + w - 20, y, 20, h);
-        subComponents.add(scrollBar);
+		text = new Text(x + 4, y + 4, w - 20, h - titleOffset);
+		text.setStyle(style);
+		subComponents.add(text);
+		
+		titleText = new Text(x, y, w - 20 , h);
+		titleText.setStyle(style);
+		titleText.setText("");
+		titleText.centerOnPosition(w/2,  0);
+		subComponents.add(titleText);
 
-        setText(Gdx.files.internal("data/dialog_text.txt").readString());
+		scrollBar = new Scrollbar(false, x + w - 20, y, 20, h- titleOffset);
+		subComponents.add(scrollBar);
 
-        final Dialog dialog = this; // Used for the button
+		setText(Gdx.files.internal("data/dialog_text.txt").readString());
 
-        closeButton = new Button(x, y + h - 15, "ui/cross"){
-            @Override
-            protected void clicked() {
-                dialog.visible = false;
-            }
-        };
-        subComponents.add(closeButton);
-    }
+		final Dialog dialog = this; // Used for the button
 
-    public void appendText(String text) {
-        this.text.appendText(text);
-    }
+		closeButton = new Button(x + w - 20, y + h - 15, "ui/cross") {
 
-    public void setText(String text) {
-        this.text.setText(text);
+			@Override
+			protected void clicked() {
+				dialog.visible = false;
+			}
+		};
+		subComponents.add(closeButton);
+	}
 
-        float width = this.text.getBounds().width;
-        float height = this.text.getBounds().height;
-        scrollBar.updateBounds(width, height);
-    }
+	public void appendText(String text) {
+		this.text.appendText(text);
+	}
 
-    @Override
-    public void handleInput(Point2F mousePosition, int amount, int event) {
-        scrollBar.scroll(amount * 5);
+	public void setText(String text) {
+		this.text.setText(text);
 
-        super.handleInput(mousePosition, amount, event);
-    }
+		float width = this.text.getBounds().width;
+		float height = this.text.getBounds().height;
+		scrollBar.updateBounds(width, height);
+	}
+	
+	public void setTitle(String title){
+		this.titleText.setText(title);
+		titleText.centerOnPosition(size.x/2,  0);
+	}
+	@Override
+	public void handleInput(Point2F mousePosition, int amount, int event) {
+		scrollBar.scroll(amount * 5);
 
-    @Override
-    public void handleInput(Point2F mousePosition, int event) {
+		super.handleInput(mousePosition, amount, event);
+	}
 
-        super.handleInput(mousePosition, event);
-    }
+	@Override
+	public void handleInput(Point2F mousePosition, int event) {
 
-    @Override
-    public boolean intersects(Point2F mousePosition) {
-        if(visible){
-            return getHitbox().intersects(mousePosition);
-        } else {
-            return false;
-        }
-    }
+		super.handleInput(mousePosition, event);
+	}
 
-    // Override it so we can use a glScissor
-    @Override
-    public void render(SpriteBatch batch) {
-        if (!visible)
-            return;
+	@Override
+	public boolean intersects(Point2F mousePosition) {
+		if (visible) {
+			return getHitbox().intersects(mousePosition);
+		} else {
+			return false;
+		}
+	}
 
-        float currentX = pos.x - Camera.getDefault().xOffsetAggregate;
-        float currentY = pos.y - Camera.getDefault().yOffsetAggregate;
+	// Override it so we can use a glScissor
+	@Override
+	public void render(SpriteBatch batch) {
+		if (!visible)
+			return;
 
-        float yOffset = scrollBar.scrollPercentage * (text.getBounds().height - size.y);
-        text.setTextPosition(0, yOffset);
+		float currentX = pos.x - Camera.getDefault().xOffsetAggregate;
+		float currentY = pos.y - Camera.getDefault().yOffsetAggregate;
 
-        sprite.render(batch, currentX, currentY, size.x, size.y);
+		float yOffset = scrollBar.scrollPercentage * (text.getBounds().height - (size.y - titleOffset));
+		text.setTextPosition(0, yOffset);
 
-        // Render all the subcomponents
-        for (SubGUIComponent child : subComponents) {
-            child.render(batch);
-        }
-    }
+		sprite.render(batch, currentX, currentY, size.x, size.y);
+
+		// Render all the subcomponents
+		for (SubGUIComponent child : subComponents) {
+			child.render(batch);
+		}
+	}
 }

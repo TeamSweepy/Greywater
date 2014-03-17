@@ -1,158 +1,147 @@
+
 package com.teamsweepy.greywater.ui.gui.subgui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.*;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.input.InputHandler;
-import com.teamsweepy.greywater.entities.components.Hitbox;
 import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
-import com.teamsweepy.greywater.ui.gui.temp.InputListener;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Robin de Jong
- * Date: 6:38 PM, 3/14/14
+ * Created with IntelliJ IDEA. User: Robin de Jong Date: 6:38 PM, 3/14/14
  */
 public class Scrollbar extends SubGUIComponent {
-    private boolean horizontal;
-    public Rectangle scroller;
-    private Sprite scrollerGraphic;
-    public float scrollPercentage = 0f;
 
-    public Scrollbar(boolean horizontal, float x, float y, float w, float h) {
-        super(x, y, w, h);
+	private boolean horizontal;
+	public Rectangle scroller;
+	private Sprite scrollerGraphic;
+	public float scrollPercentage = 0f;
 
-        sprite = new Sprite("ui/scroller", null, Texture.class);
-        scrollerGraphic = new Sprite("ui/scroller_button", null, Texture.class);
+	public Scrollbar(boolean horizontal, float x, float y, float w, float h) {
+		super(x, y, w, h);
 
-        scroller = new Rectangle(x, y, w, h);
+		sprite = new Sprite("ui/scroller", null, Texture.class);
+		scrollerGraphic = new Sprite("ui/scroller_button", null, Texture.class);
 
-        this.horizontal = horizontal;
-//        visible = true;
-    }
+		scroller = new Rectangle(x, y, w, h);
 
-    @Override
-    public void handleInput(Point2F mousePosition, int event)
-    {
-        if(event == InputHandler.MOUSE_DRAGGED || event == InputHandler.MOUSE_DOWN) {
-            float offsetY = (pos.y + size.y) - mousePosition.y;
-            updatePosition(0, offsetY);
-        }
+		this.horizontal = horizontal;
+	}
 
-        super.handleInput(mousePosition, event);
-    }
+	@Override
+	public void handleInput(Point2F mousePosition, int event) {
+		if (event == InputHandler.MOUSE_DRAGGED || event == InputHandler.MOUSE_DOWN) {
+			float offsetY = (pos.y + size.y) - mousePosition.y;
+			updatePosition(0, offsetY);
+		}
 
-    public void scroll(int amount) {
-        wheelScroll(amount);
-    }
+		super.handleInput(mousePosition, event);
+	}
 
-    public void wheelScroll(int amount) {
-        if (horizontal) {
-            updatePosition(scroller.x + (amount * 5), 0);
-        } else {
-            updatePosition(0, scroller.y + (amount * 5));
-        }
-    }
+	public void scroll(int amount) {
+		wheelScroll(amount);
+	}
 
-    public void updateBounds(float width, float height) {
-        int difference = 100;
-        setVisible(false);
-        if(horizontal) {
-            if(width > size.x) {
-                difference = (int)((size.x / width) * 100);
-                setVisible(true);
-            }
-        } else {
-            if(height > size.y) {
-                difference = (int)((size.y / height) * 100);
-                setVisible(true); // This is not working...
-            }
-        }
+	public void wheelScroll(int amount) {
+		if (horizontal) {
+			updatePosition(scroller.x + (amount * 5), 0);
+		} else {
+			updatePosition(0, scroller.y + (amount*5));
+		}
+	}
 
-        updatePercentage(difference);
-    }
+	public void updateBounds(float width, float height) {
+		int difference = 100;
+		setVisible(false);
+		if (horizontal) {
+			if (width > size.x) {
+				difference = (int) ((size.x / width) * 100);
+				setVisible(true);
+			}
+		} else {
+			if (height > size.y) {
+				difference = (int) ((size.y / height) * 100);
+				setVisible(true); // This is not working...
+			}
+		}
 
-    public void updatePosition(float x, float y) {
-        if (horizontal) {
-            float dir = scroller.x - x;
-            scroller.x = x;
+		updatePercentage(difference);
+	}
 
-            if (dir > 0) {
-                if (scroller.x < 0) {
-                    scroller.x = 0;
-                }
-            } else {
-                if (scroller.x > size.x - scroller.width) {
-                    scroller.x = (size.x - scroller.width);
-                }
-            }
-        } else {
-            float dir = scroller.y - y;
-            scroller.y = y;
-            if (dir > 0) {
-                if (scroller.y < 0) {
-                    scroller.y = 0;
-                }
-            } else {
-                if (scroller.y > size.y - scroller.height) {
-                    scroller.y = (size.y - scroller.height);
-                }
-            }
-        }
-    }
+	public void updatePosition(float x, float y) {
+		if (horizontal) {
+			float dir = scroller.x - x;
+			scroller.x = x;
 
-    public void updatePercentage(int percentage) {
-        if (horizontal) {
-            //TODO: Horizontal
-            scroller.width = (int) (size.x * (percentage / 100f));
-        } else {
-            scroller.height = (int) (size.y * (percentage / 100f));
-            float newPos = (size.y * (percentage / 100f));
+			if (dir > 0) {
+				if (scroller.x < 0) {
+					scroller.x = 0;
+				}
+			} else {
+				if (scroller.x > size.x - scroller.width) {
+					scroller.x = (size.x - scroller.width);
+				}
+			}
+		} else {
+			float dir = scroller.y - y;
+			scroller.y = y;
+			if (dir > 0) { //scroll up
+				if (scroller.y < 0) {
+					scroller.y = 0;
+				}
+			} else { //scroll down
+				if (scroller.y > size.y - scroller.height) {
+					scroller.y = (size.y - scroller.height);
+				}
+			}
+		}
+	}
 
-            if (newPos < scroller.height)
-                newPos = scroller.height;
+	public void updatePercentage(int percentage) {
+		if (horizontal) {
+			//TODO: Horizontal
+			scroller.width = (int) (size.x * (percentage / 100f));
+		} else {
+			scroller.height = (int) (size.y * (percentage / 100f));
+			float newPos = (size.y * (percentage / 100f));
 
-            scroller.y = (int) (newPos - scroller.height);
-        }
-    }
+			if (newPos < scroller.height)
+				newPos = scroller.height;
 
-    @Override
-    public boolean intersects(Point2F mousePosition) {
-        return getHitbox().intersects(mousePosition);
-    }
+			scroller.y = (int) (newPos - scroller.height);
+		}
+	}
 
-    @Override
-    public void render(SpriteBatch batch) {
-        if (!visible)
-            return;
+	@Override
+	public boolean intersects(Point2F mousePosition) {
+		return getHitbox().intersects(mousePosition);
+	}
 
-        float offsetX = Camera.getDefault().xOffsetAggregate;
-        float offsetY = Camera.getDefault().yOffsetAggregate;
+	@Override
+	public void render(SpriteBatch batch) {
+		if (!visible)
+			return;
 
-        if (horizontal) {
-            scrollPercentage = scroller.x / (size.x - scroller.width);
-        } else {
-            scrollPercentage = scroller.y / (size.y - scroller.height);
-        }
-        if(Float.isNaN(scrollPercentage)) scrollPercentage = 0f;
+		float offsetX = Camera.getDefault().xOffsetAggregate;
+		float offsetY = Camera.getDefault().yOffsetAggregate;
 
-        sprite.render(batch, pos.x - offsetX, pos.y - offsetY, size.x, size.y);
-        scrollerGraphic.render(
-                batch,
-                scroller.x - offsetX,
-                pos.y - (scroller.y - size.y + scroller.height) - offsetY,
-                scroller.width,
-                scroller.height
-        );
+		if (horizontal) {
+			scrollPercentage = scroller.x / (size.x - scroller.width);
+		} else {
+			scrollPercentage = scroller.y / (size.y - scroller.height);
+		}
+		if (Float.isNaN(scrollPercentage))
+			scrollPercentage = 0f;
 
-        // Render all the subcomponents
-        for (SubGUIComponent child : subComponents) {
-            child.render(batch);
-        }
-    }
+		sprite.render(batch, pos.x - offsetX, pos.y - offsetY, size.x, size.y);
+		scrollerGraphic.render(batch, scroller.x - offsetX, pos.y - (scroller.y - size.y + scroller.height) - offsetY, scroller.width, scroller.height);
+
+		// Render all the subcomponents
+		for (SubGUIComponent child : subComponents) {
+			child.render(batch);
+		}
+	}
 }

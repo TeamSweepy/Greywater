@@ -116,6 +116,7 @@ public class Player extends Mob {
 				physicsComponent.stopMovement();
 				pather.reset();
 				this.currentDirection = Globals.getDirectionString(interactedMob, this); //face target
+				((NPC)interactedMob).interact(this);
 				//				if(interactedMob.getClass() == Sweepy.class){
 				//
 				//				} else{
@@ -143,11 +144,8 @@ public class Player extends Mob {
 		if (enemy == null || attacking)
 			return;
 
-		System.out.println(name + " attacked " + (enemy).name);
-		physicsComponent.stopMovement();
-		pather.reset();
-
 		if (enemy.getLocation().distance(getLocation()) > getWidth() * 2.5) { //if cant reach
+			focusTarget = enemy;
 			pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(enemy.getLocation()));
 			Point newPoint = pather.getNextStep();
 			newPoint = pather.getNextStep();
@@ -158,6 +156,10 @@ public class Player extends Mob {
 			}
 			return;
 		}
+		
+		System.out.println(name + " attacked " + (enemy).name);
+		physicsComponent.stopMovement();
+		pather.reset();
 
 		attacking = true;
 		this.currentDirection = Globals.getDirectionString(enemy, this);
@@ -168,7 +170,7 @@ public class Player extends Mob {
 		System.out.println(this.name + " rolled " + chanceToHit + " to hit " + enemy.name);
 
 		if (chanceToHit > 8) {
-			damage += Globals.D(11);
+			damage += Globals.D(30);
 			enemy.changeHP(damage);
 			System.out.println(name + " hit " + enemy.name + " for " + damage + " damage...");
 			if (!enemy.isAlive()) {

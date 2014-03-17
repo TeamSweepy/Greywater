@@ -4,16 +4,17 @@
 
 package com.teamsweepy.greywater.ui.gui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
+import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.entities.Player;
 import com.teamsweepy.greywater.entities.components.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
-import com.teamsweepy.greywater.ui.gui.subgui.Button;
 import com.teamsweepy.greywater.ui.gui.subgui.ButtonCircular;
 import com.teamsweepy.greywater.ui.gui.subgui.Plane;
 import com.teamsweepy.greywater.ui.gui.subgui.ProgressBarCircular;
+import com.teamsweepy.greywater.ui.gui.subgui.SubGUIComponent;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class HUD extends GUIComponent {
 

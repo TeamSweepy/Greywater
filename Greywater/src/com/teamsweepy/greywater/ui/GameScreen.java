@@ -17,7 +17,6 @@ import com.teamsweepy.greywater.ui.gui.Cursor;
 import com.teamsweepy.greywater.ui.gui.GUI;
 import com.teamsweepy.greywater.ui.gui.HUD;
 import com.teamsweepy.greywater.ui.gui.Inventory;
-import com.teamsweepy.greywater.ui.gui.subgui.Dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -36,9 +35,6 @@ public class GameScreen implements Screen {
 	Cursor playerCursor;
 	boolean ticking = true;
 
-    //TEST DIALOG
-    Dialog dialog;
-
 	public GameScreen(Engine eng) {
 		engine = eng;
 
@@ -46,15 +42,14 @@ public class GameScreen implements Screen {
 		playerInventory = new Inventory();
 		playerHUD = new HUD();
 		playerCursor = new Cursor();
-        dialog = new Dialog(500, 500, 600, 200);
+
 		Player.getLocalPlayer().setInventory(playerInventory);
 		GUI.addGUIComponent(playerHUD, GUI.TOP_LAYER);
 		GUI.addGUIComponent(playerInventory);
 		GUI.addGUIComponent(playerCursor, GUI.TOP_LAYER);
-		GUI.addGUIComponent(dialog);
 
 
-        this.hide();
+		this.hide();
 	}
 
 	@Override
@@ -85,9 +80,6 @@ public class GameScreen implements Screen {
 	public void show() {
 		playerCursor.setVisible(true);
 		playerHUD.setVisible(true);
-		playerInventory.setVisible(true);
-        dialog.setVisible(true);
-
 	}
 
 	@Override
@@ -95,7 +87,6 @@ public class GameScreen implements Screen {
 		playerCursor.setVisible(false);
 		playerHUD.setVisible(false);
 		playerInventory.setVisible(false);
-        dialog.setVisible(false);
 	}
 
 	@Override

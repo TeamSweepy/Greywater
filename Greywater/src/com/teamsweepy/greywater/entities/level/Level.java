@@ -75,12 +75,10 @@ public class Level {
 		depthSortList = new ArrayList<Entity>();
 
 		TestTavishMob = Player.initLocalPlayer(0f, 90f, this);
-		KillQuest kq = new KillQuest(TestTavishMob, TestAIMob);
-		TestTavishMob.addGameListener(kq);
-
 		mobList.add(TestTavishMob);
 		//		for(int i = 0; i < 20; i ++){
 		mobList.add(new Watchman(20, 70, this, TestTavishMob));
+		mobList.add(new Watchman(20, 93, this, TestTavishMob));
 		mobList.add(new NPC(4, 93, this));
 		//		}
 		interactiveList.addAll(mobList);

@@ -1,99 +1,112 @@
 
 package com.teamsweepy.greywater.effect;
 
-import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entities.Mob;
+import com.teamsweepy.greywater.entities.components.events.GameEvent;
 import com.teamsweepy.greywater.entities.components.events.GameEventListener;
 
+import sun.org.mozilla.javascript.internal.ast.Assignment;
+
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 
-public abstract class Quest implements  GameEventListener{
+public abstract class Quest implements GameEventListener {
 
-	public final int QUEST_STATUS_UNSTARTED = 0;
-	public final int QUEST_STATUS_INPROGRESS = 1;
-	public final int QUEST_STATUS_TURNIN = 2;
-	public final int QUEST_STATUS_COMPLETED = 3;
+	public static final int ASSIGNEE_STATUS_UNSTARTED = 0;
+	public static final int ASSIGNEE_STATUS_INPROGRESS = 1;
+	public static final int ASSIGNEE_STATUS_TURNIN = 2;
+	public static final int ASSIGNEE_STATUS_COMPLETED = 3;
 
-	protected ArrayList<String> introText;
-	protected ArrayList<String> waitingText;
-	protected ArrayList<String> completedText;
-	protected ArrayList<Quest> subQuests;
+	private HashMap<Mob, Integer> assignees;
+	private ArrayList<Quest> prereqs;
+	//	private ArrayList<Quest> objectives;
 
-	protected int questState = 0;
-	protected int questType = 4;
-	protected Mob questAssignee;
-	protected Mob questGiver;
+	private String introText = "LOLOL DO A THING";
+	private String waitText = "LOLOL WHY HAVENT YOU DONE A THING";
+	private String completeText = "LOLOL YOU DID A THING";
 
-	/** Test Quest */
-	public Quest(Mob doer, Mob giver) {
-		introText = new ArrayList<String>();
-		waitingText = new ArrayList<String>();
-		completedText = new ArrayList<String>();
-		introText.add("Go do some bullshit!");
-		waitingText.add("You done my pointless bullshit yet?");
-		completedText.add("Congratulations, you just let a computer boss you around. Chump.");
-		questAssignee = doer;
-		questGiver = giver;
+	public Quest() {
+		assignees = new HashMap<Mob, Integer>();
+		prereqs = new ArrayList<Quest>();
 	}
 
-	/** Simple Quest */
-	public Quest(String intro, String waiting, String completed, Mob doer, Mob giver) {
-		introText = new ArrayList<String>();
-		waitingText = new ArrayList<String>();
-		completedText = new ArrayList<String>();
-		introText.add(intro);
-		waitingText.add(waiting);
-		completedText.add(completed);
-		questAssignee = doer;
-		questGiver = giver;
-	}
+	private boolean closedQuest;
+	private boolean completeQuest;
 
-	/** Real Constructor, supports subquests */
-	public Quest(List<String> intro, List<String> waiting, List<String> completed, List<Quest> children, Mob doer, Mob giver) {
-//		introText = new ArrayList<String>();
-//		waitingText = new ArrayList<String>();
-//		completedText = new ArrayList<String>();
-//		subQuests = new ArrayList<Quest>();
-//		introText.addAll(intro);
-//		waitingText.addAll(waiting);
-//		completedText.addAll(completed);
-//		if (children != null)
-//			subQuests.addAll(children);
-		questAssignee = doer;
-		questGiver = giver;
-	}
 
-	/** Return integer marking quest's status, see static ints in this class - QUEST_*** */
-	public int getQuestState() {
-		return questState;
-	}
-
-	/** Get the next bit of dialog associated with this quest */
-	public String getCurrentQuestText() {
-		if (subQuests != null && subQuests.size() > 0) { //if there are subQuests
-			if(subQuests.get(0).questState == QUEST_STATUS_COMPLETED){
-				subQuests.remove(0);
-				return getCurrentQuestText();
-			}else {
-				return subQuests.get(0).getCurrentQuestText();
+	public boolean isAvailable(Mob assignee) {
+		if (closedQuest || assignees.keySet().contains(assignee))
+			return false;
+		boolean available = true;
+		if (prereqs != null) {
+			for (int i = 0; i < prereqs.size(); i++) {
+				if (prereqs.get(i).getQuestState(assignee) != ASSIGNEE_STATUS_COMPLETED && !prereqs.get(i).completeQuest) {
+					available = false;
+					break;
+				}
+				if (prereqs.get(i).closedQuest) {
+					prereqs.remove(i);
+					i--;
+				}
 			}
-		} else { //if no subquests
-			switch (questState) {
-				case QUEST_STATUS_UNSTARTED:
-					return introText.get(Globals.rand.nextInt(introText.size()));
-				case QUEST_STATUS_INPROGRESS:
-					return waitingText.get(Globals.rand.nextInt(waitingText.size()));
-				case QUEST_STATUS_TURNIN:
-					return completedText.get(Globals.rand.nextInt(completedText.size()));
-				case QUEST_STATUS_COMPLETED:
-					return null;
-			}//end switch
+		}
+		return available;
+	}
+
+	public void turnIn(Mob finishedMob) {
+		if (assignees.get(finishedMob) == ASSIGNEE_STATUS_TURNIN) {
+			if (assignees.keySet().size() == 1) {
+				closedQuest = true;
+				completeQuest = true;
+			}
+			assignees.put(finishedMob, ASSIGNEE_STATUS_COMPLETED);
+			//assignee.questlog.remove(this)
+		}
+	}
+
+	public int getQuestState(Mob assignee) {
+		if (assignees.containsKey(assignee))
+			return assignees.get(assignee);
+		return ASSIGNEE_STATUS_UNSTARTED;
+	}
+
+	public void addPrereq(Quest prereq) {
+		prereqs.add(prereq);
+	}
+
+	public void startQuest(Mob assignee) {
+		if (!assignees.keySet().contains(assignee) && isAvailable(assignee)) {
+			assignee.addGameListener(this);
+			assignees.put(assignee, ASSIGNEE_STATUS_INPROGRESS);
+			//assignee.questlog.add(this);
+		}
+	}
+
+	public void completeObjective() {
+		if (isQuestActionOver()) {
+			for (Mob m : assignees.keySet()) {
+				assignees.put(m, ASSIGNEE_STATUS_TURNIN);
+			}
+			closedQuest = true;
+		}
+	}
+
+	public String getText(Mob assignee) {
+		int mobStatus = getQuestState(assignee);
+		switch (mobStatus) {
+			case ASSIGNEE_STATUS_UNSTARTED:
+				return introText;
+			case ASSIGNEE_STATUS_INPROGRESS:
+				return waitText;
+			case ASSIGNEE_STATUS_TURNIN:
+				return completeText;
 		}
 		return null;
 	}
-	
-	public abstract boolean finished();
+
+	public abstract boolean isQuestActionOver();
+
+
 
 }
