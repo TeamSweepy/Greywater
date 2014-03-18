@@ -60,14 +60,12 @@ public class ItemSlot extends SubGUIComponent {
 			return;
 
 		// render the slot
-		float xOff = Camera.getDefault().xOffsetAggregate;
-		float yOff = Camera.getDefault().yOffsetAggregate;
-		sprite.render(g, pos.x - xOff, pos.y - yOff);
+		sprite.render(g, pos.x, pos.y);
 
 		// render the item in the slot
 		if (item == null)
 			return;
-		item.render(g, pos.x - xOff, pos.y - yOff);
+		item.render(g, pos.x, pos.y);
 	}
 
 	@Override

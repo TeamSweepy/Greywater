@@ -4,7 +4,6 @@ package com.teamsweepy.greywater.ui.gui.subgui;
 import com.teamsweepy.greywater.ui.gui.Cursor;
 import com.teamsweepy.greywater.ui.gui.GUI;
 import com.teamsweepy.greywater.ui.gui.Inventory;
-import com.teamsweepy.greywater.ui.item.Item;
 import com.teamsweepy.greywater.ui.item.weapons.TazerWrench;
 
 /**

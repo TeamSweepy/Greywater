@@ -52,7 +52,7 @@ public class ProgressBarCircular extends SubGUIComponent {
 
 	@Override
 	public void render(SpriteBatch batch) {
-		sprite.renderRotated(batch, pos.x - Camera.getDefault().xOffsetAggregate, pos.y - Camera.getDefault().yOffsetAggregate, rotation);
+		sprite.renderRotated(batch, pos.x, pos.y, rotation);
 	}
 
 

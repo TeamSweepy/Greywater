@@ -25,8 +25,6 @@ public class Button extends SubGUIComponent {
 
 	/** Constructor for visible buttons using texture atlases! */
 	public Button(float x, float y, String atlasName, String imageName) {
-		// iéiga added this for hitbox initialization.
-		//the new iéiga, the next big thing from Apple
 		this.sprite = new Sprite(atlasName, imageName);
 		visible = true;
 		pos = new Point2F(x, y);
@@ -70,7 +68,7 @@ public class Button extends SubGUIComponent {
 
 	@Override
 	public void render(SpriteBatch batch) {
-		sprite.render(batch, pos.x - Camera.getDefault().xOffsetAggregate, pos.y - Camera.getDefault().yOffsetAggregate, size.x, size.y);
+		sprite.render(batch, pos.x, pos.y, size.x, size.y);
 	}
 	
 	@Override

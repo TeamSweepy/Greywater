@@ -97,6 +97,7 @@ public class Text extends SubGUIComponent {
 
 	public void setTextPosition(Point2F point) {
 		textPosition = point;
+		cache.setPosition(textPosition.x + pos.x,textPosition.y + pos.y + size.y);
 	}
 
 	public void setTextPosition(float x, float y) {
@@ -112,14 +113,10 @@ public class Text extends SubGUIComponent {
 	public void render(SpriteBatch batch) {
 		if (cache == null)
 			return;
-		float offsetX = pos.x - Camera.getDefault().xOffsetAggregate;
-		float offsetY = pos.y - Camera.getDefault().yOffsetAggregate;
-		
 		batch.end();
 		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 		Gdx.gl.glScissor((int) (pos.x), (int) (pos.y), (int) (size.x), (int) (size.y));
 		batch.begin();
-		cache.setPosition(textPosition.x + offsetX, textPosition.y + offsetY + size.y);
 		cache.draw(batch);
 
 		batch.flush(); // Save the data

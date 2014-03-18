@@ -125,9 +125,6 @@ public class Scrollbar extends SubGUIComponent {
 		if (!visible)
 			return;
 
-		float offsetX = Camera.getDefault().xOffsetAggregate;
-		float offsetY = Camera.getDefault().yOffsetAggregate;
-
 		if (horizontal) {
 			scrollPercentage = scroller.x / (size.x - scroller.width);
 		} else {
@@ -136,8 +133,8 @@ public class Scrollbar extends SubGUIComponent {
 		if (Float.isNaN(scrollPercentage))
 			scrollPercentage = 0f;
 
-		sprite.render(batch, pos.x - offsetX, pos.y - offsetY, size.x, size.y);
-		scrollerGraphic.render(batch, scroller.x - offsetX, pos.y - (scroller.y - size.y + scroller.height) - offsetY, scroller.width, scroller.height);
+		sprite.render(batch, pos.x, pos.y, size.x, size.y);
+		scrollerGraphic.render(batch, scroller.x, pos.y - (scroller.y - size.y + scroller.height), scroller.width, scroller.height);
 
 		// Render all the subcomponents
 		for (SubGUIComponent child : subComponents) {

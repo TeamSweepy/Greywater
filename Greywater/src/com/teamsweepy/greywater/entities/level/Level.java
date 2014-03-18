@@ -8,7 +8,6 @@
 
 package com.teamsweepy.greywater.entities.level;
 
-import com.teamsweepy.greywater.effect.KillQuest;
 import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Globals;
@@ -74,9 +73,9 @@ public class Level {
 		interactiveList = new ArrayList<Entity>();
 		depthSortList = new ArrayList<Entity>();
 
-		TestTavishMob = Player.initLocalPlayer(0f, 90f, this);
+		TestTavishMob = Player.initLocalPlayer(4f, 90f, this);
 		mobList.add(TestTavishMob);
-		//		for(int i = 0; i < 20; i ++){
+		//		//		for(int i = 0; i < 20; i ++){
 		mobList.add(new Watchman(20, 70, this, TestTavishMob));
 		mobList.add(new Watchman(20, 93, this, TestTavishMob));
 		mobList.add(new NPC(4, 93, this));
@@ -104,7 +103,7 @@ public class Level {
 
 		Collections.sort(depthSortList, spriteSorter);
 		for (Entity e : depthSortList) {
-			e.render(batch);
+				e.render(batch);
 		}
 
 		depthSortList.clear();

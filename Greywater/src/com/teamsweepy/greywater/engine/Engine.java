@@ -42,12 +42,14 @@ public class Engine extends Game {
 	private short skipCount = 0;
 
 	//other stuff, will be sorted when there's more
-	public SpriteBatch batch;
+	public SpriteBatch gameBatch;
+	public SpriteBatch guiBatch;
 	public InputMultiplexer inputs; // This is not needed, it just makes it easier for the labels to work. This will be removed
 	private InputHandler inputHandlerGUI;
 	private InputGame inputHandlerGame;
 	private GameScreen gs;
 	private MainMenuScreen ms;
+
 
 	public static boolean inGame = false;
 
@@ -58,9 +60,11 @@ public class Engine extends Game {
 	public void create() {
 		AssetLoader.init();
 		Camera.getDefault().setViewPort(NATIVE_WIDTH, NATIVE_HEIGHT);
-
-		batch = new SpriteBatch();
-		batch.setProjectionMatrix(Camera.getDefault().getProjectionMatrix());
+		
+		gameBatch = new SpriteBatch();
+		gameBatch.setProjectionMatrix(Camera.getDefault().getProjectionMatrix());
+		guiBatch = new SpriteBatch();
+		guiBatch.setProjectionMatrix(Camera.getDefault().getProjectionMatrix());
 		Texture.setEnforcePotImages(false); //binary texture sizes are for the 80's
 
 		initInput();
@@ -83,7 +87,7 @@ public class Engine extends Game {
 	/** Dispose of unmanaged assets such as the spritebatch and all textures */
 	@Override
 	public void dispose() {
-		batch.dispose();
+		gameBatch.dispose();
 		AssetLoader.disposeAll();
 	}
 

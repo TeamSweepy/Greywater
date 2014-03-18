@@ -109,13 +109,10 @@ public class Dialog extends SubGUIComponent {
 		if (!visible)
 			return;
 
-		float currentX = pos.x - Camera.getDefault().xOffsetAggregate;
-		float currentY = pos.y - Camera.getDefault().yOffsetAggregate;
-
 		float yOffset = scrollBar.scrollPercentage * (text.getBounds().height - (size.y - titleOffset));
 		text.setTextPosition(0, yOffset);
 
-		sprite.render(batch, currentX, currentY, size.x, size.y);
+		sprite.render(batch, pos.x,  pos.y, size.x, size.y);
 
 		// Render all the subcomponents
 		for (SubGUIComponent child : subComponents) {

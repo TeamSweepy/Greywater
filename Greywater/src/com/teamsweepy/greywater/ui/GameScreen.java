@@ -20,7 +20,6 @@ import com.teamsweepy.greywater.ui.gui.Inventory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GameScreen implements Screen {
 
@@ -28,8 +27,6 @@ public class GameScreen implements Screen {
 
 	//testvar
 	Level levelForTesting;
-	SpriteBatch guiBatch;
-
 	HUD playerHUD;
 	Inventory playerInventory;
 	Cursor playerCursor;
@@ -48,7 +45,6 @@ public class GameScreen implements Screen {
 		GUI.addGUIComponent(playerInventory);
 		GUI.addGUIComponent(playerCursor, GUI.TOP_LAYER);
 
-
 		this.hide();
 	}
 
@@ -59,14 +55,15 @@ public class GameScreen implements Screen {
 
 		//translate sprite batch like camera
 		Point2F offsetPoint = Camera.getDefault().getTranslatedMatrix();
-		engine.batch.setProjectionMatrix(engine.batch.getProjectionMatrix().translate(offsetPoint.x, offsetPoint.y, 0));
+		engine.gameBatch.setProjectionMatrix(engine.gameBatch.getProjectionMatrix().translate(offsetPoint.x, offsetPoint.y, 0));
 
-		engine.batch.begin();// start render
-
-		levelForTesting.render(engine.batch);
-		GUI.render(engine.batch);
-
-		engine.batch.end();// end render
+		engine.gameBatch.begin();// start render
+		levelForTesting.render(engine.gameBatch);
+		engine.gameBatch.end();// end render
+		
+		engine.guiBatch.begin();
+		GUI.render(engine.guiBatch);
+		engine.guiBatch.end();
 	}
 
 	public void tick(float delta) {

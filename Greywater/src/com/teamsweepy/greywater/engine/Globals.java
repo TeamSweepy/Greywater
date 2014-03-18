@@ -70,14 +70,15 @@ public class Globals {
 	public static Point2F toNormalCoord(float xIso, float yIso) {
 		//reverse the x and y because Tiled Map Editor uses a wacky coordinate system
 		//divide x and y by the ratio of hitbox to sprite size
-		float temp = (xIso - Camera.getDefault().xOffsetAggregate) / tileRatio;
+		float temp = (xIso - Camera.getDefault().xOffsetAggregate ) / tileRatio;
 		xIso = -(yIso - Camera.getDefault().yOffsetAggregate) / tileRatio;
 		yIso = temp;
 
 		float x = xIso + yIso / 2;
 		float y = yIso / 2 - xIso;
+
 		//+- 50 because that is the size of the tile in objective coords
-		return new Point2F(x + 50, y - 50);
+		return new Point2F(x+25, y-25);
 	}
 
 	/** Converts objective coordinates to tile indices */
@@ -99,7 +100,7 @@ public class Globals {
 	/** Converts tile indices to objective coordinates */
 	public static Point2F toNormalCoordFromTileIndices(float xCoord, float yCoord) {
 		//+25 to indicate the center of a tile
-		Point2F location = new Point2F((xCoord * tileGridWidth) + 25, (yCoord * tileGridHeight) + 25);
+		Point2F location = new Point2F((xCoord * tileGridWidth) + 25 , (yCoord * tileGridHeight) + 25);
 		return location;
 	}
 	

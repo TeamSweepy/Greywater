@@ -83,7 +83,7 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	public void render(SpriteBatch g) {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		//center on the tile
-		graphicsComponent.render(g, p.x - graphicsComponent.getImageWidth() / 2, p.y + Globals.tileImageHeight / 3);
+		graphicsComponent.render(g, p.x - graphicsComponent.getImageWidth() / 2, p.y + Globals.tileImageHeight / 10);
 		if (inventory != null) {
 			inventory.render(g);
 		}

@@ -72,7 +72,7 @@ public class GUIComponent {
 		if (!visible)
 			return;
 		if (sprite != null)
-			sprite.render(batch, pos.x - Camera.getDefault().xOffsetAggregate, pos.y - Camera.getDefault().yOffsetAggregate);
+			sprite.render(batch, pos.x, pos.y);
 
 		// Render all the subcomponents
 		for (SubGUIComponent child : subComponents) {
