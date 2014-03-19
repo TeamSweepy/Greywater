@@ -1,7 +1,7 @@
 
 package com.teamsweepy.greywater.ui.gui.subgui;
 
-import com.teamsweepy.greywater.entities.components.Sprite;
+import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.ui.gui.Inventory;
 
 

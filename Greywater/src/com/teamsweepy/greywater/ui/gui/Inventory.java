@@ -1,20 +1,20 @@
 
 package com.teamsweepy.greywater.ui.gui;
 
-import com.teamsweepy.greywater.entities.components.Hitbox;
-import com.teamsweepy.greywater.entities.components.Sprite;
+import com.teamsweepy.greywater.entity.component.Hitbox;
+import com.teamsweepy.greywater.entity.component.Sprite;
+import com.teamsweepy.greywater.entity.item.Item;
+import com.teamsweepy.greywater.entity.item.crafting.Crafting;
+import com.teamsweepy.greywater.entity.item.misc.VoltCell;
+import com.teamsweepy.greywater.entity.item.potions.HealthPotion;
+import com.teamsweepy.greywater.entity.item.potions.Mercury;
+import com.teamsweepy.greywater.entity.item.weapons.Wrench;
 import com.teamsweepy.greywater.math.Point2F;
-import com.teamsweepy.greywater.ui.gui.crafting.Crafting;
 import com.teamsweepy.greywater.ui.gui.subgui.CraftingSlot;
 import com.teamsweepy.greywater.ui.gui.subgui.ItemSlot;
 import com.teamsweepy.greywater.ui.gui.subgui.OutputSlot;
 import com.teamsweepy.greywater.ui.gui.subgui.Plane;
 import com.teamsweepy.greywater.ui.gui.subgui.WeaponSlot;
-import com.teamsweepy.greywater.ui.item.Item;
-import com.teamsweepy.greywater.ui.item.misc.VoltCell;
-import com.teamsweepy.greywater.ui.item.potions.HealthPotion;
-import com.teamsweepy.greywater.ui.item.potions.Mercury;
-import com.teamsweepy.greywater.ui.item.weapons.Wrench;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 

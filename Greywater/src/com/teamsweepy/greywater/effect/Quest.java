@@ -1,9 +1,9 @@
 
 package com.teamsweepy.greywater.effect;
 
-import com.teamsweepy.greywater.entities.Mob;
-import com.teamsweepy.greywater.entities.components.events.GameEvent;
-import com.teamsweepy.greywater.entities.components.events.GameEventListener;
+import com.teamsweepy.greywater.entity.Mob;
+import com.teamsweepy.greywater.entity.component.events.GameEvent;
+import com.teamsweepy.greywater.entity.component.events.GameEventListener;
 
 import sun.org.mozilla.javascript.internal.ast.Assignment;
 

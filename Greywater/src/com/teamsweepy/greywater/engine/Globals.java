@@ -6,7 +6,8 @@
 
 package com.teamsweepy.greywater.engine;
 
-import com.teamsweepy.greywater.entities.Mob;
+import com.teamsweepy.greywater.entity.Mob;
+import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
 
 import com.badlogic.gdx.math.Vector2;
@@ -151,5 +152,23 @@ public class Globals {
 	 */
 	public static int D(int dice) {
 		return rand.nextInt(dice) + 1;
+	}
+	
+	/** Generates a random valid point in objective coordinates for items and people 
+	 * 
+	 * @param Level - the level to generate a random point in
+	 * @param tileRadius - how many tiles away the point can be from the original point
+	 **/
+	public static Point2F calculateRandomLocation(Point2F location, Level level, float tileRadius){
+		float newX;
+		float newY;
+		Point loc;
+		do{
+		 newX = location.x + Globals.rand.nextInt((int)(50+50*tileRadius))*Integer.signum(Globals.rand.nextInt());
+		 newY = location.y + Globals.rand.nextInt((int)(50+50*tileRadius))*Integer.signum(Globals.rand.nextInt());
+		 loc = toTileIndices(newX, newY);
+		} while(!level.isTileWalkable(loc.x, loc.y));
+			
+		return new Point2F(newX, newY);
 	}
 }

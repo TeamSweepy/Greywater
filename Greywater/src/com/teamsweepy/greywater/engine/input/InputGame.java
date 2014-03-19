@@ -13,7 +13,7 @@
 package com.teamsweepy.greywater.engine.input;
 
 import com.teamsweepy.greywater.engine.Camera;
-import com.teamsweepy.greywater.entities.Player;
+import com.teamsweepy.greywater.entity.Player;
 import com.teamsweepy.greywater.math.Point2F;
 
 import com.badlogic.gdx.Gdx;

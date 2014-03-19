@@ -9,7 +9,7 @@
 package com.teamsweepy.greywater.ui;
 
 import com.teamsweepy.greywater.engine.Engine;
-import com.teamsweepy.greywater.entities.components.Sprite;
+import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.ui.gui.GUI;
 import com.teamsweepy.greywater.ui.gui.GUIComponent;
 import com.teamsweepy.greywater.ui.gui.subgui.Button;

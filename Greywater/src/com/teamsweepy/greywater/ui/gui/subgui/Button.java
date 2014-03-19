@@ -5,8 +5,8 @@
 package com.teamsweepy.greywater.ui.gui.subgui;
 
 import com.teamsweepy.greywater.engine.Camera;
-import com.teamsweepy.greywater.entities.components.Hitbox;
-import com.teamsweepy.greywater.entities.components.Sprite;
+import com.teamsweepy.greywater.entity.component.Hitbox;
+import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

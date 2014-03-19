@@ -1,10 +1,10 @@
 
 package com.teamsweepy.greywater.ui.gui.subgui;
 
+import com.teamsweepy.greywater.entity.item.weapons.TazerWrench;
 import com.teamsweepy.greywater.ui.gui.Cursor;
 import com.teamsweepy.greywater.ui.gui.GUI;
 import com.teamsweepy.greywater.ui.gui.Inventory;
-import com.teamsweepy.greywater.ui.item.weapons.TazerWrench;
 
 /**
  * Output slot makes sure you can't place anything in it.

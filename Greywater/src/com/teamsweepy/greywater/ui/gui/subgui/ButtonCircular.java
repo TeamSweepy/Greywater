@@ -3,7 +3,7 @@
  */
 package com.teamsweepy.greywater.ui.gui.subgui;
 
-import com.teamsweepy.greywater.entities.components.Hitbox;
+import com.teamsweepy.greywater.entity.component.Hitbox;
 import com.teamsweepy.greywater.math.Point2F;
 
 
