@@ -40,6 +40,8 @@ import com.teamsweepy.greywater.math.Point2F;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
+import java.awt.Point;
+
 
 public abstract class Entity {
 
@@ -97,6 +99,10 @@ public abstract class Entity {
 	/** Returns location in objective coordinates */
 	public Point2F getLocation() {
 		return new Point2F(getX(), getY());
+	}
+	
+	public Point getTileLocation(){
+		return Globals.toTileIndices(getLocation());
 	}
 
 	/** Used for hitbox interaction, meant to indicate if two entities collide in objective coordinate space */

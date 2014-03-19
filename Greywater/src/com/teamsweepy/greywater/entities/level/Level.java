@@ -39,6 +39,7 @@ public class Level {
 	private ArrayList<Entity> depthSortList;
 	private Tile[][] tileList;
 	private Tile[][] wallList;
+	private int[][] intWallList;
 	private ArrayList<Mob> mobList;
 	private ArrayList<Entity> interactiveList;
 
@@ -68,6 +69,7 @@ public class Level {
 		map = new TmxMapLoader().load("data/map.tmx");
 		mainCamera = Camera.getDefault();
 		convertTiledMapToEntities();
+		setUpMapCosts();
 
 		mobList = new ArrayList<Mob>();
 		interactiveList = new ArrayList<Entity>();
@@ -96,14 +98,14 @@ public class Level {
 					depthSortList.add(wallList[x][y]);
 			}
 		}
-
+		removeOccludingWalls();
 		for (Mob mob : mobList) {
 			depthSortList.add(mob);
 		}
 
 		Collections.sort(depthSortList, spriteSorter);
 		for (Entity e : depthSortList) {
-				e.render(batch);
+			e.render(batch);
 		}
 
 		depthSortList.clear();
@@ -185,6 +187,42 @@ public class Level {
 		return null;
 	}
 
+	public void removeOccludingWalls() {
+		Point pLoc = Player.getLocalPlayer().getTileLocation();
+		for (int i = 0; i < 6; i++) {
+			removeOccludingWalls(pLoc.x + i, pLoc.y, false);
+			removeOccludingWalls(pLoc.x, pLoc.y - i, true);
+		}
+	}
+
+	private void removeOccludingWalls(int x, int y, boolean xTransverse) {
+		if (!isWall(x, y) || wallList[x][y].isTransparent()) { //if invalid tile
+			return;
+		}
+
+		if (isWall(x, y + 1) || isWall(x, y - 1)) { //if corner, stop
+			if (isWall(x + 1, y) || isWall(x - 1, y)) {
+				return;
+			}
+		}
+		wallList[x][y].setTransparency(true, xTransverse);
+		if (xTransverse) {
+			removeOccludingWalls(x - 1, y, xTransverse);
+			removeOccludingWalls(x + 1, y, xTransverse);
+		} else {
+			removeOccludingWalls(x, y - 1, xTransverse);
+			removeOccludingWalls(x, y + 1, xTransverse);
+		}
+
+
+	}
+
+	private boolean isWall(int x, int y) {
+		if (x < 0 || x >= wallList.length || y < 0 || y >= wallList[0].length || wallList[x][y] == null) //if invalid tile
+			return false;
+		return true;
+	}
+
 	/** Converts map from Tiled Map Editor (TMX) into Entity Objects. You can probably ignore this method. */
 	private void convertTiledMapToEntities() {
 		TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
@@ -232,4 +270,24 @@ public class Level {
 	public Point getMapDimensions() {
 		return new Point(tileList.length, tileList[0].length);
 	}
+
+
+	public int[][] getMapAsCosts() {
+		return intWallList;
+	}
+
+	public int[][] setUpMapCosts() {
+		intWallList = new int[tileList.length][tileList[0].length];
+		for (int x = 0; x < tileList.length; x++) {
+			for (int y = 0; y < tileList[0].length; y++) {
+				if (isTileWalkable(x, y)) {
+					intWallList[x][y] = 0;
+				} else {
+					intWallList[x][y] = 1;
+				}
+			}
+		}
+		return intWallList;
+	}
+
 }

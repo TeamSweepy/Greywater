@@ -117,7 +117,7 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		if (e.action.contains("ATTACK") && e.ending && !e.beginning) {
 			attacking = false;
 		} else if (e.action.contains("WALK") && !e.beginning) {
-			((Sound) AssetLoader.getAsset(Sound.class, "TavWalk1V1.wav")).play(); //replace with proper naming convention TODO	
+			//((Sound) AssetLoader.getAsset(Sound.class, "TavWalk1V1.wav")).play(); //replace with proper naming convention TODO	
 		} else if (e.action.contains("Die") && e.ending) {
 			System.out.println(name + " died: " + HP);
 			graphicsComponent = new Sprite(this.name, name + "Dead");

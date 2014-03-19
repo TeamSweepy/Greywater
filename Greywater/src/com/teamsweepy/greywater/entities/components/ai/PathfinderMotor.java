@@ -116,20 +116,7 @@ public class PathfinderMotor {
 	}
 
 	public void updateMap(Level level) {
-		Point dimensions = level.getMapDimensions();
-		int[][] mapCost = new int[dimensions.x][dimensions.y];
-		// Walkable == 0
-		for (int x = 0; x < dimensions.x; x++) {
-			for (int y = 0; y < dimensions.y; y++) {
-				if (level.isTileWalkable(x, y)) {
-					mapCost[x][y] = 0;
-				} else {
-					mapCost[x][y] = 1;
-				}
-			}
-		}
-
-		pathfinder.setMap(mapCost);
+		pathfinder.setMap(level.getMapAsCosts());
 	}
 
 	public enum Method {

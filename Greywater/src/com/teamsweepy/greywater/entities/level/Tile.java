@@ -21,7 +21,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 
 public class Tile extends Entity {
-
+	
+	private boolean transparent;
+	private Sprite trans;
 	/**
 	 * Constructor!
 	 * 
@@ -51,11 +53,45 @@ public class Tile extends Entity {
 		this.physicsComponent = new Hitbox(xPos, yPos, widthAndHeight, widthAndHeight, 0);
 	}
 	
+	public void render(SpriteBatch g){
+		if(transparent){
+			renderTransparent(g);
+		} else {
+			super.render(g);
+		}
+	}
+	
 	public void renderTransparent(SpriteBatch g){
-		Sprite trans = new Sprite("Transparent");
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		trans.render(g, p.x, p.y);
-		
+		transparent = false;
+	}
+	
+	public void setTransparency(boolean tr){
+		if(trans == null){
+			trans = new Sprite("Transparent");
+		}
+		transparent = tr;
+	}
+	
+	public void setTransparency(boolean tr, boolean x){
+		if(trans == null){
+			trans = new Sprite("Transparent");
+		}
+		transparent = tr;
+		if(x){
+			if(!trans.getCurrentImageName().equalsIgnoreCase("Transparent_X")){
+				trans.setImage("Transparent_X");
+			}
+		}else{
+			if(!trans.getCurrentImageName().equalsIgnoreCase("Transparent_Y")){
+				trans.setImage("Transparent_Y");
+			}
+		}
+	}
+	
+	public boolean isTransparent(){
+		return transparent;
 	}
 
 
