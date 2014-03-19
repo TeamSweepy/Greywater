@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Mercury extends Item {
 
 	public Mercury() {
-		sprite = new Sprite("mercury");
+		graphicsComponent = new Sprite("mercury");
 	}
 
 	@Override

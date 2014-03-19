@@ -100,8 +100,8 @@ public abstract class Entity {
 	public Point2F getLocation() {
 		return new Point2F(getX(), getY());
 	}
-	
-	public Point getTileLocation(){
+
+	public Point getTileLocation() {
 		return Globals.toTileIndices(getLocation());
 	}
 

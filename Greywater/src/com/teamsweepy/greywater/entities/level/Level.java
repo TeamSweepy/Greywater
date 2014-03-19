@@ -17,6 +17,7 @@ import com.teamsweepy.greywater.entities.Player;
 import com.teamsweepy.greywater.entities.Watchman;
 import com.teamsweepy.greywater.entities.components.Entity;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.item.Item;
 
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -35,12 +36,15 @@ import java.util.Comparator;
 
 public class Level {
 
+	private static Level level;
+
 	private TiledMap map;
 	private ArrayList<Entity> depthSortList;
 	private Tile[][] tileList;
 	private Tile[][] wallList;
 	private int[][] intWallList;
 	private ArrayList<Mob> mobList;
+	private ArrayList<Item> floorItemsList;
 	private ArrayList<Entity> interactiveList;
 
 	Camera mainCamera;
@@ -63,6 +67,7 @@ public class Level {
 	};
 
 	public Level() {
+		level = this;
 		while (AssetLoader.tick() < 1f) {
 			// do nothing TODO remove later
 		}
@@ -72,6 +77,7 @@ public class Level {
 		setUpMapCosts();
 
 		mobList = new ArrayList<Mob>();
+		floorItemsList = new ArrayList<Item>();
 		interactiveList = new ArrayList<Entity>();
 		depthSortList = new ArrayList<Entity>();
 
@@ -87,6 +93,18 @@ public class Level {
 
 	}
 
+
+	/** Adds an item to the ground */
+	public void addNewFloorItem(Item e) {
+		floorItemsList.add(e);
+	}
+
+	/** Removes an item from the ground */
+	public void removeFloorItem(Item e) {
+		floorItemsList.remove(e);
+	}
+
+
 	/** Render all components "in" the world - mobs, doodads, loot, etc */
 	public void render(SpriteBatch batch) {
 		for (int x = 0; x < tileList.length; x++) {
@@ -101,6 +119,9 @@ public class Level {
 		removeOccludingWalls();
 		for (Mob mob : mobList) {
 			depthSortList.add(mob);
+		}
+		for (Item item : floorItemsList) {
+			depthSortList.add(item);
 		}
 
 		Collections.sort(depthSortList, spriteSorter);
@@ -288,6 +309,14 @@ public class Level {
 			}
 		}
 		return intWallList;
+	}
+
+	public ArrayList<Item> getFloorItems() {
+		return floorItemsList;
+	}
+
+	public static Level getLevel() {
+		return level;
 	}
 
 }

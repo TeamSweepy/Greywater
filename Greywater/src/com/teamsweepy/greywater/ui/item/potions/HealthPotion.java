@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class HealthPotion extends Item {
 
 	public HealthPotion() {
-		sprite = new Sprite("healthpotion");
+		graphicsComponent = new Sprite("healthpotion");
 	}
 
 	@Override

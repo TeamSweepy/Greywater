@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Wrench extends Weapon {
 
 	public Wrench() {
-		sprite = new Sprite("tavwrench");
+		graphicsComponent = new Sprite("tavwrench");
 	}
 
 	@Override

@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class VoltCell extends Item {
 
 	public VoltCell() {
-		sprite = new Sprite("voltcell");
+		graphicsComponent = new Sprite("voltcell");
 	}
 
 	@Override
