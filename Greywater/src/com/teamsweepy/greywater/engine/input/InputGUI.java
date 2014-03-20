@@ -41,7 +41,7 @@ public class InputGUI extends InputHandler {
 
 		boolean touchedGUI = GUI.handleInput(MOUSE_DOWN, mousePositionInGame);
 		if (!touchedGUI) { // throw item from the cursor
-			return GUI.getCursor().clicked();
+			return GUI.getCursor().handleClick();
 		}
 
 		return touchedGUI;

@@ -55,7 +55,7 @@ public class GUI {
             guiC.render(batch);
         }
 	}
-    /** Used when dealinh with different types of input **/
+    /** Used when dealing with different types of input **/
     public static boolean handleInput(int event, Point2F mousePosition, int amount) {
         // guiC.visible is protected, how can we reference it from here....
         for (GUIComponent guiC : topGuiComponents) {

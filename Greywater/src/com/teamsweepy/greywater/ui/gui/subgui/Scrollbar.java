@@ -1,19 +1,16 @@
 
 package com.teamsweepy.greywater.ui.gui.subgui;
 
-import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.input.InputHandler;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.GUIComponent;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-/**
- * Created with IntelliJ IDEA. User: Robin de Jong Date: 6:38 PM, 3/14/14
- */
-public class Scrollbar extends SubGUIComponent {
+public class Scrollbar extends GUIComponent {
 
 	private boolean horizontal;
 	public Rectangle scroller;
@@ -137,7 +134,7 @@ public class Scrollbar extends SubGUIComponent {
 		scrollerGraphic.render(batch, scroller.x, pos.y - (scroller.y - size.y + scroller.height), scroller.width, scroller.height);
 
 		// Render all the subcomponents
-		for (SubGUIComponent child : subComponents) {
+		for (GUIComponent child : subComponents) {
 			child.render(batch);
 		}
 	}

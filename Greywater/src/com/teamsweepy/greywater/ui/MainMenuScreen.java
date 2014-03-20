@@ -53,9 +53,9 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		engine.gameBatch.begin(); // begin rendering
-		GUI.render(engine.gameBatch);
-		engine.gameBatch.end();// end rendering
+		engine.guiBatch.begin(); // begin rendering
+		GUI.render(engine.guiBatch);
+		engine.guiBatch.end();// end rendering
 	}
 
 	public void tick(float delta) {

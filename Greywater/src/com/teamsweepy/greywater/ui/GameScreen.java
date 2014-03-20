@@ -36,7 +36,7 @@ public class GameScreen implements Screen {
 		engine = eng;
 
 		levelForTesting = new Level();
-		playerInventory = new Inventory();
+		playerInventory = new Inventory(Player.getLocalPlayer());
 		playerHUD = new HUD();
 		playerCursor = new Cursor();
 

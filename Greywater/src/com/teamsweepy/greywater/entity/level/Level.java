@@ -36,8 +36,6 @@ import java.util.Comparator;
 
 public class Level {
 
-	private static Level level;
-
 	private TiledMap map;
 	private ArrayList<Entity> depthSortList;
 	private Tile[][] tileList;
@@ -67,7 +65,6 @@ public class Level {
 	};
 
 	public Level() {
-		level = this;
 		while (AssetLoader.tick() < 1f) {
 			// do nothing TODO remove later
 		}
@@ -136,6 +133,7 @@ public class Level {
 
 	/** Tick logic of all components in the world - mobs, doodads, loot, etc */
 	public void tick(float deltaTime) {
+		
 		for (int x = 0; x < tileList.length; x++) {
 			for (int y = 0; y < tileList[x].length; y++) {
 				if (tileList[x][y] != null)
@@ -310,6 +308,10 @@ public class Level {
 			}
 		}
 		return intWallList;
+	}
+	
+	public void removeFromInteractiveList(Entity e){
+		interactiveList.remove(e);
 	}
 
 }

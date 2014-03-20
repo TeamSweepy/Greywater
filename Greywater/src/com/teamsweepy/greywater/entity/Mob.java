@@ -135,6 +135,8 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		System.out.println(name + " took " + damage + " dmg ---> " + HP + " HP");
 		if (HP <= 0) {
 			graphicsComponent.setImage(0.7f, "Die", Sprite.FORWARD);
+			inventory.dumpSlots();
+			world.removeFromInteractiveList(this);
 		}
 	}
 
@@ -176,7 +178,7 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	protected boolean didPointHitImage(Point2F point) {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		return graphicsComponent.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate - graphicsComponent.getImageWidth() / 2,
-			p.y + mainCamera.yOffsetAggregate + Globals.tileImageHeight / 3).contains(point.x, point.y);
+			p.y + mainCamera.yOffsetAggregate + Globals.tileImageHeight / 10).contains(point.x, point.y);
 	}
 
 	public void setInventory(Inventory i) {

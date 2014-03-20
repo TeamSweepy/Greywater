@@ -5,9 +5,9 @@
 
 package com.teamsweepy.greywater.ui.gui.subgui;
 
-import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.GUIComponent;
 import com.teamsweepy.greywater.ui.gui.subgui.data.TextStyle;
 
 import com.badlogic.gdx.Gdx;
@@ -17,7 +17,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 // import net.biodiscus.debug.Debug;
 
 
-public class Dialog extends SubGUIComponent {
+public class Dialog extends GUIComponent {
 
 	private TextStyle style;
 	private Text text;
@@ -25,38 +25,33 @@ public class Dialog extends SubGUIComponent {
 	private Scrollbar scrollBar;
 	private Button closeButton;
 	private int titleOffset = 90; //default size of title area
-
-	public Dialog() {
-		this(0, 0, 100, 100);
-	}
-
-	public Dialog(float x, float y, float w, float h) {
-		super(x, y, w, h);
+	
+	public Dialog(float x, float y, float w, float h, boolean centered) {
+		super(x, y, w, h, centered);
 
 		sprite = new Sprite("ui/menu", null, Texture.class);
 		visible = true;
 
 		style = new TextStyle("data/font/times.fnt", 0xFF0000FF, TextStyle.WordStyle.WRAPPING);
 
-		text = new Text(x + 4, y + 4, w - 20, h - titleOffset);
+		text = new Text(pos.x + 4, pos.y + 4, w - 20, h - titleOffset);
 		text.setStyle(style);
 		subComponents.add(text);
 		
-		titleText = new Text(x, y, w - 20 , h);
+		titleText = new Text(pos.x, pos.y, w - 20 , h);
 		titleText.setStyle(style);
 		titleText.setText("");
-		titleText.centerOnPosition(w/2,  0);
+		titleText.centerTextOnPosition(w/2,  0);
 		subComponents.add(titleText);
 
-		scrollBar = new Scrollbar(false, x + w - 20, y, 20, h- titleOffset);
+		scrollBar = new Scrollbar(false, pos.x + w - 20, pos.y, 20, h- titleOffset);
 		subComponents.add(scrollBar);
 
 		setText(Gdx.files.internal("data/dialog_text.txt").readString());
 
 		final Dialog dialog = this; // Used for the button
 
-		closeButton = new Button(x + w - 20, y + h - 15, "ui/cross") {
-
+		closeButton = new Button(pos.x + w - 20, pos.y + h - 15, "ui/cross") {
 			@Override
 			protected void clicked() {
 				dialog.visible = false;
@@ -79,28 +74,13 @@ public class Dialog extends SubGUIComponent {
 	
 	public void setTitle(String title){
 		this.titleText.setText(title);
-		titleText.centerOnPosition(size.x/2,  0);
+		titleText.centerTextOnPosition(size.x/2,  0);
 	}
 	@Override
 	public void handleInput(Point2F mousePosition, int amount, int event) {
 		scrollBar.scroll(amount * 5);
 
 		super.handleInput(mousePosition, amount, event);
-	}
-
-	@Override
-	public void handleInput(Point2F mousePosition, int event) {
-
-		super.handleInput(mousePosition, event);
-	}
-
-	@Override
-	public boolean intersects(Point2F mousePosition) {
-		if (visible) {
-			return getHitbox().intersects(mousePosition);
-		} else {
-			return false;
-		}
 	}
 
 	// Override it so we can use a glScissor
@@ -115,8 +95,9 @@ public class Dialog extends SubGUIComponent {
 		sprite.render(batch, pos.x,  pos.y, size.x, size.y);
 
 		// Render all the subcomponents
-		for (SubGUIComponent child : subComponents) {
+		for (GUIComponent child : subComponents) {
 			child.render(batch);
 		}
 	}
+	
 }

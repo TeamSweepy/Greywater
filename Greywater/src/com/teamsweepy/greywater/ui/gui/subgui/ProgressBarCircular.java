@@ -1,16 +1,16 @@
 
 package com.teamsweepy.greywater.ui.gui.subgui;
 
-import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.GUIComponent;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
  * SubGUIComponent used for
  * */
-public class ProgressBarCircular extends SubGUIComponent {
+public class ProgressBarCircular extends GUIComponent {
 
 	protected float minRotation;
 	protected float maxRotation;
@@ -40,12 +40,12 @@ public class ProgressBarCircular extends SubGUIComponent {
 			System.out.println("[ERROR] ProgressBar division MAX VALUE IS 0");
 			return;
 		}
-		
+
 		// TODO: smooth rotation after big value changes
-		
+
 		percentage = (float) value / maxValue;
 		float dRotation = maxRotation - minRotation;
-		rotation = minRotation +  dRotation * percentage;
+		rotation = minRotation + dRotation * percentage;
 
 		value++;
 	}

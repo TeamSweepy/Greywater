@@ -4,16 +4,17 @@
 
 package com.teamsweepy.greywater.ui.gui.subgui;
 
-import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.entity.component.Hitbox;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.GUIComponent;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
-public class Button extends SubGUIComponent {
+public class Button extends GUIComponent {
 
+	private Text text;
 
 	public Button() {
 		super(0, 0, 100, 100);
@@ -31,7 +32,7 @@ public class Button extends SubGUIComponent {
 		size = new Point2F(sprite.getImageWidth(), sprite.getImageHeight());
 		hitbox = new Hitbox(x, y, (int) sprite.getImageWidth(), (int) sprite.getImageHeight(), 0f);
 	}
-	
+
 	/** Constructor for visible buttons using textures! */
 	public Button(float x, float y, String imageName) {
 		this.sprite = new Sprite(imageName);
@@ -41,18 +42,22 @@ public class Button extends SubGUIComponent {
 		hitbox = new Hitbox(x, y, (int) sprite.getImageWidth(), (int) sprite.getImageHeight(), 0f);
 	}
 
+	public Button(float x, float y, float maxW, float maxH, String text) {
+
+	}
+
 
 	/** The method should be overridden when creating the button */
 	protected void clicked() {
 		System.out.println("Button clicked");
 	}
-	
-	public void centerImage(float x, float y){
-		float xLoc = x - size.x/2;
-		float yLoc = y - size.y/2;
+
+	public void centerImage(float x, float y) {
+		float xLoc = x - size.x / 2;
+		float yLoc = y - size.y / 2;
 		pos = new Point2F(xLoc, yLoc);
 		hitbox.setLocation(xLoc, yLoc);
-		
+
 	}
 
 	public boolean intersects(Point2F mousePosition) {
@@ -68,11 +73,15 @@ public class Button extends SubGUIComponent {
 
 	@Override
 	public void render(SpriteBatch batch) {
-		sprite.render(batch, pos.x, pos.y, size.x, size.y);
+		if (sprite != null)
+			sprite.render(batch, pos.x, pos.y, size.x, size.y);
+		if (text != null){
+			
+		}
 	}
-	
+
 	@Override
-	public void tick(float deltaTime){
+	public void tick(float deltaTime) {
 		sprite.tick(deltaTime);
 	}
 }

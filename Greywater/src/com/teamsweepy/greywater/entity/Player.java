@@ -155,7 +155,7 @@ public class Player extends Mob {
 		if (enemy == null || attacking)
 			return;
 
-		if (enemy.getLocation().distance(getLocation()) > getWidth() * 2.5) { //if cant reach
+		if (enemy.getLocation().distance(getLocation()) > getWidth()) { //if cant reach
 			focusTarget = enemy;
 			pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(enemy.getLocation()));
 			Point newPoint = pather.getNextStep();

@@ -20,7 +20,7 @@ public class Cursor extends GUIComponent {
 		visible = true;
 	}
 
-	public boolean clicked() {
+	public boolean handleClick() {
 		boolean inputTaken = false;
 		if (item != null) {
 			throwItem();
@@ -31,7 +31,6 @@ public class Cursor extends GUIComponent {
 
 	public void throwItem() {
 		Point2F throwPoint = Globals.calculateRandomLocation(Player.getLocalPlayer().getLocation(), Player.getLocalPlayer().getLevel(), .7f);
-		System.out.println(throwPoint + "     " + Player.getLocalPlayer().getLocation());
 		item.throwOnGround(throwPoint, Player.getLocalPlayer());
 		item = null;
 	}

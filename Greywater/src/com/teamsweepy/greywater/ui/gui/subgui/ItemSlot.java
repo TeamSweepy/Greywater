@@ -1,18 +1,18 @@
 
 package com.teamsweepy.greywater.ui.gui.subgui;
 
-import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.Cursor;
 import com.teamsweepy.greywater.ui.gui.GUI;
+import com.teamsweepy.greywater.ui.gui.GUIComponent;
 import com.teamsweepy.greywater.ui.gui.Inventory;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
-public class ItemSlot extends SubGUIComponent {
+public class ItemSlot extends GUIComponent {
 
 	protected Inventory inventory; // inventory that the itemslot is in
 
@@ -33,14 +33,12 @@ public class ItemSlot extends SubGUIComponent {
 		Cursor cursor = GUI.getCursor();
 
 		if (item == null) {
-
 			if (cursor.getItem() != null) { // move the item from the cursor into the slot
 				this.item = cursor.getItem();
 				cursor.setItem(null);
 			}
 
 		} else if (item != null) { // there is an item in the slot
-
 			if (cursor.getItem() == null) {// move the item from the slot to the cursor
 				cursor.setItem(item);
 				this.item = null;
@@ -55,7 +53,6 @@ public class ItemSlot extends SubGUIComponent {
 
 	@Override
 	public void render(SpriteBatch g) {
-		visible = inventory.isVisible();
 		if (!visible)
 			return;
 
@@ -68,16 +65,25 @@ public class ItemSlot extends SubGUIComponent {
 		item.render(g, pos.x, pos.y);
 	}
 
-	@Override
-	public boolean intersects(Point2F mousePosition) {
-		return getHitbox().intersects(mousePosition);
-	}
-
 	public Item getItem() {
 		return item;
 	}
 
 	public void setItem(Item item) {
+		if(item != null && item.getName().toUpperCase().contains("TAZER"))
+			System.out.println("BAMB");
 		this.item = item;
+	}
+
+	public Item removeItem() {
+		Item temp = item;
+		item = null;
+		return temp;
+	}
+
+	public boolean isEmpty() {
+		if (item != null)
+			return false;
+		return true;
 	}
 }

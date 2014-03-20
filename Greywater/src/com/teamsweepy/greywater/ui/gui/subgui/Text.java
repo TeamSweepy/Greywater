@@ -7,8 +7,8 @@
 
 package com.teamsweepy.greywater.ui.gui.subgui;
 
-import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.GUIComponent;
 import com.teamsweepy.greywater.ui.gui.subgui.bbcode.BBCodeNode;
 import com.teamsweepy.greywater.ui.gui.subgui.bbcode.BBCodeParser;
 import com.teamsweepy.greywater.ui.gui.subgui.data.TextStyle;
@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
-public class Text extends SubGUIComponent {
+public class Text extends GUIComponent {
 
 	private String currentText; // Is a stringbuilder faster?
 	private TextStyle style;
@@ -105,11 +105,6 @@ public class Text extends SubGUIComponent {
 	}
 
 	@Override
-	public boolean intersects(Point2F mousePosition) {
-		return getHitbox().intersects(mousePosition);
-	}
-
-	@Override
 	public void render(SpriteBatch batch) {
 		if (cache == null)
 			return;
@@ -123,11 +118,11 @@ public class Text extends SubGUIComponent {
 		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 	}
 
-	public void centerOnPosition(Point2F point) {
-		centerOnPosition(point.x, point.y);
+	public void centerTextOnPosition(Point2F point) {
+		centerTextOnPosition(point.x, point.y);
 	}
 
-	public void centerOnPosition(float x, float y) {
+	public void centerTextOnPosition(float x, float y) {
 		TextBounds bound = getBounds();
 		setTextPosition(x - bound.width / 2, y - bound.height / 2);
 	}

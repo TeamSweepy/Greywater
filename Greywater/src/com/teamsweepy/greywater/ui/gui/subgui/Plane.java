@@ -1,15 +1,14 @@
 /**
  * 
  */
+
 package com.teamsweepy.greywater.ui.gui.subgui;
 
-import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.GUIComponent;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-
-public class Plane extends SubGUIComponent {
+public class Plane extends GUIComponent {
 
 	public Plane() {
 		super(0, 0, 100, 100);
@@ -26,6 +25,4 @@ public class Plane extends SubGUIComponent {
 	public boolean intersects(Point2F mousePosition) {
 		return getHitbox().intersects(mousePosition);
 	}
-
-	/* public boolean intersects(Point2F mousePosition) { return getHitbox().intersects(mousePosition); } */
 }

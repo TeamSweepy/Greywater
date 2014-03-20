@@ -13,7 +13,6 @@ public class OutputSlot extends ItemSlot {
 
 	public OutputSlot(Inventory inventory, float x, float y, float w, float h) {
 		super(inventory, x, y, w, h);
-		item = new TazerWrench();
 	}
 
 	@Override

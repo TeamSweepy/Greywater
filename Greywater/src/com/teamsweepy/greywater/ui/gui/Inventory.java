@@ -1,6 +1,8 @@
 
 package com.teamsweepy.greywater.ui.gui;
 
+import com.teamsweepy.greywater.engine.Globals;
+import com.teamsweepy.greywater.entity.Mob;
 import com.teamsweepy.greywater.entity.component.Hitbox;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.item.Item;
@@ -13,7 +15,6 @@ import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.subgui.CraftingSlot;
 import com.teamsweepy.greywater.ui.gui.subgui.ItemSlot;
 import com.teamsweepy.greywater.ui.gui.subgui.OutputSlot;
-import com.teamsweepy.greywater.ui.gui.subgui.Plane;
 import com.teamsweepy.greywater.ui.gui.subgui.WeaponSlot;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -34,15 +35,14 @@ public class Inventory extends GUIComponent {
 	protected ArrayList<WeaponSlot> weaponSlots = new ArrayList<WeaponSlot>();
 
 	/** Add a hitbox so the Inventory can be placed on top of the screen when clicked on it **/
-	private Hitbox hitbox;
+	//private Hitbox hitbox;
+	private Mob owner;
 
-	public Inventory() {
+	public Inventory(Mob owner) {
+		super(1000, 250, 437, 250);
+		this.owner = owner;
 		sprite = new Sprite("inventory");
-		pos = new Point2F(1000, 250);
-		size = new Point2F(437, 608);
-		hitbox = new Hitbox((int) pos.x, (int) pos.y, (int) size.x, (int) size.y, 0f);
-
-
+		
 		initSubComponents();
 
 		{// Adding some items in the inventory for testing purposes
@@ -67,9 +67,7 @@ public class Inventory extends GUIComponent {
 	}
 
 	@Override
-	/**
-	 * Create all the comopnents of the inventory, such as background and itemslots
-	 * */
+	/** Create all the comopnents of the inventory, such as background and itemslots */
 	protected void initSubComponents() {
 		//subComponents.add(new Plane(pos.x, pos.y, size.x, size.y));
 
@@ -98,18 +96,17 @@ public class Inventory extends GUIComponent {
 		subComponents.add(weaponSlot);
 	}
 
-	public void addItem(Item i) {
+	public boolean addItem(Item i) {
 		int a = getEmptySlot();
 		if (a == -1)
-			return;
+			return false;
 		itemSlots.get(a).setItem(i);
+		return true;
 	}
 
 
 	@Override
-	/**
-	 * Attempt to craft stuff
-	 * */
+	/** Attempt to craft stuff */
 	public void tick(float deltaTime) {
 		outputSlot.setItem(Crafting.checkCrafting(craftingSlots));
 	}
@@ -128,16 +125,6 @@ public class Inventory extends GUIComponent {
 		return hitbox.intersects(mousePosition);
 	}
 
-	@Override
-	public void handleInput(Point2F mousePosition, int event) {
-		super.handleInput(mousePosition, event);
-	}
-
-	@Override
-	public void render(SpriteBatch batch) {
-		super.render(batch);
-	}
-
 	public Item getWeapon() {
 		if (weaponSlots.size() != 1) {
 			return null;
@@ -151,6 +138,41 @@ public class Inventory extends GUIComponent {
 				return true;
 		}
 		return false;
+	}
+
+	public void dumpSlots() {
+		if (weaponSlots != null && !weaponSlots.isEmpty()) {
+			for (ItemSlot slot : weaponSlots) {
+				if (!slot.isEmpty()) {
+					Point2F throwPoint = Globals.calculateRandomLocation(owner.getLocation(), owner.getLevel(), .7f);
+					slot.removeItem().throwOnGround(throwPoint, owner);
+				}
+			}
+		}
+		if (craftingSlots != null && !craftingSlots.isEmpty()) {
+			for (ItemSlot slot : craftingSlots) {
+				if (!slot.isEmpty()) {
+					Point2F throwPoint = Globals.calculateRandomLocation(owner.getLocation(), owner.getLevel(), .7f);
+					slot.removeItem().throwOnGround(throwPoint, owner);
+				}
+			}
+		}
+		if (outputSlot != null && !outputSlot.isEmpty()) {
+			if (!outputSlot.isEmpty()) {
+				Point2F throwPoint = Globals.calculateRandomLocation(owner.getLocation(), owner.getLevel(), .7f);
+				outputSlot.removeItem().throwOnGround(throwPoint, owner);
+			}
+
+		}
+		if (itemSlots != null && !itemSlots.isEmpty()) {
+			for (ItemSlot slot : itemSlots) {
+				if (!slot.isEmpty()) {
+					Point2F throwPoint = Globals.calculateRandomLocation(owner.getLocation(), owner.getLevel(), .7f);
+					slot.removeItem().throwOnGround(throwPoint, owner);
+				}
+			}
+		}
+
 	}
 
 	private int getEmptySlot() {

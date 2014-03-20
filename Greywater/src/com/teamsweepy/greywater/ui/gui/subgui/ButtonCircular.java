@@ -1,13 +1,15 @@
 /**
  * 
  */
+
 package com.teamsweepy.greywater.ui.gui.subgui;
 
 import com.teamsweepy.greywater.entity.component.Hitbox;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.GUIComponent;
 
 
-public class ButtonCircular extends SubGUIComponent {
+public class ButtonCircular extends GUIComponent {
 
 	protected float radius;
 
