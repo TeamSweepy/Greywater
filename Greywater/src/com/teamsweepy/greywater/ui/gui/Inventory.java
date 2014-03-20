@@ -39,7 +39,7 @@ public class Inventory extends GUIComponent {
 	private Mob owner;
 
 	public Inventory(Mob owner) {
-		super(1000, 250, 437, 250);
+		super(1000, 250, 437, 608);
 		this.owner = owner;
 		sprite = new Sprite("inventory");
 		
@@ -118,11 +118,6 @@ public class Inventory extends GUIComponent {
 		for (CraftingSlot cs : craftingSlots) {
 			cs.setItem(null);
 		}
-	}
-
-	@Override
-	public boolean intersects(Point2F mousePosition) {
-		return hitbox.intersects(mousePosition);
 	}
 
 	public Item getWeapon() {

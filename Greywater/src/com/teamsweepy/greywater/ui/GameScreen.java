@@ -81,9 +81,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void hide() {
-		playerCursor.setVisible(false);
-		playerHUD.setVisible(false);
-		playerInventory.setVisible(false);
+		GUI.setVisibility(false);
 	}
 
 	@Override
