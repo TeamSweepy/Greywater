@@ -51,7 +51,7 @@ public class Dialog extends GUIComponent {
 
 		final Dialog dialog = this; // Used for the button
 
-		closeButton = new Button(pos.x + w - 20, pos.y + h - 15, "ui/cross") {
+		closeButton = new Button(pos.x + w - 25, pos.y + h - 25, "ui/cross") {
 			@Override
 			protected void clicked() {
 				dialog.visible = false;

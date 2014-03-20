@@ -9,6 +9,7 @@
 
 package com.teamsweepy.greywater.entity;
 
+import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.component.Hitbox;
@@ -125,9 +126,6 @@ public abstract class Mob extends Entity implements AnimEventListener {
 
 	}
 
-	//	public Inventory getInventory(){ TODO activate when inventories exist
-	//		return inventory;
-	//	}
 
 	/** Reduce or increase this mob's health by the given amount (+ for damage, - for buffs/healing) */
 	public void changeHP(int damage) {

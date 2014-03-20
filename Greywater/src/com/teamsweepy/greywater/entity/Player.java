@@ -75,7 +75,7 @@ public class Player extends Mob {
 			Point clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
 			System.out.println("Player starts at " + startTile);
 			System.out.println("Clicked to move to " + clickedTile);
-			pather.reset();
+		//	pather.reset();
 			pather.createPath(startTile, clickedTile);
 			Point newPoint = pather.getNextStep();
 			if (newPoint != null) {
@@ -96,7 +96,6 @@ public class Player extends Mob {
 	@Override
 	public boolean interact() {
 		Entity interacted = (Entity) world.getClickedEntity(mouseLocation, this);
-
 		focusTarget = null;
 		if (interacted == null) {
 			return false;
@@ -128,7 +127,7 @@ public class Player extends Mob {
 		}//end mob interaction
 
 		if (interacted instanceof Item) { //pickup loot
-			if (interacted.getLocation().distance(getLocation()) < getWidth() * 2.5) {
+			if (interacted.getLocation().distance(getLocation()) < getWidth()) {
 				inventory.addItem((Item) interacted);
 				getLevel().removeFloorItem((Item) interacted);
 				((Item) interacted).pickup();
@@ -152,10 +151,11 @@ public class Player extends Mob {
 
 	@Override
 	protected void attack(Mob enemy) {
-		if (enemy == null || attacking)
+		if (enemy == null || attacking){
 			return;
+		}
 
-		if (enemy.getLocation().distance(getLocation()) > getWidth()) { //if cant reach
+		if (enemy.getLocation().distance(getLocation()) > getWidth() * 2.5) { //if cant reach
 			focusTarget = enemy;
 			pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(enemy.getLocation()));
 			Point newPoint = pather.getNextStep();
