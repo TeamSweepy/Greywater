@@ -146,6 +146,11 @@ public class Level {
 		for (Mob mob : mobList) {
 			mob.tick(deltaTime);
 		}
+		
+		// No sorting needed in the tick
+        for (Item item : floorItemsList) {
+            item.tick(deltaTime);
+        }
 		Camera.getDefault().moveTo(Globals.toIsoCoord(TestTavishMob.getX(), TestTavishMob.getY()));
 	}
 

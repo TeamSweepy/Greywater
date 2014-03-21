@@ -124,7 +124,7 @@ public class Engine extends Game {
 		}
 
 		if (secondsElapsed > 10.0) {
-			printStats();
+			//printStats();
 			tickCount = 0;
 			secondsElapsed = 0;
 			frameCount = 0;

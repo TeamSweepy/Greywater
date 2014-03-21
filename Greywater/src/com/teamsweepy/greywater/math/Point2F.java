@@ -41,13 +41,13 @@ public class Point2F {
 	}
 
     public float angle(Point2F p2) {
-        return distance(p2.x, p2.y);
+        return angle(p2.x, p2.y);
     }
 
     public float angle(float x, float y) {
         float dx = x - this.x;
         float dy = y - this.y;
-        return (float)(Math.atan2(dy, dx) * (180f / Math.PI));
+        return (float)(Math.atan2(dy, dx));
     }
 
 	public String toString() {

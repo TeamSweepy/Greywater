@@ -31,7 +31,8 @@ public class Cursor extends GUIComponent {
 
 	public void throwItem() {
 		Point2F throwPoint = Globals.calculateRandomLocation(Player.getLocalPlayer().getLocation(), Player.getLocalPlayer().getLevel(), .7f);
-		item.throwOnGround(throwPoint, Player.getLocalPlayer());
+//		item.throwOnGround(throwPoint, Player.getLocalPlayer());
+		item.throwOnGround(Globals.toNormalCoord(pos), Player.getLocalPlayer());
 		item = null;
 	}
 
