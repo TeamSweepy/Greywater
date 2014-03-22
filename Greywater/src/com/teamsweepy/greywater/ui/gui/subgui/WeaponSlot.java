@@ -17,9 +17,7 @@ public class WeaponSlot extends ItemSlot {
 	}
 
 	@Override
-	/**
-	 * Only accepts a weapon
-	 * */
+	/** Only accepts a weapon */
 	protected void clicked() {
 		Cursor cursor = GUI.getCursor();
 

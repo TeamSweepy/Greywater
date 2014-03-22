@@ -9,7 +9,8 @@
 
 package com.teamsweepy.greywater.entity;
 
-import com.teamsweepy.greywater.engine.Camera;
+import com.teamsweepy.greywater.effect.spell.Spell;
+import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.component.Hitbox;
@@ -39,8 +40,9 @@ public abstract class Mob extends Entity implements AnimEventListener {
 
 	/* *********** WORLD INTERACTION VARIABLES ************ */
 	protected boolean attacking = false;
+	protected boolean missing = false;
 	public boolean friendly; //indicates if this is a friend of the Player.
-	protected int HP = 100;
+	protected float HP = 100;
 	protected Line2D.Float sightLine;
 	protected boolean canSeeTarget;
 	protected int maxSightRange = 20 * 50;//in tiles
@@ -51,9 +53,11 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	protected Inventory inventory;
 	protected ArrayList<Entity> killList;
 	private List<GameEventListener> listeners;
-	
-	public Mob() {
-	}
+
+	protected int armorRating = 10;
+	protected int reflexRating = 14;
+
+	public Mob() {}
 
 	/**
 	 * @param x - tile location x
@@ -83,8 +87,8 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	public void render(SpriteBatch g) {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		//center on the tile
-		for(int i = 0; i < afflictingSpells.size(); i++){
-			afflictingSpells.get(i).render(g);			
+		for (int i = 0; i < afflictingSpells.size(); i++) {
+			afflictingSpells.get(i).render(g);
 		}
 		graphicsComponent.render(g, p.x - graphicsComponent.getImageWidth() / 2, p.y + Globals.tileImageHeight / 10);
 		if (inventory != null) {
@@ -119,8 +123,10 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	public void handleEvent(AnimEvent e) {
 		if (e.action.contains("ATTACK") && e.ending && !e.beginning) {
 			attacking = false;
+			if (!missing)
+				executeAttack();
 		} else if (e.action.contains("WALK") && !e.beginning) {
-			//((Sound) AssetLoader.getAsset(Sound.class, "TavWalk1V1.wav")).play(); //replace with proper naming convention TODO	
+			((Sound) AssetLoader.getAsset(Sound.class, "TavWalk1V1.wav")).play(); //replace with proper naming convention TODO	
 		} else if (e.action.contains("Die") && e.ending) {
 			System.out.println(name + " died: " + HP);
 			graphicsComponent = new Sprite(this.name, name + "Dead");
@@ -131,7 +137,7 @@ public abstract class Mob extends Entity implements AnimEventListener {
 
 
 	/** Reduce or increase this mob's health by the given amount (+ for damage, - for buffs/healing) */
-	public void changeHP(int damage) {
+	public void changeHP(float damage) {
 		HP -= damage;
 		System.out.println(name + " took " + damage + " dmg ---> " + HP + " HP");
 		if (HP <= 0) {
@@ -141,15 +147,13 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		}
 	}
 
-	/** Indicates if this mob has >0 HP */
 	public boolean isAlive() {
 		if (HP > 0)
 			return true;
 		return false;
 	}
 
-	/** Returns this mob's current HP */
-	public int getHP() {
+	public float getHP() {
 		return HP;
 	}
 
@@ -185,18 +189,18 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	public void setInventory(Inventory i) {
 		inventory = i;
 	}
-	
-	public Inventory getInventory(){
+
+	public Inventory getInventory() {
 		return inventory;
 	}
-	
-	public int maxHP(){
+
+	public int maxHP() {
 		return 100;
 	}
-	
+
 	/** Add a class that implements GameEventListener Interface who wants to listen to this mob */
 	public void addGameListener(GameEventListener listener) {
-		if(listeners == null){
+		if (listeners == null) {
 			listeners = new ArrayList<GameEventListener>();
 		}
 		listeners.add(listener);
@@ -204,7 +208,7 @@ public abstract class Mob extends Entity implements AnimEventListener {
 
 	/** Remove a class that implements GameEventListener Interface who no longer wants to listen to this mob */
 	public void removeGameListener(GameEventListener listener) {
-		if(listeners == null || listeners.size() < 1)
+		if (listeners == null || listeners.size() < 1)
 			return;
 		listeners.remove(listener);
 	}
@@ -218,15 +222,27 @@ public abstract class Mob extends Entity implements AnimEventListener {
 			listener.handleGameEvent(e);
 		}
 	}
-	
-	public Level getLevel(){
+
+	public Level getLevel() {
 		return world;
 	}
-	
-	public void setLevel(Level world){
+
+	public void setLevel(Level world) {
 		this.world = world;
 	}
-	
+
+	public int getArmor() {
+		return armorRating;
+	}
+
+	public int getReflex() {
+		return reflexRating;
+	}
+
+	public ArrayList getKillList() {
+		return killList;
+	}
+
 
 	/** Gets next action for this mob, can be AI logic or player input, subclasses can deal with it. */
 	protected abstract void getInput();
@@ -236,4 +252,6 @@ public abstract class Mob extends Entity implements AnimEventListener {
 
 	/** Deal with friendly entities or attack enemy mobs */
 	public abstract boolean interact();
+
+	public abstract void executeAttack();
 }

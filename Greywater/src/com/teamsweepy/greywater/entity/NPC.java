@@ -79,4 +79,10 @@ public class NPC extends Mob {
 		return false;
 	}
 
+	@Override
+	public void executeAttack() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

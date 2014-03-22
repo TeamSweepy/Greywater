@@ -15,7 +15,6 @@ public class TazerWrench extends Weapon {
 		super("tazerwrench", "tazerwrench", 12, 3, 5, 105f);
 	}
 
-
 	@Override
 	public int getID() {
 		return IDs.TAZER_WRENCH.getID();
@@ -23,7 +22,9 @@ public class TazerWrench extends Weapon {
 
 
 	@Override
-	public void attack(Mob attacker, Mob victim) {
+	public boolean attack(Mob attacker, Mob victim) {
+		super.swing(attacker, victim);
 		victim.addSpell(new PersonalSpell("particle/electric.p", 0, 10, victim, attacker));
+		return !victim.isAlive();
 	}
 }

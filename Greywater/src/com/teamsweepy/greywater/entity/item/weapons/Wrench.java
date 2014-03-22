@@ -13,14 +13,6 @@ public class Wrench extends Weapon {
 
 	@Override
 	public int getID() {
-		// TODO Auto-generated method stub
 		return IDs.WRENCH.getID();
 	}
-
-	@Override
-	public void attack(Mob attacker, Mob victim) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

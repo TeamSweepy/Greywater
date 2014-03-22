@@ -38,6 +38,9 @@ public abstract class Item extends Entity {
 		this.graphicsComponent = new Sprite(inventoryImageName);
 		this.groundSprite = new Sprite(floorImageName);
 	}
+	
+	public Item() {
+	}
 
 
 

@@ -72,7 +72,7 @@ public class ProgressBarCircular extends GUIComponent {
 		this.maxValue = maxValue;
 	}
 
-	public void setValue(int value) {
+	public void setValue(float value) {
 		this.value = value;
 	}
 

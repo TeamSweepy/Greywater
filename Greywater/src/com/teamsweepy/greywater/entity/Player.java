@@ -1,20 +1,17 @@
 
 package com.teamsweepy.greywater.entity;
 
-import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.component.events.KillEvent;
 import com.teamsweepy.greywater.entity.item.Item;
+import com.teamsweepy.greywater.entity.item.weapons.Fist;
+import com.teamsweepy.greywater.entity.item.weapons.Weapon;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.entity.level.Tile;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.subgui.ProgressBarCircular;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -28,6 +25,8 @@ public class Player extends Mob {
 
 	private ProgressBarCircular healthBar;
 	private ProgressBarCircular manaBar;
+
+	private Fist fist; //default weapon
 
 	public static Player getLocalPlayer() {
 		return localPlayer;
@@ -54,6 +53,7 @@ public class Player extends Mob {
 		this.walkCycleDuration = .5f;
 		killList = new ArrayList<Entity>();
 		graphicsComponent.setImage(3f, "Walk_South", Sprite.LOOP);
+		fist = new Fist();
 
 	}
 
@@ -81,7 +81,7 @@ public class Player extends Mob {
 			Point clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
 			System.out.println("Player starts at " + startTile);
 			System.out.println("Clicked to move to " + clickedTile);
-			//	pather.reset();
+			pather.reset();
 			pather.createPath(startTile, clickedTile);
 			Point newPoint = pather.getNextStep();
 			if (newPoint != null) {
@@ -161,8 +161,14 @@ public class Player extends Mob {
 			return;
 		}
 
-		if (enemy.getLocation().distance(getLocation()) > inventory.getWeapon().getRange()) { //if cant reach
-			focusTarget = enemy;
+		Weapon equippedWeapon = inventory.getWeapon();
+		if (equippedWeapon == null) {
+			equippedWeapon = fist;
+		}
+
+		focusTarget = enemy;
+		
+		if (enemy.getLocation().distance(getLocation()) > equippedWeapon.getRange() || !this.canSeeTarget()) { //if cant reach
 			pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(enemy.getLocation()));
 			Point newPoint = pather.getNextStep();
 			newPoint = pather.getNextStep();
@@ -173,39 +179,18 @@ public class Player extends Mob {
 			}
 			return;
 		}
-
-		inventory.getWeapon().attack(this, enemy);
-
-//		System.out.println(name + " attacked " + (enemy).name);
+		missing = !equippedWeapon.swing(this, enemy);
 		physicsComponent.stopMovement();
 		pather.reset();
 
 		attacking = true;
 		this.currentDirection = Globals.getDirectionString(enemy, this);
-
-//		int damage = 0;
-
-//		int chanceToHit = Globals.D(20); //20 sided dice, bitch
-//		System.out.println(this.name + " rolled " + chanceToHit + " to hit " + enemy.name);
-
-//		if (chanceToHit > 8) {
-//			damage += Globals.D(30);
-//			enemy.changeHP(damage);
-//			System.out.println(name + " hit " + enemy.name + " for " + damage + " damage...");
-//			if (!enemy.isAlive()) {
-//				killList.add(enemy);
-//				fireEvent(new KillEvent(this, enemy));
-//			}
-//		}
 	}
 
-	/**
-	 * Sets local player input variables. Used as a callback.
-	 */
+	/** Sets local player input variables. Used as a callback. */
 	public static void handleInput(Point2F screenLocation, boolean clicked, int keyCode) {
 		mouseClicked = clicked;
 		mouseLocation = screenLocation;
-
 		if (mouseLocation != null || keyCode != -69) {
 			return; //TODO deal with key input when needed
 		}
@@ -214,6 +199,16 @@ public class Player extends Mob {
 	public void setBars(ProgressBarCircular hp, ProgressBarCircular mana) {
 		this.healthBar = hp;
 		this.manaBar = mana;
+	}
+
+	@Override
+	public void executeAttack() {
+		Weapon equippedWeapon = inventory.getWeapon();
+		if (equippedWeapon == null) {
+			equippedWeapon = fist;
+		}
+		equippedWeapon.attack((Mob)this, (Mob)focusTarget);
+		
 	}
 
 }
