@@ -2,6 +2,10 @@
 package com.teamsweepy.greywater.entity.item.crafting;
 
 import com.teamsweepy.greywater.entity.item.IDs;
+import com.teamsweepy.greywater.entity.item.misc.FulminatedMercury;
+import com.teamsweepy.greywater.entity.item.misc.VoltCell;
+import com.teamsweepy.greywater.entity.item.weapons.Bomb;
+import com.teamsweepy.greywater.entity.item.weapons.TazerWrench;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,16 +14,16 @@ import java.util.List;
 
 public enum ShapelessRecipe {
 
-	TAZER_WRENCH(new int[] { IDs.VOLT_CELL.getID(), IDs.WRENCH.getID() }, IDs.TAZER_WRENCH.getID()), //
-	MERCURY(new int[] { IDs.HEALTH_POTION.getID(), IDs.TAZER_WRENCH.getID() }, IDs.MERCURY.getID()), //
-	VOLT_CELL(new int[] { IDs.MERCURY.getID(), IDs.HEALTH_POTION.getID(), IDs.WRENCH.getID() }, IDs.VOLT_CELL.getID()), //
-	WRENCH(new int[] { IDs.VOLT_CELL.getID() }, IDs.WRENCH.getID()), //
-	HEALTH_POTION(new int[] { IDs.MERCURY.getID(), IDs.MERCURY.getID(), IDs.MERCURY.getID() }, IDs.HEALTH_POTION.getID());
+	TAZER_WRENCH(new int[] { IDs.VOLT_CELL.getID(), IDs.WRENCH.getID() }, TazerWrench.class), //
+	VOLT_CELL(new int[] { IDs.MERCURY.getID(), IDs.WIRES.getID() }, VoltCell.class), //
+	BOMB(new int[]{IDs.FULMINATED_MERCURY.getID(), IDs.WIRES.getID(), IDs.VOLT_CELL.getID()}, Bomb.class),
+	FULMINATED_MERCURY(new int[]{IDs.MERCURY.getID(), IDs.MERCURY.getID(), IDs.MERCURY.getID()}, FulminatedMercury.class);
+
 
 	private int[] items;
-	private int crafted;
+	private Class crafted;
 
-	private ShapelessRecipe(int items[], int crafted) {
+	private ShapelessRecipe(int items[], Class crafted) {
 		this.items = items;
 		this.crafted = crafted;
 	}
@@ -36,7 +40,7 @@ public enum ShapelessRecipe {
 		return output;
 	}
 
-	public int getCrafted() {
+	public Class getCrafted() {
 		return crafted;
 	}
 

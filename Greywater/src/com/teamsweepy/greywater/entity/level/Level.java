@@ -33,6 +33,7 @@ import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 
 public class Level {
 
@@ -102,6 +103,10 @@ public class Level {
 		floorItemsList.remove(e);
 		interactiveList.remove(e);
 	}
+	
+	public void addNewThrownItem(Item e){
+		floorItemsList.add(e);
+	}
 
 
 	/** Render all components "in" the world - mobs, doodads, loot, etc */
@@ -146,11 +151,20 @@ public class Level {
 		for (Mob mob : mobList) {
 			mob.tick(deltaTime);
 		}
+		Iterator<Item> e = floorItemsList.iterator();
 		
-		// No sorting needed in the tick
-        for (Item item : floorItemsList) {
-            item.tick(deltaTime);
+		
+        for (int i = 0; i < floorItemsList.size(); i++) {
+        	Item it = floorItemsList.get(i);
+        	 it.tick(deltaTime);
+            if(!it.isWorldItem()){
+            	i--;
+            	floorItemsList.remove(it);
+            	continue;
+            }
+           
         }
+        
 		Camera.getDefault().moveTo(Globals.toIsoCoord(TestTavishMob.getX(), TestTavishMob.getY()));
 	}
 
@@ -239,8 +253,6 @@ public class Level {
 			removeOccludingWalls(x, y - 1, xTransverse);
 			removeOccludingWalls(x, y + 1, xTransverse);
 		}
-
-
 	}
 
 	private boolean isWall(int x, int y) {

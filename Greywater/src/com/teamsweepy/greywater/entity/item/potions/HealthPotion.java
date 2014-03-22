@@ -1,17 +1,14 @@
 
 package com.teamsweepy.greywater.entity.item.potions;
 
-import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.item.IDs;
 import com.teamsweepy.greywater.entity.item.Item;
-
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
 public class HealthPotion extends Item {
 
 	public HealthPotion() {
-		super("healthpotion", 0, 0, 62, 62);
+		super("healthpotion", "healthpotion", 0, 0, 62, 62);
 	}
 
 

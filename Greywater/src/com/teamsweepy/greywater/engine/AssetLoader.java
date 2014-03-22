@@ -95,6 +95,14 @@ public class AssetLoader {
 	 * @return The asset requested or null
 	 */
 	public static <T> T getAsset(Class<?> type, String name) {
+//		if (type == ParticleEffect.class) {
+//			T asset = ((T) assetManager.get(ASSET_FOLDER + name, type));
+//			try {
+//				return (T) asset;
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
 		T asset = (T) assetManager.get(ASSET_FOLDER + name, type);
 		return asset;
 	}

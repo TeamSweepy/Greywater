@@ -33,6 +33,7 @@
 
 package com.teamsweepy.greywater.entity.component;
 
+import com.teamsweepy.greywater.effect.spell.Spell;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.math.Point2F;
@@ -41,6 +42,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public abstract class Entity {
@@ -49,21 +52,40 @@ public abstract class Entity {
 	protected Hitbox physicsComponent; // hitbox
 	protected Sprite graphicsComponent; // sprite
 	protected Camera mainCamera;
+	
+	protected List<Spell> afflictingSpells;
 
 	public Entity() {
 		mainCamera = Camera.getDefault();
+		afflictingSpells = new ArrayList<Spell>();
 	}
 
 	/** Ticks components logic (graphics and physics) */
 	public void tick(float deltaTime) {
 		physicsComponent.tick(deltaTime); // update components
 		graphicsComponent.tick(deltaTime);
+		for(int i = 0; i < afflictingSpells.size(); i++){
+			Spell affliction = afflictingSpells.get(i);
+			affliction.tick(deltaTime);
+			if(!affliction.isActive()){
+				afflictingSpells.remove(i);
+				i--;
+			}
+		}
 	}
 
 	/** Draws the current sprite for this entity. */
 	public void render(SpriteBatch g) {
+		for(int i = 0; i < afflictingSpells.size(); i++){
+			afflictingSpells.get(i).render(g);
+			
+		}
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		graphicsComponent.render(g, p.x, p.y);
+	}
+	
+	public void addSpell(Spell s){
+		afflictingSpells.add(s);
 	}
 
 	/** @return the physicsComponent for filthy outsiders */

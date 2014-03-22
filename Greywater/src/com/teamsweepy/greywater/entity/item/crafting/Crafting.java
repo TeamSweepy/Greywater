@@ -14,9 +14,7 @@ public class Crafting {
 
 	/**
 	 * Called from Inventory to check if anything can be crafted.
-	 * 
-	 * Recipies are pulled from ShaplessRecipies enumeration class
-	 * 
+	 * Recipes are pulled from ShaplessRecipies enumeration class
 	 * There is a check if there are the right items in the slots, and it also checks that there is not too much items in there.
 	 * */
 	public static Item checkCrafting(ArrayList<CraftingSlot> craftingSlots) {
@@ -26,16 +24,12 @@ public class Crafting {
 		if (temp.isEmpty())
 			return null;
 
-		for (ShapelessRecipe recipie : recipies) {
+		for (ShapelessRecipe recipe : recipies) {
 
 			ArrayList<Item> items = getItemsFromSlots(craftingSlots);
 			items = removeAllEmpty(items);
-			/*int[] itemsGottenIDs = new int[items.size()];
-			for (int i = 0; i < items.size(); i++) {
-				itemsGottenIDs[i] = items.get(i).getID();
-			}*/
 
-			int[] itemsNeeded = recipie.getNeededItems(); //get needed items form the recipie
+			int[] itemsNeeded = recipe.getNeededItems(); //get needed items form the recipe
 
 			if (itemsNeeded.length > items.size())
 				continue;
@@ -49,9 +43,14 @@ public class Crafting {
 					canCraft = false;
 
 			}
-			//System.out.println(canCraft);
 			if (canCraft && items.isEmpty())
-				return Item.getByID(recipie.getCrafted());
+				try {
+					return (Item) recipe.getCrafted().newInstance();
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
 		}
 
 

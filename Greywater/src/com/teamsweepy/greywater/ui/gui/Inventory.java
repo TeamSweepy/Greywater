@@ -10,6 +10,8 @@ import com.teamsweepy.greywater.entity.item.crafting.Crafting;
 import com.teamsweepy.greywater.entity.item.misc.VoltCell;
 import com.teamsweepy.greywater.entity.item.potions.HealthPotion;
 import com.teamsweepy.greywater.entity.item.potions.Mercury;
+import com.teamsweepy.greywater.entity.item.weapons.Bomb;
+import com.teamsweepy.greywater.entity.item.weapons.Weapon;
 import com.teamsweepy.greywater.entity.item.weapons.Wrench;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.subgui.CraftingSlot;
@@ -53,7 +55,7 @@ public class Inventory extends GUIComponent {
 			itemSlots.get(3).setItem(new VoltCell());
 			i = 5;
 			itemSlots.get(0 + i).setItem(new HealthPotion());
-			itemSlots.get(1 + i).setItem(new Mercury());
+			itemSlots.get(1 + i).setItem(new Bomb());
 			itemSlots.get(2 + i).setItem(new Wrench());
 			itemSlots.get(3 + i).setItem(new VoltCell());
 			i = 10;
@@ -120,11 +122,11 @@ public class Inventory extends GUIComponent {
 		}
 	}
 
-	public Item getWeapon() {
+	public Weapon getWeapon() {
 		if (weaponSlots.size() != 1) {
 			return null;
 		}
-		return weaponSlots.get(0).getItem();
+		return (Weapon)weaponSlots.get(0).getItem();
 	}
 
 	public boolean hasSpace() {

@@ -9,6 +9,7 @@ import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.item.misc.VoltCell;
 import com.teamsweepy.greywater.entity.item.potions.HealthPotion;
 import com.teamsweepy.greywater.entity.item.potions.Mercury;
+import com.teamsweepy.greywater.entity.item.weapons.Bomb;
 import com.teamsweepy.greywater.entity.item.weapons.TazerWrench;
 import com.teamsweepy.greywater.entity.item.weapons.Wrench;
 import com.teamsweepy.greywater.math.Point2F;
@@ -22,65 +23,89 @@ public abstract class Item extends Entity {
 	private Sprite groundSprite;
 	private String name;
 
-	/** Item dropping TEST **/
-	private boolean bounce = false;
-	private Point2F gotoPoint, basePos;
+	private boolean dropped = false;
+	private boolean thrown = false;
+	private Point2F landingLoc, startLoc;
 
 	private float x, y, z;
 	private float angle;
-	private float toRadians = (float) (Math.PI / 180);
+	private float maxDistance;
 
 
-	public Item(String name, float x, float y, int width, int height) {
-		this.name = name;
+	public Item(String inventoryImageName, String floorImageName, float x, float y, int width, int height) {
+		this.name = inventoryImageName;
 		physicsComponent = new Hitbox(x * 50 + 25, y * 50 + 25, width, height, 0);
-		this.graphicsComponent = new Sprite(getName());
-		this.groundSprite = new Sprite(getName());
+		this.graphicsComponent = new Sprite(inventoryImageName);
+		this.groundSprite = new Sprite(floorImageName);
 	}
 
 
 
-	public void throwOnGround(Point2F objectiveCoordinates, Mob thrower) {
-		onGround = true;
-		//		physicsComponent.setLocation(objectiveCoordinates.x, objectiveCoordinates.y);
-		gotoPoint = objectiveCoordinates;
-		basePos = thrower.getLocation();
-		physicsComponent.setLocation(basePos.x, basePos.y);
-
-		System.out.println(gotoPoint + " | " + basePos);
-
+	public void throwOnGround(Point2F destination, Mob thrower) {
+		dropped = true;
+		landingLoc = destination;
+		startLoc = thrower.getLocation();
+		physicsComponent.setLocation(startLoc.x, startLoc.y);
+		System.out.println(destination + " | " + thrower.getLocation());
 		thrower.getLevel().addNewFloorItem(this);
-
-		bounce = true;
-		angle = basePos.angle(gotoPoint);
+		
+		angle = startLoc.angle(landingLoc);
 		x = y = z = 0;
+		maxDistance = startLoc.distance(landingLoc);
+	}
+	
+	public void throwItemAtTarget(Mob thrower, Entity target) {
+		thrown = true;
+		landingLoc = target.getLocation();
+		startLoc = thrower.getLocation();
+		physicsComponent.setLocation(startLoc.x, startLoc.y);
+
+		thrower.getLevel().addNewThrownItem(this);
+		
+		angle = startLoc.angle(landingLoc);
+		x = y = z = 0;
+		maxDistance = startLoc.distance(landingLoc);
 	}
 
 	public void pickup() {
 		onGround = false;
+		dropped = false;
 	}
 
 	@Override
 	public void tick(float deltaTime) {
-		if (onGround) {
-			if (bounce) {
+		if (dropped || thrown) {
+			float dx = 0;
+			float dy = 0;
+			if (dropped) {
+				dx = (float) (Math.cos(angle) * 9F);
+				dy = (float) (Math.sin(angle) * 9F);
+			}
 
-				float dx = (float) (Math.cos(angle) * 22F);
-				float dy = (float) (Math.sin(angle) * 22F);
+			if (thrown) {
+				dx = (float) (Math.cos(angle) * 28F);
+				dy = (float) (Math.sin(angle) * 28F);
+			}
 
-				float curDistance = basePos.distance(getX(), getY());
-				float maxDistance = basePos.distance(gotoPoint);
+			float curDistance = startLoc.distance(getX(), getY());
 
-				x = getX() + dx;
-				y = getY() + dy;
+			x = getX() + dx;
+			y = getY() + dy;
 
+			if (dropped)
+				z = getArcHeight(curDistance, maxDistance, 150);
+
+			if (thrown)
 				z = getArcHeight(curDistance, maxDistance, 40) + 160;//160 so it starts at chest height of thrower
 
-				physicsComponent.setLocation(x, y);
-				if (curDistance > maxDistance) {
-					bounce = false;
-					physicsComponent.setLocation(gotoPoint.x, gotoPoint.y);
+			physicsComponent.setLocation(x, y);
+			if (curDistance >= maxDistance) {
+				if(dropped){
+					onGround = true;
+					physicsComponent.setLocation(landingLoc.x, landingLoc.y);
 				}
+				dropped = false;
+				thrown = false;
 			}
 		}
 		super.tick(deltaTime);
@@ -94,17 +119,19 @@ public abstract class Item extends Entity {
 			return maxLength * dif;
 		} else {
 			float dif = 1 - ((mid - currentDistance) / mid);
-			System.out.println(dif + ", " + currentDistance + ", " + maxLength);
 			return (maxLength * dif);
 		}
-
+	}
+	
+	public boolean isWorldItem(){
+		return (dropped || thrown || onGround);
 	}
 
 
 
 	/** Calls the render method below with sprite's dimensions */
 	public void render(SpriteBatch g, float x, float y) {
-		if (!onGround) {
+		if (!onGround && !thrown) {
 			graphicsComponent.render(g, x, y);
 		} else {
 			System.out.println("WARNING " + name + " is out of state! A floor item is being drawn like a inventory item.");
@@ -112,9 +139,9 @@ public abstract class Item extends Entity {
 	}
 
 	public void render(SpriteBatch g) {
-		if (onGround) {
+		if (onGround || thrown || dropped) {
 			Point2F p = Globals.toIsoCoord(getX(), getY());
-			if (bounce) {
+			if (dropped || thrown) {
 				p.y += z;
 			}
 			groundSprite.render(g, p.x, p.y);
@@ -128,22 +155,6 @@ public abstract class Item extends Entity {
 	}
 
 	public abstract int getID();
-
-	public static Item getByID(int crafted) {
-		if (crafted == IDs.HEALTH_POTION.getID())
-			return new HealthPotion();
-		if (crafted == IDs.MERCURY.getID())
-			return new Mercury();
-		if (crafted == IDs.VOLT_CELL.getID())
-			return new VoltCell();
-		if (crafted == IDs.WRENCH.getID())
-			return new Wrench();
-		if (crafted == IDs.TAZER_WRENCH.getID())
-			return new TazerWrench();
-
-		System.out.println("No ID Found in Item.java getByID");
-		return null;
-	}
 
 	public String getName() {
 		return name;

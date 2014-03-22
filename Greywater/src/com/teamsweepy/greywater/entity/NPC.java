@@ -1,8 +1,8 @@
 
 package com.teamsweepy.greywater.entity;
 
-import com.teamsweepy.greywater.effect.KillQuest;
-import com.teamsweepy.greywater.effect.Quest;
+import com.teamsweepy.greywater.effect.quest.KillQuest;
+import com.teamsweepy.greywater.effect.quest.Quest;
 import com.teamsweepy.greywater.entity.component.Hitbox;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.level.Level;

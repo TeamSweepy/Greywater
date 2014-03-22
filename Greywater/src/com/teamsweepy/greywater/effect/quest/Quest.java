@@ -1,5 +1,5 @@
 
-package com.teamsweepy.greywater.effect;
+package com.teamsweepy.greywater.effect.quest;
 
 import com.teamsweepy.greywater.entity.Mob;
 import com.teamsweepy.greywater.entity.component.events.GameEvent;
