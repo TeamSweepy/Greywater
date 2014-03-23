@@ -49,7 +49,6 @@ public abstract class Item extends Entity {
 		landingLoc = destination;
 		startLoc = thrower.getLocation();
 		physicsComponent.setLocation(startLoc.x, startLoc.y);
-		System.out.println(destination + " | " + thrower.getLocation());
 		thrower.getLevel().addNewFloorItem(this);
 		
 		angle = startLoc.angle(landingLoc);

@@ -27,6 +27,7 @@ import com.teamsweepy.greywater.ui.gui.Inventory;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.awt.Point;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		else
 			pather = new PathfinderMotor(PathfinderMotor.Method.POTENTIAL_FIELD);
 
-		pather.updateMap(level);
+		pather.setLevel(level);
 	}
 
 
@@ -139,7 +140,6 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	/** Reduce or increase this mob's health by the given amount (+ for damage, - for buffs/healing) */
 	public void changeHP(float damage) {
 		HP -= damage;
-		System.out.println(name + " took " + damage + " dmg ---> " + HP + " HP");
 		if (HP <= 0) {
 			graphicsComponent.setImage(0.7f, "Die", Sprite.FORWARD);
 			inventory.dumpSlots();
@@ -241,6 +241,13 @@ public abstract class Mob extends Entity implements AnimEventListener {
 
 	public ArrayList getKillList() {
 		return killList;
+	}
+
+	public Point getFinalDestination() {
+		Point p = pather.getFinalStep();
+		if (p == null)
+			return Globals.toTileIndices(getLocation());
+		return p;
 	}
 
 

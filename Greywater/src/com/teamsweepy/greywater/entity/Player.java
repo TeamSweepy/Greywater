@@ -63,7 +63,7 @@ public class Player extends Mob {
 
 		if (healthBar != null && manaBar != null) {
 			healthBar.setValue(HP);
-			manaBar.setValue(0);
+			manaBar.setValue(inventory.getCharge());
 		}
 	}
 

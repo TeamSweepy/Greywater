@@ -28,6 +28,7 @@ public class PathfinderMotor {
 	private double[][] pfMap;
 	private Point curPos;
 	private Point[] nodesDirections;
+	private Level level;
 
 	public PathfinderMotor(Method method) {
 		currentMethod = method;
@@ -58,6 +59,7 @@ public class PathfinderMotor {
 		pathfinder.setStart(from);
 		pathfinder.setEnd(end);
 		pathIndex = 0;
+		updateMap();
 
 		if (pathfinder.isGoal(from)) { //if clicked self, ignore
 			aStarMap = new LinkedList<Point>();
@@ -67,6 +69,10 @@ public class PathfinderMotor {
 
 		if (currentMethod == Method.ASTAR) {
 			aStarMap = (java.util.List<Point>) pathfinder.create();
+			if (aStarMap != null)
+				for (Point p : aStarMap) {
+					level.getMapAsCosts()[p.x][p.y] = 1;
+				}
 		} else if (currentMethod == Method.POTENTIAL_FIELD) {
 			pfMap = (double[][]) pathfinder.create();
 		}
@@ -85,6 +91,16 @@ public class PathfinderMotor {
 			}
 		}
 
+		return null;
+	}
+
+	public Point getFinalStep() {
+		if (currentMethod == Method.ASTAR) {
+			if (aStarMap != null && aStarMap.size() > 0) {
+
+				return aStarMap.get(aStarMap.size() - 1);
+			}
+		}
 		return null;
 	}
 
@@ -115,8 +131,12 @@ public class PathfinderMotor {
 		return node;
 	}
 
-	public void updateMap(Level level) {
+	public void updateMap() {
 		pathfinder.setMap(level.getMapAsCosts());
+	}
+
+	public void setLevel(Level level) {
+		this.level = level;
 	}
 
 	public enum Method {

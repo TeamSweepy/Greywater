@@ -2,6 +2,7 @@
 package com.teamsweepy.greywater.ui.gui.subgui;
 
 import com.teamsweepy.greywater.entity.component.Sprite;
+import com.teamsweepy.greywater.entity.item.Chargeable;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.entity.item.weapons.Weapon;
 import com.teamsweepy.greywater.ui.gui.Cursor;
@@ -37,6 +38,14 @@ public class WeaponSlot extends ItemSlot {
 				this.item = null;
 
 			} else { // swap the items
+				if (getCharge() > 0) {
+					if (((Chargeable) item).isCharger(cursor.getItem())) {
+						if(((Chargeable) item).addCharge(cursor.getItem()))
+						cursor.setItem(null);
+						return;
+					}
+				}
+				
 				if (!(cursor.getItem() instanceof Weapon))// do the check
 					return;
 				Item temp = item;
@@ -46,4 +55,16 @@ public class WeaponSlot extends ItemSlot {
 		}
 	}
 
+	public int getCharge() {
+		if (item != null) {
+			if (item instanceof Chargeable) {
+				int charge = ((Chargeable) item).getCharge();
+				if (charge <= 0) {
+					item = null;
+				}
+				return charge;
+			}
+		}
+		return 0;
+	}
 }

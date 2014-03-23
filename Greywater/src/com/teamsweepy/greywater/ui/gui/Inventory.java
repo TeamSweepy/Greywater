@@ -44,7 +44,7 @@ public class Inventory extends GUIComponent {
 		super(1000, 250, 437, 608);
 		this.owner = owner;
 		sprite = new Sprite("inventory");
-		
+
 		initSubComponents();
 
 		{// Adding some items in the inventory for testing purposes
@@ -63,6 +63,12 @@ public class Inventory extends GUIComponent {
 			itemSlots.get(1 + i).setItem(new Mercury());
 			itemSlots.get(2 + i).setItem(new Wrench());
 			itemSlots.get(3 + i).setItem(new VoltCell());
+			this.addItem(new Bomb());
+			this.addItem(new Bomb());
+			this.addItem(new Bomb());
+			this.addItem(new Bomb());
+			this.addItem(new Bomb());
+			this.addItem(new Bomb());
 		}
 
 		visible = true;
@@ -111,6 +117,7 @@ public class Inventory extends GUIComponent {
 	/** Attempt to craft stuff */
 	public void tick(float deltaTime) {
 		outputSlot.setItem(Crafting.checkCrafting(craftingSlots));
+		weaponSlots.get(0).getCharge();
 	}
 
 	/**
@@ -126,7 +133,7 @@ public class Inventory extends GUIComponent {
 		if (weaponSlots.size() != 1) {
 			return null;
 		}
-		return (Weapon)weaponSlots.get(0).getItem();
+		return (Weapon) weaponSlots.get(0).getItem();
 	}
 
 	public boolean hasSpace() {
@@ -136,6 +143,11 @@ public class Inventory extends GUIComponent {
 		}
 		return false;
 	}
+
+	public int getCharge() {
+		return weaponSlots.get(0).getCharge();
+	}
+
 
 	public void dumpSlots() {
 		if (weaponSlots != null && !weaponSlots.isEmpty()) {

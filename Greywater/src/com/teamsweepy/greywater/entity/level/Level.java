@@ -3,7 +3,6 @@
  * 
  * Copyright Team Sweepy - Jeremy Barnes 2014 All use outside of the Greywater Project is not permitted unless express permission is
  * granted. Email TeamSweepy@gmail.com to discuss usage.
- * 
  */
 
 package com.teamsweepy.greywater.entity.level;
@@ -33,7 +32,7 @@ import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
+import java.util.List;
 
 public class Level {
 
@@ -41,7 +40,7 @@ public class Level {
 	private ArrayList<Entity> depthSortList;
 	private Tile[][] tileList;
 	private Tile[][] wallList;
-	private int[][] intWallList;
+	private int[][] mapCostList;
 	private ArrayList<Mob> mobList;
 	private ArrayList<Item> floorItemsList;
 	private ArrayList<Entity> interactiveList;
@@ -72,6 +71,7 @@ public class Level {
 		map = new TmxMapLoader().load("data/map.tmx");
 		mainCamera = Camera.getDefault();
 		convertTiledMapToEntities();
+		mapCostList = new int[tileList.length][tileList[0].length];
 		setUpMapCosts();
 
 		mobList = new ArrayList<Mob>();
@@ -81,11 +81,16 @@ public class Level {
 
 		TestTavishMob = Player.initLocalPlayer(4f, 90f, this);
 		mobList.add(TestTavishMob);
-		//		//		for(int i = 0; i < 20; i ++){
+
 		mobList.add(new Watchman(20, 70, this, TestTavishMob));
 		mobList.add(new Watchman(20, 93, this, TestTavishMob));
 		mobList.add(new NPC(4, 93, this));
-		//		}
+		for (int i = 0; i < 20; i++) {
+			mobList.add(new Watchman(20 + i, 73, this, TestTavishMob));
+		}
+		for (int i = 0; i < 20; i++) {
+			mobList.add(new Watchman(5 + i, 43, this, TestTavishMob));
+		}
 		interactiveList.addAll(mobList);
 		Camera.getDefault().moveTo(Globals.toIsoCoord(TestTavishMob.getX(), TestTavishMob.getY()));
 
@@ -103,8 +108,8 @@ public class Level {
 		floorItemsList.remove(e);
 		interactiveList.remove(e);
 	}
-	
-	public void addNewThrownItem(Item e){
+
+	public void addNewThrownItem(Item e) {
 		floorItemsList.add(e);
 	}
 
@@ -138,33 +143,48 @@ public class Level {
 
 	/** Tick logic of all components in the world - mobs, doodads, loot, etc */
 	public void tick(float deltaTime) {
-		
+
 		for (int x = 0; x < tileList.length; x++) {
 			for (int y = 0; y < tileList[x].length; y++) {
 				if (tileList[x][y] != null)
 					tileList[x][y].tick(deltaTime);
 
-				if (wallList[x][y] != null)
+				if (wallList[x][y] != null) {
 					wallList[x][y].tick(deltaTime);
+					mapCostList[x][y] = 1;
+				} else {
+					mapCostList[x][y] = 0;
+				}
 			}
 		}
+
+		Point p;
 		for (Mob mob : mobList) {
-			mob.tick(deltaTime);
+			if((mob instanceof Player))
+				continue;
+			p = Globals.toTileIndices(mob.getLocation());
+			mapCostList[p.x][p.y] = 1;
 		}
-		Iterator<Item> e = floorItemsList.iterator();
-		
-		
-        for (int i = 0; i < floorItemsList.size(); i++) {
-        	Item it = floorItemsList.get(i);
-        	 it.tick(deltaTime);
-            if(!it.isWorldItem()){
-            	i--;
-            	floorItemsList.remove(it);
-            	continue;
-            }
-           
-        }
-        
+
+		for (Mob mob : mobList) {
+//			p = Globals.toTileIndices(mob.getLocation());
+//			mapCostList[p.x][p.y] = 0;
+			mob.tick(deltaTime);
+//			mapCostList[p.x][p.y] = 1;
+		}
+
+
+		for (int i = 0; i < floorItemsList.size(); i++) {
+			Item it = floorItemsList.get(i);
+			it.tick(deltaTime);
+			if (!it.isWorldItem()) {
+				i--;
+				floorItemsList.remove(it);
+				continue;
+			}
+
+		}
+
 		Camera.getDefault().moveTo(Globals.toIsoCoord(TestTavishMob.getX(), TestTavishMob.getY()));
 	}
 
@@ -214,6 +234,18 @@ public class Level {
 				return e;
 		}
 		return null;
+	}
+	
+	/** Finds if an entity's logical hitbox collides with another hitbox in objective coordinates */
+	public List<Mob> getCollidedMobs(List<Rectangle> intersectionAreas) {
+		ArrayList<Mob> collisions = new ArrayList<Mob>();
+		for (Mob e : mobList) {
+			for(Rectangle intersectionArea : intersectionAreas){
+				if (e.checkPhysicalIntersection(intersectionArea))
+					collisions.add(e);
+			}
+		}
+		return collisions;
 	}
 
 	/** Finds if an entity's sprite is clicked by a given screen location. Will not return the same entity who is searching */
@@ -310,25 +342,38 @@ public class Level {
 	}
 
 	public int[][] getMapAsCosts() {
-		return intWallList;
+		return mapCostList;
 	}
 
 	public int[][] setUpMapCosts() {
-		intWallList = new int[tileList.length][tileList[0].length];
 		for (int x = 0; x < tileList.length; x++) {
 			for (int y = 0; y < tileList[0].length; y++) {
 				if (isTileWalkable(x, y)) {
-					intWallList[x][y] = 0;
+					mapCostList[x][y] = 0;
 				} else {
-					intWallList[x][y] = 1;
+					mapCostList[x][y] = 1;
 				}
 			}
 		}
-		return intWallList;
+		return mapCostList;
 	}
-	
-	public void removeFromInteractiveList(Entity e){
+
+	public void removeFromInteractiveList(Entity e) {
 		interactiveList.remove(e);
 	}
 
+	public Tile getTile(int x, int y){
+		return tileList[x][y];
+	}
+	
+	public List<Tile> getTiles(List<Point> tileindices){
+		ArrayList<Tile> tileAList = new ArrayList<Tile>();
+		for(Point tile : tileindices){
+			if(tile.x < 0 || tile.y < 0 || tile.x > tileList.length || tile.y > tileList[0].length)
+				continue;
+			tileAList.add(tileList[tile.x][tile.y]);
+		}
+		return tileAList;
+	}
+	
 }

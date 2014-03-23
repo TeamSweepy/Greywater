@@ -154,8 +154,9 @@ public class AStar extends Pathfinder<java.util.List<Point>> {
 			f(root, start, end);
 			expand(root);
 
-
-			for (;;) {
+			int qi = 0;
+			for (int iterations = 0;iterations < 500; iterations++) {
+				qi++;
 				AStarPath<Point> p = paths.poll();
 
 				if (p == null) {
@@ -171,7 +172,7 @@ public class AStar extends Pathfinder<java.util.List<Point>> {
 					for (AStarPath<Point> i = p; i != null; i = i.parent) {
 						retPath.addFirst(i.point);
 					}
-
+					System.out.println(qi);
 					nodes = retPath;
 					return retPath;
 				}

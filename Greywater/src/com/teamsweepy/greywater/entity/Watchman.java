@@ -29,7 +29,10 @@ public class Watchman extends Mob {
 		if (attacking || interact())
 			return;
 
-		if (!physicsComponent.isMoving() && canSeeTarget()) {
+		if (!physicsComponent.isMoving() && canSeeTarget() && Globals.rand.nextBoolean()) {
+			if(Globals.rand.nextBoolean() && Globals.rand.nextBoolean() && Globals.rand.nextBoolean() && Globals.rand.nextBoolean()){
+				pather.createPath(Globals.toTileIndices(getLocation()), ((Mob) focusTarget).getFinalDestination());
+			}
 			pather.createPath(Globals.toTileIndices(getLocation()), Globals.toTileIndices(focusTarget.getLocation()));
 
 			Point newPoint = pather.getNextStep();
@@ -53,9 +56,6 @@ public class Watchman extends Mob {
 
 		if (enemy == null || attacking)
 			return;
-
-		System.out.println(name + " attacked " + (enemy).name);
-
 		physicsComponent.stopMovement();
 		pather.reset();
 		this.currentDirection = Globals.getDirectionString(enemy, this);

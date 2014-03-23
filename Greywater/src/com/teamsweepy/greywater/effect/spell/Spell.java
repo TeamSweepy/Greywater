@@ -34,7 +34,6 @@ public abstract class Spell {
 		
 		if (duration > 0 && spellEffect.isComplete()) {
 			spellEffect.start();
-			System.out.println("START");
 		}
 	}
 
