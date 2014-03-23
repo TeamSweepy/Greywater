@@ -41,8 +41,6 @@ public class ProgressBarCircular extends GUIComponent {
 			System.out.println("[ERROR] ProgressBar division MAX VALUE IS 0");
 			return;
 		}
-
-		// TODO: smooth rotation after big value changes
 		float dR = (percentage*arcofRotation - rotation) * .08f;
 		rotation = rotation + dR;
 

@@ -7,6 +7,7 @@ import com.teamsweepy.greywater.entity.component.Hitbox;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.ui.gui.GUI;
+import com.teamsweepy.greywater.ui.gui.subgui.Button;
 import com.teamsweepy.greywater.ui.gui.subgui.Dialog;
 
 import java.util.ArrayList;
@@ -26,6 +27,25 @@ public class NPC extends Mob {
 		this.graphicsComponent = new Sprite(getName());
 		world = level;
 		friendly = true;
+		Button talkButton = new Button(800, 650, 300, 50, "Talk") {
+			@Override
+			protected void clicked() {
+				welcomeDialog.setVisible(false);
+			}
+		};
+
+		Button questButton = new Button(800, 600, 300, 50, "Quests") {
+			@Override
+			protected void clicked() {
+				welcomeDialog.setVisible(false);
+			}
+		};
+		
+		
+		
+		welcomeDialog.addGUIComponent(talkButton);
+		welcomeDialog.addGUIComponent(questButton);
+
 
 		//shitty quest test code
 		possibleQuests = new ArrayList<Quest>();
@@ -63,6 +83,7 @@ public class NPC extends Mob {
 			//			d.setTitle("SAMPLE QUEST");
 			//			d.setVisible(true);
 			GUI.addGUIComponent(welcomeDialog);
+			//			GUI.addGUIComponent();
 			welcomeDialog.setVisible(true);
 			possibleQuests.get(0).startQuest(interlocutor);
 			if (possibleQuests.get(0).getQuestState(interlocutor) == Quest.ASSIGNEE_STATUS_TURNIN) {
@@ -82,7 +103,7 @@ public class NPC extends Mob {
 	@Override
 	public void executeAttack() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

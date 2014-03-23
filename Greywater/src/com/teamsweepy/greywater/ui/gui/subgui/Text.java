@@ -34,6 +34,7 @@ public class Text extends GUIComponent {
 	// TODO: Automatic resize
 	public Text() {
 		this(0, 0, 100, 100);
+		visible = true;
 	}
 
 	public Text(float x, float y, float w, float h) {

@@ -46,9 +46,7 @@ public class Dialog extends GUIComponent {
 
 		scrollBar = new Scrollbar(false, pos.x + w - 20, pos.y, 20, h- titleOffset);
 		subComponents.add(scrollBar);
-
-		setText(Gdx.files.internal("data/dialog_text.txt").readString());
-
+		setText("");
 		final Dialog dialog = this; // Used for the button
 
 		closeButton = new Button(pos.x + w - 25, pos.y + h - 25, "ui/cross") {
