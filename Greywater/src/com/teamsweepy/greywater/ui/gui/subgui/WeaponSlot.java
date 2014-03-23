@@ -60,7 +60,7 @@ public class WeaponSlot extends ItemSlot {
 			if (item instanceof Chargeable) {
 				int charge = ((Chargeable) item).getCharge();
 				if (charge <= 0) {
-					item = null;
+					item = ((Chargeable) item).getNoChargeItem();
 				}
 				return charge;
 			}

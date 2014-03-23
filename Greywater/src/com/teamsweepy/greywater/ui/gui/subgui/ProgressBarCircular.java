@@ -21,6 +21,7 @@ public class ProgressBarCircular extends GUIComponent {
 	protected float value;
 	protected float percentage;
 	protected float rotation;
+	float arcofRotation;
 
 
 	public ProgressBarCircular(float x, float y) {
@@ -42,26 +43,26 @@ public class ProgressBarCircular extends GUIComponent {
 		}
 
 		// TODO: smooth rotation after big value changes
+		float dR = (percentage*arcofRotation - rotation) * .08f;
+		rotation = rotation + dR;
 
-		percentage = (float) value / maxValue;
-		float dRotation = maxRotation - minRotation;
-		rotation = minRotation + dRotation * percentage;
 
-		value++;
 	}
 
 	@Override
 	public void render(SpriteBatch batch) {
-		sprite.renderRotated(batch, pos.x, pos.y, rotation);
+		sprite.renderRotated(batch, pos.x, pos.y, rotation + minRotation);
 	}
 
 
 	public void setMinRotation(float minRotation) {
 		this.minRotation = minRotation;
+		arcofRotation = maxRotation - minRotation;
 	}
 
 	public void setMaxRotation(float maxRotation) {
 		this.maxRotation = maxRotation;
+		arcofRotation = maxRotation - minRotation;
 	}
 
 	public void setMinValue(float minValue) {
@@ -73,7 +74,13 @@ public class ProgressBarCircular extends GUIComponent {
 	}
 
 	public void setValue(float value) {
-		this.value = value;
+		if (value < minValue)
+			value = minValue;
+		else if (value > maxValue)
+			value = maxValue;
+		else
+			this.value = value;
+		percentage = (float) value / maxValue;
 	}
 
 

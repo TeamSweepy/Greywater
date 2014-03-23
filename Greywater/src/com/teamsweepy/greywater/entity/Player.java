@@ -113,7 +113,7 @@ public class Player extends Mob {
 				attack(interactedMob);
 
 			} else if (interactedMob.friendly) { //interact with friends
-				if (interactedMob.getLocation().distance(getLocation()) > getWidth() * 4.5)
+				if (interactedMob.getLocation().distance(getLocation()) > getWidth() * 3.5)
 					return false;
 
 				physicsComponent.stopMovement();
@@ -128,12 +128,10 @@ public class Player extends Mob {
 			} else { //clicked a dead guy
 				return false;
 			}
-
-
 		}//end mob interaction
 
 		if (interacted instanceof Item) { //pickup loot
-			if (interacted.getLocation().distance(getLocation()) < getWidth()) {
+			if (interacted.getLocation().distance(getLocation()) < getWidth()*2) {
 				inventory.addItem((Item) interacted);
 				getLevel().removeFloorItem((Item) interacted);
 				((Item) interacted).pickup();
@@ -167,12 +165,17 @@ public class Player extends Mob {
 		}
 
 		focusTarget = enemy;
+		boolean visible = this.canSeeTarget();
+		if(!visible){
+			System.out.println("CANT SEE");
+			focusTarget = null;
+			return;
+		}
 		
-		if (enemy.getLocation().distance(getLocation()) > equippedWeapon.getRange() || !this.canSeeTarget()) { //if cant reach
+		if (enemy.getLocation().distance(getLocation()) > equippedWeapon.getRange() && visible ) { //if cant reach
 			pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(enemy.getLocation()));
 			Point newPoint = pather.getNextStep();
 			newPoint = pather.getNextStep();
-
 			if (newPoint != null) {
 				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 				physicsComponent.moveTo(newLoc.x, newLoc.y);

@@ -87,6 +87,11 @@ public class Bomb extends RangedWeapon implements Chargeable {
 		return false;
 	}
 
+	@Override
+	public Item getNoChargeItem() {
+		return null;
+	}
+
 
 
 }

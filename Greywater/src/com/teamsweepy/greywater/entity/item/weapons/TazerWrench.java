@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class TazerWrench extends Weapon implements Chargeable {
 
-	private int charge = 80;
+	private int charge = 20;
 	private int maxCharge = 100;
 
 	public TazerWrench() {
@@ -30,7 +30,7 @@ public class TazerWrench extends Weapon implements Chargeable {
 	@Override
 	public boolean attack(Mob attacker, Mob victim) {
 		super.swing(attacker, victim);
-		victim.addSpell(new PersonalSpell("particle/electric.p", 0, 10, victim, attacker));
+		victim.addSpell(new PersonalSpell("particle/electric.p", 0, 20, victim, attacker));
 		removeCharge(5);
 		return !victim.isAlive();
 	}
@@ -63,5 +63,10 @@ public class TazerWrench extends Weapon implements Chargeable {
 		if (i.getClass() == VoltCell.class)
 			return true;
 		return false;
+	}
+
+	@Override
+	public Item getNoChargeItem() {
+		return new Wrench();
 	}
 }

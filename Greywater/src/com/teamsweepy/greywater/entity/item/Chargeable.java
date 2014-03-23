@@ -12,5 +12,7 @@ public interface Chargeable {
 	public int maxCharge();
 	
 	public boolean isCharger(Item i);
+	
+	public Item getNoChargeItem();
 
 }
