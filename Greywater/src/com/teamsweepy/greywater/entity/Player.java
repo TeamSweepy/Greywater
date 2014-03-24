@@ -72,16 +72,21 @@ public class Player extends Mob {
 		//PATHFINDING CODE
 		if (mouseClicked) {
 			mouseClicked = false;
-
 			if (attacking || interact()) //no need to walk if you're fighting/talking
-				return;
+                return;
 
 			Point startTile = Globals.toTileIndices(getLocation().x, getLocation().y);
+
+            if(physicsComponent.isMoving()) {
+                startTile = Globals.toTileIndices(physicsComponent.destination);
+            }
+
 			Point2F objectiveClick = Globals.toNormalCoord(mouseLocation.x, mouseLocation.y);
 			Point clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
+
 			System.out.println("Player starts at " + startTile);
 			System.out.println("Clicked to move to " + clickedTile);
-			pather.reset();
+
 			pather.createPath(startTile, clickedTile);
 			Point newPoint = pather.getNextStep();
 			if (newPoint != null) {
@@ -91,6 +96,7 @@ public class Player extends Mob {
 		} else { //if no recent click, continue along pre-established path
 			if (!physicsComponent.isMoving()) {
 				Point newPoint = pather.getNextStep();
+
 				if (newPoint != null) {
 					Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 					physicsComponent.moveTo(newLoc.x, newLoc.y);
@@ -101,11 +107,12 @@ public class Player extends Mob {
 
 	@Override
 	public boolean interact() {
-		Entity interacted = (Entity) world.getClickedEntity(mouseLocation, this);
-		focusTarget = null;
-		if (interacted == null) {
-			return false;
-		}
+
+
+        Entity interacted = (Entity) world.getClickedEntity(mouseLocation, this);
+        focusTarget = null;
+        if (interacted == null) return false;
+
 		if (interacted.getClass().getSuperclass() == Mob.class) { //deal with mobs
 			Mob interactedMob = (Mob) interacted;
 			if (interactedMob.isAlive() && !interactedMob.friendly) { //attack the living enemy
@@ -175,13 +182,13 @@ public class Player extends Mob {
 		if (enemy.getLocation().distance(getLocation()) > equippedWeapon.getRange() && visible ) { //if cant reach
 			pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(enemy.getLocation()));
 			Point newPoint = pather.getNextStep();
-			newPoint = pather.getNextStep();
 			if (newPoint != null) {
 				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 				physicsComponent.moveTo(newLoc.x, newLoc.y);
 			}
 			return;
 		}
+
 		missing = !equippedWeapon.swing(this, enemy);
 		physicsComponent.stopMovement();
 		pather.reset();
@@ -192,7 +199,7 @@ public class Player extends Mob {
 
 	/** Sets local player input variables. Used as a callback. */
 	public static void handleInput(Point2F screenLocation, boolean clicked, int keyCode) {
-		mouseClicked = clicked;
+        mouseClicked = clicked;
 		mouseLocation = screenLocation;
 		if (mouseLocation != null || keyCode != -69) {
 			return; //TODO deal with key input when needed

@@ -52,8 +52,8 @@ public class PathfinderMotor {
 	}
 
 	public void createPath(Point from, Point end) {
-		if (pathfinder.isGoal(end)) //no need to find same path twice
-			return;
+            if (pathfinder.isGoal(end)) //no need to find same path twice
+                return;
 
 		pathfinder.reset();
 		pathfinder.setStart(from);
