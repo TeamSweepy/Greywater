@@ -7,6 +7,7 @@ import com.teamsweepy.greywater.entity.component.Hitbox;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.ui.gui.GUI;
+import com.teamsweepy.greywater.ui.gui.GUIComponent;
 import com.teamsweepy.greywater.ui.gui.subgui.Button;
 import com.teamsweepy.greywater.ui.gui.subgui.Dialog;
 
@@ -17,7 +18,16 @@ public class NPC extends Mob {
 
 	ArrayList<Quest> possibleQuests;
 	Dialog welcomeDialog;
+	Dialog talkDialog;
+	
+	GUIComponent mainMenu;
+	String mainMenuTitle;
 
+	
+	GUIComponent questMenu;
+	String questMenuTitle;
+	
+	
 	public NPC(float x, float y, Level level) {
 		super();
 		name = "NPC_South";
@@ -27,6 +37,10 @@ public class NPC extends Mob {
 		this.graphicsComponent = new Sprite(getName());
 		world = level;
 		friendly = true;
+		mainMenu = new GUIComponent();
+		mainMenuTitle = getName();
+		questMenuTitle = "Quests";
+		
 		Button talkButton = new Button(800, 650, 300, 50, "Talk") {
 			@Override
 			protected void clicked() {
@@ -37,14 +51,17 @@ public class NPC extends Mob {
 		Button questButton = new Button(800, 600, 300, 50, "Quests") {
 			@Override
 			protected void clicked() {
-				welcomeDialog.setVisible(false);
+				welcomeDialog.setTitle(questMenuTitle);
+				welcomeDialog.removeGUIComponent(mainMenu);
+				welcomeDialog.addGUIComponent(questMenu);
+				questMenu.setVisible(true);
 			}
 		};
 		
-		
-		
-		welcomeDialog.addGUIComponent(talkButton);
-		welcomeDialog.addGUIComponent(questButton);
+		mainMenu.addGUIComponent(talkButton);
+		mainMenu.addGUIComponent(questButton);
+	
+		questMenu = new GUIComponent();
 
 
 		//shitty quest test code
@@ -55,6 +72,8 @@ public class NPC extends Mob {
 		watch2.addPrereq(watch1);
 		possibleQuests.add(watch1);
 		possibleQuests.add(watch2);
+		
+		GUI.addGUIComponent(welcomeDialog);
 
 	}
 
@@ -82,8 +101,21 @@ public class NPC extends Mob {
 			//			d.setText(possibleQuests.get(0).getText(interlocutor));
 			//			d.setTitle("SAMPLE QUEST");
 			//			d.setVisible(true);
-			GUI.addGUIComponent(welcomeDialog);
+
 			//			GUI.addGUIComponent();
+			
+			questMenu.removeAllGUIComponent();
+			int i = 0;
+			for(Quest q : possibleQuests){
+				Button b = new Button(800, 650 - (50*i), 300, 50, q.getText(interlocutor));
+				i++;
+				questMenu.addGUIComponent(b);
+			}
+			
+			welcomeDialog.removeGUIComponent(mainMenu);
+			welcomeDialog.removeGUIComponent(questMenu);
+			welcomeDialog.addGUIComponent(mainMenu);
+			welcomeDialog.setTitle(mainMenuTitle);
 			welcomeDialog.setVisible(true);
 			possibleQuests.get(0).startQuest(interlocutor);
 			if (possibleQuests.get(0).getQuestState(interlocutor) == Quest.ASSIGNEE_STATUS_TURNIN) {

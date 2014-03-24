@@ -34,7 +34,7 @@ public class GUIComponent {
 		hitbox = new Hitbox();
 		visible = false; // no need for empty render method, just flag imageless components
 	}
-	
+
 	/** Creates a subcomponent centered on the X and Y given */
 	public GUIComponent(float x, float y, float w, float h, boolean centered) {
 		size = new Point2F(w, h);
@@ -47,7 +47,7 @@ public class GUIComponent {
 		}
 		visible = false; // no need for empty render method, just flag imageless components
 	}
-	
+
 	public GUIComponent(float x, float y, float w, float h) {
 		pos = new Point2F(x, y);
 		size = new Point2F(w, h);
@@ -80,8 +80,8 @@ public class GUIComponent {
 			}
 		}
 	}
-	
-	protected void clicked(){
+
+	protected void clicked() {
 		System.out.println("Click function not defined for GUIComponent");
 	}
 
@@ -159,7 +159,15 @@ public class GUIComponent {
 	public void addGUIComponent(GUIComponent component) {
 		subComponents.add(component);
 	}
-	
+
+	public void removeGUIComponent(GUIComponent component) {
+		subComponents.remove(component);
+	}
+
+	public void removeAllGUIComponent() {
+		subComponents.clear();
+	}
+
 	public Hitbox getHitbox() {
 		return hitbox;
 	}
