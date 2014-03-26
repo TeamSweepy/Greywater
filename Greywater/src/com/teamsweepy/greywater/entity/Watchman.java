@@ -6,9 +6,7 @@ import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
-import com.teamsweepy.greywater.ui.gui.Inventory;
-
-import com.badlogic.gdx.math.Vector2;
+import com.teamsweepy.greywater.ui.gui.AIInventory;
 
 import java.awt.Point;
 
@@ -21,7 +19,7 @@ public class Watchman extends Mob {
 		this.walkCycleDuration = 1;
 		graphicsComponent.setImage(.6f, "Walk_South", Sprite.LOOP);
 		focusTarget = focus;
-		inventory = new Inventory(this);
+		inventory = new AIInventory(this);
 	}
 
 	@Override

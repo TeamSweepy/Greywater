@@ -92,9 +92,6 @@ public abstract class Mob extends Entity implements AnimEventListener {
 			afflictingSpells.get(i).render(g);
 		}
 		graphicsComponent.render(g, p.x - graphicsComponent.getImageWidth() / 2, p.y + Globals.tileImageHeight / 10);
-		if (inventory != null) {
-			inventory.render(g);
-		}
 	}
 
 	/** Update graphics and physics components, deal with animation and behavior */

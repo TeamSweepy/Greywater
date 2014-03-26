@@ -4,7 +4,6 @@ package com.teamsweepy.greywater.entity;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.component.Sprite;
-import com.teamsweepy.greywater.entity.component.events.KillEvent;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.entity.item.weapons.Fist;
 import com.teamsweepy.greywater.entity.item.weapons.Weapon;
@@ -113,13 +112,9 @@ public class Player extends Mob {
 		if (interacted == null)
 			return false;
 
-		if (interacted.getClass().getSuperclass() == Mob.class) { // deal with
-																	// mobs
+		if (interacted.getClass().getSuperclass() == Mob.class) { // deal with mobs
 			Mob interactedMob = (Mob) interacted;
-			if (interactedMob.isAlive() && !interactedMob.friendly) { // attack
-																		// the
-																		// living
-																		// enemy
+			if (interactedMob.isAlive() && !interactedMob.friendly) { // attack the living enemy
 				focusTarget = interactedMob;
 				attack(interactedMob);
 
@@ -149,7 +144,7 @@ public class Player extends Mob {
 					((Item) interacted).pickup();
 				} else {
 					getLevel().removeFloorItem((Item) interacted);
-					((Item) interacted).throwOnGround(Globals.calculateRandomLocation(this.getLocation(), this.getLevel(), .7f), this);
+					((Item) interacted).throwOnGround(Globals.calculateRandomLocation(this.getLocation(), this.getLevel(), -.1f), this);
 				}
 			} else {
 				pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(interacted.getLocation()));

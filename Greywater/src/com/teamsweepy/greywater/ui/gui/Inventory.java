@@ -3,7 +3,6 @@ package com.teamsweepy.greywater.ui.gui;
 
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.Mob;
-import com.teamsweepy.greywater.entity.component.Hitbox;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.entity.item.crafting.Crafting;
@@ -18,8 +17,6 @@ import com.teamsweepy.greywater.ui.gui.subgui.CraftingSlot;
 import com.teamsweepy.greywater.ui.gui.subgui.ItemSlot;
 import com.teamsweepy.greywater.ui.gui.subgui.OutputSlot;
 import com.teamsweepy.greywater.ui.gui.subgui.WeaponSlot;
-
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
 
@@ -45,10 +42,34 @@ public class Inventory extends GUIComponent {
 
 		initSubComponents();
 
+		{// Adding some items in the inventory for testing purposes
+ 			int i = 0;
+ 			itemSlots.get(0).setItem(new HealthPotion());
+ 			itemSlots.get(1).setItem(new Mercury());
+ 			itemSlots.get(2).setItem(new Wrench());
+ 			itemSlots.get(3).setItem(new VoltCell());
+ 			i = 5;
+ 			itemSlots.get(0 + i).setItem(new HealthPotion());
+ 			itemSlots.get(1 + i).setItem(new Bomb());
+ 			itemSlots.get(2 + i).setItem(new Wrench());
+ 			itemSlots.get(3 + i).setItem(new VoltCell());
+ 			i = 10;
+ 			itemSlots.get(0 + i).setItem(new HealthPotion());
+ 			itemSlots.get(1 + i).setItem(new Mercury());
+ 			itemSlots.get(2 + i).setItem(new Wrench());
+ 			itemSlots.get(3 + i).setItem(new VoltCell());
+ 			this.addItem(new Bomb());
+ 			this.addItem(new Bomb());
+ 			this.addItem(new Bomb());
+ 			this.addItem(new Bomb());
+ 			this.addItem(new Bomb());
+ 			this.addItem(new Bomb());
+ 		}
+		
 		visible = true;
 	}
-	
-	public Inventory(int x, int y, int w, int h){
+
+	public Inventory(int x, int y, int w, int h) {
 		super(x, y, w, y);
 	}
 

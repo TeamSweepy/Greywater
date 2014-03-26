@@ -80,8 +80,8 @@ public abstract class Item extends Entity {
 			float dx = 0;
 			float dy = 0;
 			if (dropped) {
-				dx = (float) (Math.cos(angle) * 9F);
-				dy = (float) (Math.sin(angle) * 9F);
+				dx = (float) (Math.cos(angle) * 6F);
+				dy = (float) (Math.sin(angle) * 6F);
 			}
 
 			if (thrown) {

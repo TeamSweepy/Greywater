@@ -23,6 +23,10 @@ public class ItemSlot extends GUIComponent {
 		this.inventory = inventory;
 		sprite = new Sprite("slot");
 	}
+	
+	public ItemSlot(Inventory inventory) {
+		this.inventory = inventory;
+	}
 
 
 	@Override

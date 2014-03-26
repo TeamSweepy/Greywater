@@ -2,10 +2,7 @@
 package com.teamsweepy.greywater.effect.quest;
 
 import com.teamsweepy.greywater.entity.Mob;
-import com.teamsweepy.greywater.entity.component.events.GameEvent;
 import com.teamsweepy.greywater.entity.component.events.GameEventListener;
-
-import sun.org.mozilla.javascript.internal.ast.Assignment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,23 +24,25 @@ public abstract class Quest implements GameEventListener {
 	private String completeText = "LOLOL YOU DID A THING";
 	private String questTitle = "LDAT";
 
+	private boolean closedQuest;
+	private boolean completeQuest;
+
 	public Quest() {
 		assignees = new HashMap<Mob, Integer>();
 		prereqs = new ArrayList<Quest>();
 	}
-	
-	public Quest(String intro, String wait, String complete, String title){
+
+	public Quest(String intro, String wait, String complete, String title) {
 		introText = intro;
 		waitText = wait;
 		completeText = complete;
 		questTitle = title;
+		assignees = new HashMap<Mob, Integer>();
+		prereqs = new ArrayList<Quest>();
 	}
 
-	private boolean closedQuest;
-	private boolean completeQuest;
-
-
-	public boolean isAvailable(Mob assignee) {
+	/** Indicates if a player can START a quest. False if they are on the quest already. */
+	public boolean isAvailableForStarting(Mob assignee) {
 		if (closedQuest || assignees.keySet().contains(assignee))
 			return false;
 		boolean available = true;
@@ -84,14 +83,18 @@ public abstract class Quest implements GameEventListener {
 	}
 
 	public void startQuest(Mob assignee) {
-		if (!assignees.keySet().contains(assignee) && isAvailable(assignee)) {
+		if (!assignees.keySet().contains(assignee) && isAvailableForStarting(assignee)) {
 			assignee.addGameListener(this);
 			assignees.put(assignee, ASSIGNEE_STATUS_INPROGRESS);
-			//assignee.questlog.add(this);
+			//TODO assignee.questlog.add(this);
 		}
 	}
 
-	public void completeObjective() {
+	public boolean isAssignee(Mob potential) {
+		return assignees.containsKey(potential) && getQuestState(potential) != ASSIGNEE_STATUS_COMPLETED;
+	}
+
+	protected void completeObjective() {
 		if (isQuestActionOver()) {
 			for (Mob m : assignees.keySet()) {
 				assignees.put(m, ASSIGNEE_STATUS_TURNIN);
@@ -112,8 +115,8 @@ public abstract class Quest implements GameEventListener {
 		}
 		return null;
 	}
-	
-	public String getTitle(){
+
+	public String getTitle() {
 		return questTitle;
 	}
 

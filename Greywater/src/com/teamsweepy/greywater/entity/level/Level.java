@@ -36,14 +36,14 @@ import java.util.List;
 
 public class Level {
 
-	private TiledMap map;
-	private ArrayList<Entity> depthSortList;
-	private Tile[][] tileList;
-	private Tile[][] wallList;
-	private int[][] mapCostList;
-	private ArrayList<Mob> mobList;
-	private ArrayList<Item> floorItemsList;
-	private ArrayList<Entity> interactiveList;
+	protected TiledMap map;
+	protected ArrayList<Entity> depthSortList;
+	protected Tile[][] tileList;
+	protected Tile[][] wallList;
+	protected int[][] mapCostList;
+	protected ArrayList<Mob> mobList;
+	protected ArrayList<Item> floorItemsList;
+	protected ArrayList<Entity> interactiveList;
 
 	Camera mainCamera;
 
@@ -64,6 +64,8 @@ public class Level {
 		}
 	};
 
+//	public Level(){};
+	
 	public Level() {
 		while (AssetLoader.tick() < 1f) {
 			// do nothing TODO remove later
@@ -84,6 +86,7 @@ public class Level {
 
 		mobList.add(new Watchman(20, 70, this, TestTavishMob));
 		mobList.add(new Watchman(20, 93, this, TestTavishMob));
+		mobList.add(new Watchman(20, 94, this, TestTavishMob));
 		mobList.add(new NPC(4, 93, this));
 		for (int i = 0; i < 20; i++) {
 			mobList.add(new Watchman(20 + i, 73, this, TestTavishMob));

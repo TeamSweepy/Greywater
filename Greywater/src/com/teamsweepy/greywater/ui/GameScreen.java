@@ -12,6 +12,7 @@ import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Engine;
 import com.teamsweepy.greywater.entity.Player;
 import com.teamsweepy.greywater.entity.level.Level;
+import com.teamsweepy.greywater.entity.level.Town;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.Cursor;
 import com.teamsweepy.greywater.ui.gui.GUI;
