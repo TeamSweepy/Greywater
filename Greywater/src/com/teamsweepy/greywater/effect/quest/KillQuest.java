@@ -18,6 +18,12 @@ public class KillQuest extends Quest {
 		winConditions = new HashMap<Class, Integer>();
 		currentConditions = new HashMap<Class, Integer>();
 	}
+	
+	public KillQuest(String intro, String wait, String complete, String title){
+		super(intro, wait, complete, title);
+		winConditions = new HashMap<Class, Integer>();
+		currentConditions = new HashMap<Class, Integer>();
+	}
 
 	@Override
 	public void handleGameEvent(GameEvent ge) {

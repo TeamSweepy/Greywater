@@ -16,7 +16,6 @@ import com.teamsweepy.greywater.ui.gui.subgui.ProgressBarCircular;
 import java.awt.Point;
 import java.util.ArrayList;
 
-
 public class Player extends Mob {
 
 	private static Point2F mouseLocation;
@@ -26,7 +25,7 @@ public class Player extends Mob {
 	private ProgressBarCircular healthBar;
 	private ProgressBarCircular manaBar;
 
-	private Fist fist; //default weapon
+	private Fist fist; // default weapon
 
 	public static Player getLocalPlayer() {
 		return localPlayer;
@@ -34,6 +33,7 @@ public class Player extends Mob {
 
 	/**
 	 * Creates a new player standing in the center of the tile specified.
+	 * 
 	 * @param x - Tile X Position, not objective position
 	 * @param y - Tile Y Position, not objective position
 	 */
@@ -44,6 +44,7 @@ public class Player extends Mob {
 
 	/**
 	 * Creates a new player standing in the center of the tile specified.
+	 * 
 	 * @param x - Tile X Position, not objective position
 	 * @param y - Tile Y Position, not objective position
 	 */
@@ -69,17 +70,16 @@ public class Player extends Mob {
 
 	@Override
 	protected void getInput() {
-		//PATHFINDING CODE
+		// PATHFINDING CODE
 		if (mouseClicked) {
 			mouseClicked = false;
-			if (attacking || interact()) //no need to walk if you're fighting/talking
-                return;
-
-			Point startTile = Globals.toTileIndices(getLocation().x, getLocation().y);
-
-            if(physicsComponent.isMoving()) {
-                startTile = Globals.toTileIndices(physicsComponent.destination);
-            }
+			if (attacking || interact()) // no need to walk if you're fighting/talking
+				return;
+			Point startTile;
+			if (!physicsComponent.isMoving())
+				startTile = Globals.toTileIndices(getLocation().x, getLocation().y);
+			else
+				startTile = Globals.toTileIndices(physicsComponent.destination);
 
 			Point2F objectiveClick = Globals.toNormalCoord(mouseLocation.x, mouseLocation.y);
 			Point clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
@@ -93,7 +93,7 @@ public class Player extends Mob {
 				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 				physicsComponent.moveTo(newLoc.x, newLoc.y);
 			}
-		} else { //if no recent click, continue along pre-established path
+		} else { // if no recent click, continue along pre-established path
 			if (!physicsComponent.isMoving()) {
 				Point newPoint = pather.getNextStep();
 
@@ -102,46 +102,55 @@ public class Player extends Mob {
 					physicsComponent.moveTo(newLoc.x, newLoc.y);
 				}
 			}
-		} //END PATHFINDING CODE
+		} // END PATHFINDING CODE
 	}
 
 	@Override
 	public boolean interact() {
 
+		Entity interacted = (Entity) world.getClickedEntity(mouseLocation, this);
+		focusTarget = null;
+		if (interacted == null)
+			return false;
 
-        Entity interacted = (Entity) world.getClickedEntity(mouseLocation, this);
-        focusTarget = null;
-        if (interacted == null) return false;
-
-		if (interacted.getClass().getSuperclass() == Mob.class) { //deal with mobs
+		if (interacted.getClass().getSuperclass() == Mob.class) { // deal with
+																	// mobs
 			Mob interactedMob = (Mob) interacted;
-			if (interactedMob.isAlive() && !interactedMob.friendly) { //attack the living enemy
+			if (interactedMob.isAlive() && !interactedMob.friendly) { // attack
+																		// the
+																		// living
+																		// enemy
 				focusTarget = interactedMob;
 				attack(interactedMob);
 
-			} else if (interactedMob.friendly) { //interact with friends
+			} else if (interactedMob.friendly) { // interact with friends
 				if (interactedMob.getLocation().distance(getLocation()) > getWidth() * 3.5)
 					return false;
 
 				physicsComponent.stopMovement();
 				pather.reset();
-				this.currentDirection = Globals.getDirectionString(interactedMob, this); //face target
+				this.currentDirection = Globals.getDirectionString(interactedMob, this); // face target
 				((NPC) interactedMob).interact(this);
-				//				if(interactedMob.getClass() == Sweepy.class){
+				// if(interactedMob.getClass() == Sweepy.class){
 				//
-				//				} else{
-				//					((NPC)interactedMob).interact(this);
-				//				}
-			} else { //clicked a dead guy
+				// } else{
+				// ((NPC)interactedMob).interact(this);
+				// }
+			} else { // clicked a dead guy
 				return false;
 			}
-		}//end mob interaction
+		}// end mob interaction
 
-		if (interacted instanceof Item) { //pickup loot
-			if (interacted.getLocation().distance(getLocation()) < getWidth()*2) {
-				inventory.addItem((Item) interacted);
-				getLevel().removeFloorItem((Item) interacted);
-				((Item) interacted).pickup();
+		if (interacted instanceof Item) { // pickup loot
+			if (interacted.getLocation().distance(getLocation()) < getWidth() * 2) {
+				if (inventory.hasSpace()) {
+					inventory.addItem((Item) interacted);
+					getLevel().removeFloorItem((Item) interacted);
+					((Item) interacted).pickup();
+				} else {
+					getLevel().removeFloorItem((Item) interacted);
+					((Item) interacted).throwOnGround(Globals.calculateRandomLocation(this.getLocation(), this.getLevel(), .7f), this);
+				}
 			} else {
 				pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(interacted.getLocation()));
 				Point newPoint = pather.getNextStep();
@@ -155,7 +164,7 @@ public class Player extends Mob {
 		}
 
 		if (interacted.getClass() == Tile.class) {
-			//someday door logic will go here
+			// someday door logic will go here
 		}
 		return true;
 	}
@@ -173,13 +182,13 @@ public class Player extends Mob {
 
 		focusTarget = enemy;
 		boolean visible = this.canSeeTarget();
-		if(!visible){
+		if (!visible) {
 			System.out.println("CANT SEE");
 			focusTarget = null;
 			return;
 		}
-		
-		if (enemy.getLocation().distance(getLocation()) > equippedWeapon.getRange() && visible ) { //if cant reach
+
+		if (enemy.getLocation().distance(getLocation()) > equippedWeapon.getRange() && visible) { // if cant reach
 			pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(enemy.getLocation()));
 			Point newPoint = pather.getNextStep();
 			if (newPoint != null) {
@@ -199,10 +208,10 @@ public class Player extends Mob {
 
 	/** Sets local player input variables. Used as a callback. */
 	public static void handleInput(Point2F screenLocation, boolean clicked, int keyCode) {
-        mouseClicked = clicked;
+		mouseClicked = clicked;
 		mouseLocation = screenLocation;
 		if (mouseLocation != null || keyCode != -69) {
-			return; //TODO deal with key input when needed
+			return; // TODO deal with key input when needed
 		}
 	}
 
@@ -217,8 +226,8 @@ public class Player extends Mob {
 		if (equippedWeapon == null) {
 			equippedWeapon = fist;
 		}
-		equippedWeapon.attack((Mob)this, (Mob)focusTarget);
-		
+		equippedWeapon.attack((Mob) this, (Mob) focusTarget);
+
 	}
 
 }

@@ -1,6 +1,8 @@
 
 package com.teamsweepy.greywater.entity;
 
+import java.util.ArrayList;
+
 import com.teamsweepy.greywater.effect.quest.KillQuest;
 import com.teamsweepy.greywater.effect.quest.Quest;
 import com.teamsweepy.greywater.entity.component.Hitbox;
@@ -10,8 +12,7 @@ import com.teamsweepy.greywater.ui.gui.GUI;
 import com.teamsweepy.greywater.ui.gui.GUIComponent;
 import com.teamsweepy.greywater.ui.gui.subgui.Button;
 import com.teamsweepy.greywater.ui.gui.subgui.Dialog;
-
-import java.util.ArrayList;
+import com.teamsweepy.greywater.entity.Player;
 
 
 public class NPC extends Mob {
@@ -19,15 +20,15 @@ public class NPC extends Mob {
 	ArrayList<Quest> possibleQuests;
 	Dialog welcomeDialog;
 	Dialog talkDialog;
-	
+
 	GUIComponent mainMenu;
 	String mainMenuTitle;
 
-	
+
 	GUIComponent questMenu;
 	String questMenuTitle;
-	
-	
+
+
 	public NPC(float x, float y, Level level) {
 		super();
 		name = "NPC_South";
@@ -40,8 +41,9 @@ public class NPC extends Mob {
 		mainMenu = new GUIComponent();
 		mainMenuTitle = getName();
 		questMenuTitle = "Quests";
-		
+
 		Button talkButton = new Button(800, 650, 300, 50, "Talk") {
+
 			@Override
 			protected void clicked() {
 				welcomeDialog.setVisible(false);
@@ -49,6 +51,7 @@ public class NPC extends Mob {
 		};
 
 		Button questButton = new Button(800, 600, 300, 50, "Quests") {
+
 			@Override
 			protected void clicked() {
 				welcomeDialog.setTitle(questMenuTitle);
@@ -57,22 +60,22 @@ public class NPC extends Mob {
 				questMenu.setVisible(true);
 			}
 		};
-		
+
 		mainMenu.addGUIComponent(talkButton);
 		mainMenu.addGUIComponent(questButton);
-	
+
 		questMenu = new GUIComponent();
 
 
 		//shitty quest test code
 		possibleQuests = new ArrayList<Quest>();
-		KillQuest watch1 = new KillQuest();
+		KillQuest watch1 = new KillQuest("HI DO THIS", "WAITING", "NO MORE WAITING", "STUPID BULLSHIT");
 		watch1.addWinCondition(Watchman.class, 2);
 		KillQuest watch2 = new KillQuest();
 		watch2.addPrereq(watch1);
 		possibleQuests.add(watch1);
 		possibleQuests.add(watch2);
-		
+
 		GUI.addGUIComponent(welcomeDialog);
 
 	}
@@ -82,19 +85,13 @@ public class NPC extends Mob {
 	}
 
 	@Override
-	protected void getInput() {
-		// TODO Auto-generated method stub
-
-	}
+	protected void getInput() {} //NPCs don't think
 
 	@Override
-	protected void attack(Mob enemy) {
-		// TODO Auto-generated method stub
-
-	}
+	protected void attack(Mob enemy) {} //NPCs don't attack
 
 	public void interact(Mob interlocutor) {
-
+		final Mob interloc = interlocutor;
 		if (interlocutor.getClass() == Player.class) {
 
 			//			Dialog d = new Dialog(500, 500, 600, 300);
@@ -103,15 +100,27 @@ public class NPC extends Mob {
 			//			d.setVisible(true);
 
 			//			GUI.addGUIComponent();
-			
+
 			questMenu.removeAllGUIComponent();
 			int i = 0;
-			for(Quest q : possibleQuests){
-				Button b = new Button(800, 650 - (50*i), 300, 50, q.getText(interlocutor));
-				i++;
-				questMenu.addGUIComponent(b);
+			for (Quest q : possibleQuests) {
+				final Quest fq = q;
+				if (q.isAvailable(interlocutor)) {
+					Button b = new Button(800, 650 - (50 * i), 300, 50, q.getTitle()) {
+
+						@Override
+						protected void clicked() {
+							welcomeDialog.setVisible(false);
+							talkDialog.setText(fq.getText(interloc));
+							talkDialog.setTitle(fq.getText(interloc));
+							talkDialog.setVisible(true);
+						}
+					};
+					i++;
+					questMenu.addGUIComponent(b);
+				}
 			}
-			
+
 			welcomeDialog.removeGUIComponent(mainMenu);
 			welcomeDialog.removeGUIComponent(questMenu);
 			welcomeDialog.addGUIComponent(mainMenu);
@@ -128,14 +137,10 @@ public class NPC extends Mob {
 
 	@Override
 	public boolean interact() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public void executeAttack() {
-		// TODO Auto-generated method stub
-
-	}
+	public void executeAttack() {} //NPCs don't attack
 
 }

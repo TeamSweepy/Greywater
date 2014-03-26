@@ -36,9 +36,7 @@ public class Inventory extends GUIComponent {
 	/** Currently only a weapon slot, but this will later include armor slots */
 	protected ArrayList<WeaponSlot> weaponSlots = new ArrayList<WeaponSlot>();
 
-	/** Add a hitbox so the Inventory can be placed on top of the screen when clicked on it **/
-	//private Hitbox hitbox;
-	private Mob owner;
+	protected Mob owner;
 
 	public Inventory(Mob owner) {
 		super(1000, 250, 437, 608);
@@ -47,31 +45,11 @@ public class Inventory extends GUIComponent {
 
 		initSubComponents();
 
-		{// Adding some items in the inventory for testing purposes
-			int i = 0;
-			itemSlots.get(0).setItem(new HealthPotion());
-			itemSlots.get(1).setItem(new Mercury());
-			itemSlots.get(2).setItem(new Wrench());
-			itemSlots.get(3).setItem(new VoltCell());
-			i = 5;
-			itemSlots.get(0 + i).setItem(new HealthPotion());
-			itemSlots.get(1 + i).setItem(new Bomb());
-			itemSlots.get(2 + i).setItem(new Wrench());
-			itemSlots.get(3 + i).setItem(new VoltCell());
-			i = 10;
-			itemSlots.get(0 + i).setItem(new HealthPotion());
-			itemSlots.get(1 + i).setItem(new Mercury());
-			itemSlots.get(2 + i).setItem(new Wrench());
-			itemSlots.get(3 + i).setItem(new VoltCell());
-			this.addItem(new Bomb());
-			this.addItem(new Bomb());
-			this.addItem(new Bomb());
-			this.addItem(new Bomb());
-			this.addItem(new Bomb());
-			this.addItem(new Bomb());
-		}
-
 		visible = true;
+	}
+	
+	public Inventory(int x, int y, int w, int h){
+		super(x, y, w, y);
 	}
 
 	@Override
@@ -184,7 +162,7 @@ public class Inventory extends GUIComponent {
 
 	}
 
-	private int getEmptySlot() {
+	protected int getEmptySlot() {
 		for (int i = 0; i < itemSlots.size(); i++) {
 			if (itemSlots.get(i).getItem() == null)
 				return i;

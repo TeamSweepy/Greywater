@@ -25,10 +25,18 @@ public abstract class Quest implements GameEventListener {
 	private String introText = "LOLOL DO A THING";
 	private String waitText = "LOLOL WHY HAVENT YOU DONE A THING";
 	private String completeText = "LOLOL YOU DID A THING";
+	private String questTitle = "LDAT";
 
 	public Quest() {
 		assignees = new HashMap<Mob, Integer>();
 		prereqs = new ArrayList<Quest>();
+	}
+	
+	public Quest(String intro, String wait, String complete, String title){
+		introText = intro;
+		waitText = wait;
+		completeText = complete;
+		questTitle = title;
 	}
 
 	private boolean closedQuest;
@@ -103,6 +111,10 @@ public abstract class Quest implements GameEventListener {
 				return completeText;
 		}
 		return null;
+	}
+	
+	public String getTitle(){
+		return questTitle;
 	}
 
 	public abstract boolean isQuestActionOver();
