@@ -27,26 +27,26 @@ public class Button extends GUIComponent {
 
 	/** Constructor for visible buttons using texture atlases! */
 	public Button(float x, float y, String atlasName, String imageName) {
-		this.sprite = new Sprite(atlasName, imageName);
+		this.sprite = new Sprite(atlasName, imageName, true);
 		visible = true;
 		pos = new Point2F(x, y);
 		size = new Point2F(sprite.getImageWidth(), sprite.getImageHeight());
-		hitbox = new Hitbox(x, y, (int) sprite.getImageWidth(), (int) sprite.getImageHeight(), 0f);
+		hitbox = new Hitbox(x, y, (int) sprite.getImageWidth(), (int) sprite.getImageHeight(), 0f, true);
 	}
 
 	/** Constructor for visible buttons using textures! */
 	public Button(float x, float y, String imageName) {
-		this.sprite = new Sprite(imageName);
+		this.sprite = new Sprite(imageName, true);
 		visible = true;
 		pos = new Point2F(x, y);
 		size = new Point2F(sprite.getImageWidth(), sprite.getImageHeight());
-		hitbox = new Hitbox(x, y, (int) sprite.getImageWidth(), (int) sprite.getImageHeight(), 0f);
+		hitbox = new Hitbox(x, y, (int) sprite.getImageWidth(), (int) sprite.getImageHeight(), 0f, true);
 	}
 
 	public Button(float x, float y, float maxW, float maxH, String txt) {
 		super(x, y, maxW, maxH, true);
 		visible = true;
-		TextStyle style = new TextStyle("data/font/times.fnt", 0xFF0000FF, TextStyle.WordStyle.MULTILINE);
+		TextStyle style = new TextStyle("data/font/times.fnt", 0xD6B36EFF, TextStyle.WordStyle.MULTILINE);
 
 		text = new Text(pos.x, pos.y, size.x, size.y);
 		text.setStyle(style);
@@ -59,7 +59,7 @@ public class Button extends GUIComponent {
 
 
 	/** The method should be overridden when creating the button */
-	protected void clicked() {
+	protected void clicked(boolean rightClick) {
 		System.out.println("Button clicked");
 	}
 

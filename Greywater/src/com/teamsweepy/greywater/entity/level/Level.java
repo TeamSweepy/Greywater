@@ -10,17 +10,23 @@ package com.teamsweepy.greywater.entity.level;
 import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Globals;
+import com.teamsweepy.greywater.entity.ClockWorm;
 import com.teamsweepy.greywater.entity.Mob;
-import com.teamsweepy.greywater.entity.NPC;
 import com.teamsweepy.greywater.entity.Player;
+import com.teamsweepy.greywater.entity.Sweepy;
+import com.teamsweepy.greywater.entity.Tinkerer;
+import com.teamsweepy.greywater.entity.Vagrant;
 import com.teamsweepy.greywater.entity.Watchman;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.subgui.ItemSlot;
 
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -47,9 +53,13 @@ public class Level {
 
 	Camera mainCamera;
 
-	// test variable
-	Mob TestTavishMob;
+	protected ArrayList<Tile> exitTiles;
+	Level swapLevel;
+	Level currentLevel;
+
 	Mob TestAIMob;
+
+
 
 	/** Used for depth sorting */
 	private Comparator<Entity> spriteSorter = new Comparator<Entity>() {
@@ -64,38 +74,31 @@ public class Level {
 		}
 	};
 
-//	public Level(){};
-	
-	public Level() {
-		while (AssetLoader.tick() < 1f) {
-			// do nothing TODO remove later
-		}
-		map = new TmxMapLoader().load("data/map.tmx");
-		mainCamera = Camera.getDefault();
-		convertTiledMapToEntities();
-		mapCostList = new int[tileList.length][tileList[0].length];
-		setUpMapCosts();
+	public Level() {};
 
+	public Level(String mapPath) {
+		map = new TmxMapLoader().load(mapPath);
 		mobList = new ArrayList<Mob>();
 		floorItemsList = new ArrayList<Item>();
 		interactiveList = new ArrayList<Entity>();
 		depthSortList = new ArrayList<Entity>();
+		currentLevel = this;
+		mainCamera = Camera.getDefault();
+		exitTiles = new ArrayList<Tile>();
+		convertTiledMapToEntities();
+		mapCostList = new int[tileList.length][tileList[0].length];
+		setUpMapCosts();
 
-		TestTavishMob = Player.initLocalPlayer(4f, 90f, this);
-		mobList.add(TestTavishMob);
+		
+		
 
-		mobList.add(new Watchman(20, 70, this, TestTavishMob));
-		mobList.add(new Watchman(20, 93, this, TestTavishMob));
-		mobList.add(new Watchman(20, 94, this, TestTavishMob));
-		mobList.add(new NPC(4, 93, this));
-		for (int i = 0; i < 20; i++) {
-			mobList.add(new Watchman(20 + i, 73, this, TestTavishMob));
-		}
-		for (int i = 0; i < 20; i++) {
-			mobList.add(new Watchman(5 + i, 43, this, TestTavishMob));
-		}
+
+		//		mobList.add(new Watchman(20, 70, this, TestTavishMob));
+		
+		mobList.add(new Sweepy(30, 5, this));
+		mobList.add(new ClockWorm(this, Player.getLocalPlayer()));
 		interactiveList.addAll(mobList);
-		Camera.getDefault().moveTo(Globals.toIsoCoord(TestTavishMob.getX(), TestTavishMob.getY()));
+		Camera.getDefault().moveTo(Globals.toIsoCoord(Player.getLocalPlayer().getX(), Player.getLocalPlayer().getY()));
 
 	}
 
@@ -162,19 +165,30 @@ public class Level {
 		}
 
 		Point p;
-		for (Mob mob : mobList) {
-			if((mob instanceof Player))
-				continue;
-			p = Globals.toTileIndices(mob.getLocation());
-			mapCostList[p.x][p.y] = 1;
+		//		for (Mob mob : mobList) {
+		//			if ((mob instanceof Player))
+		//				continue;
+		//			p = Globals.toTileIndices(mob.getLocation());
+		//			mapCostList[p.x][p.y] = 1;
+		//		}
+		for (Tile exit : exitTiles) {
+			if (Player.getLocalPlayer().getTileLocation().distance(exit.getTileLocation()) < 2) {
+				for (Mob m : Player.getLocalPlayer().getFollowers()) {
+					mobList.remove(m);
+					swapLevel.addMobAtGate(m);
+				}
+				Player.getLocalPlayer().getPhysics().stopMovement();
+				mobList.remove(Player.getLocalPlayer());
+				swapLevel.addMobAtGate(Player.getLocalPlayer());
+				currentLevel = swapLevel;
+				return;
+			}
 		}
 
 		for (Mob mob : mobList) {
-//			p = Globals.toTileIndices(mob.getLocation());
-//			mapCostList[p.x][p.y] = 0;
 			mob.tick(deltaTime);
-//			mapCostList[p.x][p.y] = 1;
 		}
+
 
 
 		for (int i = 0; i < floorItemsList.size(); i++) {
@@ -188,7 +202,7 @@ public class Level {
 
 		}
 
-		Camera.getDefault().moveTo(Globals.toIsoCoord(TestTavishMob.getX(), TestTavishMob.getY()));
+		Camera.getDefault().moveTo(Globals.toIsoCoord(Player.getLocalPlayer().getX(), Player.getLocalPlayer().getY()));
 	}
 
 	/** Creates 2D grid that indicates if a tile is obstructed with a closed door/ wall/ etc */
@@ -238,12 +252,12 @@ public class Level {
 		}
 		return null;
 	}
-	
+
 	/** Finds if an entity's logical hitbox collides with another hitbox in objective coordinates */
 	public List<Mob> getCollidedMobs(List<Rectangle> intersectionAreas) {
 		ArrayList<Mob> collisions = new ArrayList<Mob>();
 		for (Mob e : mobList) {
-			for(Rectangle intersectionArea : intersectionAreas){
+			for (Rectangle intersectionArea : intersectionAreas) {
 				if (e.checkPhysicalIntersection(intersectionArea))
 					collisions.add(e);
 			}
@@ -335,8 +349,30 @@ public class Level {
 				TextureRegion region = tile.getTextureRegion();
 				region.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 				wallList[x][y] = new Tile(region, x * 50, y * 50, 50);
+				if (cell.getTile().getProperties() != null && cell.getTile().getProperties().containsKey("GATE")){
+					this.exitTiles.add(wallList[x][y]);
+				}
 			}
 		}
+		
+		
+		MapLayer objLayer = (MapLayer) map.getLayers().get("Object Layer 1");
+		for(MapObject mo : objLayer.getObjects()){
+			if(mo.getProperties().containsKey("WATCHMAN")){
+				float xLoc = Float.parseFloat(mo.getProperties().get("x").toString())/56;
+				float yLoc = Float.parseFloat(mo.getProperties().get("y").toString())/56;
+				mobList.add(new Watchman(xLoc, yLoc, this, Player.getLocalPlayer()));
+			}
+			
+			if(mo.getProperties().containsKey("VAGRANT")){
+				float xLoc = Float.parseFloat(mo.getProperties().get("x").toString())/56;
+				float yLoc = Float.parseFloat(mo.getProperties().get("y").toString())/56;
+				mobList.add(new Vagrant(xLoc, yLoc, this, Player.getLocalPlayer()));
+			}
+			
+		}
+
+		
 	}
 
 	/** Returns point with map X and Y dimensions */
@@ -365,18 +401,43 @@ public class Level {
 		interactiveList.remove(e);
 	}
 
-	public Tile getTile(int x, int y){
+	public Tile getTile(int x, int y) {
 		return tileList[x][y];
 	}
-	
-	public List<Tile> getTiles(List<Point> tileindices){
+
+	public List<Tile> getTiles(List<Point> tileindices) {
 		ArrayList<Tile> tileAList = new ArrayList<Tile>();
-		for(Point tile : tileindices){
-			if(tile.x < 0 || tile.y < 0 || tile.x > tileList.length || tile.y > tileList[0].length)
+		for (Point tile : tileindices) {
+			if (tile.x < 0 || tile.y < 0 || tile.x > tileList.length || tile.y > tileList[0].length)
 				continue;
 			tileAList.add(tileList[tile.x][tile.y]);
 		}
 		return tileAList;
 	}
 	
+	public void addMobAtGate(Mob m){
+		currentLevel = this;
+		Point2F loc = Globals.calculateRandomLocation(exitTiles.get(0).getLocation(), this, 4);
+		m.setLevel(this);
+		m.getPhysics().setLocation(loc.x, loc.y);
+		m.getPhysics().stopMovement();
+		mobList.add(m);
+	}
+	
+	public void addMobAtLoc(Mob m, Point loc){
+		currentLevel = this;
+		m.setLevel(this);
+		m.getPhysics().setLocation(loc.x * 50, loc.y * 50);
+		m.getPhysics().stopMovement();
+		mobList.add(m);
+	}
+	
+	public Level getCurrentLevel(){
+		return currentLevel;
+	}
+	
+	public void setSwapLevel(Level swap){
+		swapLevel = swap;
+	}
+
 }

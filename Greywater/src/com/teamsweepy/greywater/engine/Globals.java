@@ -171,4 +171,22 @@ public class Globals {
 			
 		return new Point2F(newX, newY);
 	}
+	
+	/** Generates a random valid point in objective coordinates for items and people 
+	 * 
+	 * @param Level - the level to generate a random point in
+	 * @param tileRadius - how many tiles away the point can be from the original point
+	 **/
+	public static Point calculateRandomTileIndex(Point location, Level level, int tileRadius){
+		int newX;
+		int newY;
+		Point loc;
+		do{
+		 newX = location.x + Globals.rand.nextInt(tileRadius)*Integer.signum(Globals.rand.nextInt());
+		 newY = location.y + Globals.rand.nextInt(tileRadius)*Integer.signum(Globals.rand.nextInt());
+		
+		} while(!level.isTileWalkable(newX, newY));
+			
+		return new Point(newX, newY);
+	}
 }

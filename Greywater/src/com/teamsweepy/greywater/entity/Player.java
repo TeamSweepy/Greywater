@@ -1,16 +1,23 @@
 
 package com.teamsweepy.greywater.entity;
 
+import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.component.Sprite;
+import com.teamsweepy.greywater.entity.component.events.EscortEvent;
 import com.teamsweepy.greywater.entity.item.Item;
+import com.teamsweepy.greywater.entity.item.weapons.Bomb;
 import com.teamsweepy.greywater.entity.item.weapons.Fist;
+import com.teamsweepy.greywater.entity.item.weapons.TazerWrench;
 import com.teamsweepy.greywater.entity.item.weapons.Weapon;
+import com.teamsweepy.greywater.entity.item.weapons.Wrench;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.entity.level.Tile;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.subgui.ProgressBarCircular;
+
+import com.badlogic.gdx.audio.Sound;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -23,6 +30,7 @@ public class Player extends Mob {
 
 	private ProgressBarCircular healthBar;
 	private ProgressBarCircular manaBar;
+	public Sprite selection;
 
 	private Fist fist; // default weapon
 
@@ -37,7 +45,8 @@ public class Player extends Mob {
 	 * @param y - Tile Y Position, not objective position
 	 */
 	public static Player initLocalPlayer(float x, float y, Level level) {
-		localPlayer = new Player(x, y, level);
+		if (localPlayer == null)
+			localPlayer = new Player(x, y, level);
 		return localPlayer;
 	}
 
@@ -54,12 +63,22 @@ public class Player extends Mob {
 		killList = new ArrayList<Entity>();
 		graphicsComponent.setImage(3f, "Walk_South", Sprite.LOOP);
 		fist = new Fist();
+		armorRating = 14;
 
 	}
 
 	@Override
 	public void tick(float deltaTime) {
 		super.tick(deltaTime);
+		Weapon equippedWeapon = inventory.getWeapon();
+		if (equippedWeapon != null) {
+			if(equippedWeapon.getClass() == Wrench.class || equippedWeapon.getClass() == TazerWrench.class)
+				weapon = "Wrench_";
+			if(equippedWeapon instanceof Bomb)
+				weapon = "Bomb_";
+		} else{
+			weapon = "";
+		}
 
 		if (healthBar != null && manaBar != null) {
 			healthBar.setValue(HP);
@@ -72,7 +91,7 @@ public class Player extends Mob {
 		// PATHFINDING CODE
 		if (mouseClicked) {
 			mouseClicked = false;
-			if (attacking || interact()) // no need to walk if you're fighting/talking
+			if (attacking || sendInteract()) // no need to walk if you're fighting/talking
 				return;
 			Point startTile;
 			if (!physicsComponent.isMoving())
@@ -92,32 +111,36 @@ public class Player extends Mob {
 				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 				physicsComponent.moveTo(newLoc.x, newLoc.y);
 			}
-		} else { // if no recent click, continue along pre-established path
-			if (!physicsComponent.isMoving()) {
-				Point newPoint = pather.getNextStep();
+		} else if (!physicsComponent.isMoving()) {  // if no recent click, continue along pre-established path
+			Point newPoint = pather.getNextStep();
 
-				if (newPoint != null) {
-					Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
-					physicsComponent.moveTo(newLoc.x, newLoc.y);
+			if (newPoint != null) {
+				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
+				physicsComponent.moveTo(newLoc.x, newLoc.y);
+				if (!followerList.isEmpty()) {
+					for (Mob mob : followerList) {
+						System.out.println(mob);
+						fireEvent(new EscortEvent(this, mob));
+					}
 				}
 			}
-		} // END PATHFINDING CODE
-	}
+		}
+	} // END PATHFINDING CODE
+
 
 	@Override
-	public boolean interact() {
+	public boolean sendInteract() {
 
 		Entity interacted = (Entity) world.getClickedEntity(mouseLocation, this);
 		focusTarget = null;
 		if (interacted == null)
 			return false;
 
-		if (interacted.getClass().getSuperclass() == Mob.class) { // deal with mobs
+		if (interacted instanceof Mob) { // deal with mobs
 			Mob interactedMob = (Mob) interacted;
 			if (interactedMob.isAlive() && !interactedMob.friendly) { // attack the living enemy
 				focusTarget = interactedMob;
 				attack(interactedMob);
-
 			} else if (interactedMob.friendly) { // interact with friends
 				if (interactedMob.getLocation().distance(getLocation()) > getWidth() * 3.5)
 					return false;
@@ -125,12 +148,7 @@ public class Player extends Mob {
 				physicsComponent.stopMovement();
 				pather.reset();
 				this.currentDirection = Globals.getDirectionString(interactedMob, this); // face target
-				((NPC) interactedMob).interact(this);
-				// if(interactedMob.getClass() == Sweepy.class){
-				//
-				// } else{
-				// ((NPC)interactedMob).interact(this);
-				// }
+				interactedMob.receiveInteract(this);
 			} else { // clicked a dead guy
 				return false;
 			}
@@ -178,7 +196,6 @@ public class Player extends Mob {
 		focusTarget = enemy;
 		boolean visible = this.canSeeTarget();
 		if (!visible) {
-			System.out.println("CANT SEE");
 			focusTarget = null;
 			return;
 		}
@@ -192,6 +209,7 @@ public class Player extends Mob {
 			}
 			return;
 		}
+		((Sound)AssetLoader.getAsset(Sound.class, "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1)+ ".wav")).play();
 
 		missing = !equippedWeapon.swing(this, enemy);
 		physicsComponent.stopMovement();
@@ -222,7 +240,11 @@ public class Player extends Mob {
 			equippedWeapon = fist;
 		}
 		equippedWeapon.attack((Mob) this, (Mob) focusTarget);
-
+		missing = true;
 	}
+	
+
+	@Override
+	public void receiveInteract(Mob interlocutor) {}
 
 }

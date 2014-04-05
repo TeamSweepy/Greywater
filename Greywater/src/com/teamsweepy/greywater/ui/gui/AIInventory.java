@@ -1,15 +1,22 @@
 
 package com.teamsweepy.greywater.ui.gui;
 
+import com.teamsweepy.greywater.engine.Globals;
+import com.teamsweepy.greywater.entity.ClockWorm;
 import com.teamsweepy.greywater.entity.Mob;
 import com.teamsweepy.greywater.entity.Player;
 import com.teamsweepy.greywater.entity.Sweepy;
+import com.teamsweepy.greywater.entity.Vagrant;
+import com.teamsweepy.greywater.entity.Watchman;
+import com.teamsweepy.greywater.entity.item.misc.FulminatedMercury;
 import com.teamsweepy.greywater.entity.item.misc.VoltCell;
+import com.teamsweepy.greywater.entity.item.misc.Wires;
 import com.teamsweepy.greywater.entity.item.potions.HealthPotion;
 import com.teamsweepy.greywater.entity.item.potions.Mercury;
 import com.teamsweepy.greywater.entity.item.weapons.Bomb;
-import com.teamsweepy.greywater.entity.item.weapons.Wrench;
+import com.teamsweepy.greywater.ui.gui.subgui.Button;
 import com.teamsweepy.greywater.ui.gui.subgui.ItemSlot;
+import com.teamsweepy.greywater.ui.gui.subgui.WeaponSlot;
 
 
 public class AIInventory extends Inventory {
@@ -34,11 +41,21 @@ public class AIInventory extends Inventory {
 			}
 		}
 		addItem(new HealthPotion());
-		addItem(new VoltCell());
-		addItem(new Bomb());
+		addItem(new Wires());
+
+		final AIInventory aiv = this;
+		Button closeButton = new Button(pos.x + 320, pos.y + 320, "ui/cross") {
+
+			@Override
+			protected void clicked(boolean rightClick) {
+				aiv.visible = false;
+			}
+		};
+		subComponents.add(closeButton);
 		GUI.addGUIComponent(this);
+
 	}
-	
+
 	public AIInventory(Mob owner) {
 		super(100, 300, 310, 310);
 		this.owner = owner;
@@ -57,20 +74,73 @@ public class AIInventory extends Inventory {
 				itemSlots.add(newSlot);
 			}
 		}
-		//TODO add random items based on class
-		{// Adding some items in the inventory for testing purposes
- 			int i = 0;
- 			itemSlots.get(0).setItem(new HealthPotion());
- 			itemSlots.get(1).setItem(new Mercury());
- 			itemSlots.get(2).setItem(new Wrench());
- 			itemSlots.get(3).setItem(new VoltCell());
- 			i = 5;
- 			itemSlots.get(0 + i).setItem(new HealthPotion());
- 			itemSlots.get(1 + i).setItem(new Bomb());
- 			itemSlots.get(2 + i).setItem(new Wrench());
- 			itemSlots.get(3 + i).setItem(new VoltCell());
+		if (owner instanceof ClockWorm) {
+			if (Globals.rand.nextBoolean())
+				addItem(new Wires());
+			if (Globals.rand.nextBoolean())
+				addItem(new VoltCell());
+			if (Globals.rand.nextBoolean())
+				addItem(new FulminatedMercury());
+			if (Globals.rand.nextBoolean())
+				addItem(new Wires());
+			if (Globals.rand.nextBoolean())
+				addItem(new VoltCell());
+			if (Globals.rand.nextBoolean())
+				addItem(new FulminatedMercury());
+			if (Globals.rand.nextBoolean())
+				addItem(new Wires());
+			if (Globals.rand.nextBoolean())
+				addItem(new VoltCell());
+			if (Globals.rand.nextBoolean())
+				addItem(new FulminatedMercury());
+		}
 
- 		}
+		if (owner instanceof Vagrant) {
+			if (Globals.rand.nextBoolean())
+				addItem(new Mercury());
+			if (Globals.rand.nextBoolean())
+				addItem(new Bomb());
+			if (Globals.rand.nextBoolean())
+				addItem(new Wires());
+			if (Globals.rand.nextBoolean())
+				addItem(new HealthPotion());
+			if (Globals.rand.nextBoolean())
+				addItem(new VoltCell());
+			if (Globals.rand.nextBoolean())
+				addItem(new FulminatedMercury());
+			if (Globals.rand.nextBoolean())
+				addItem(new HealthPotion());
+			if (Globals.rand.nextBoolean())
+				addItem(new HealthPotion());
+			if (Globals.rand.nextBoolean())
+				addItem(new Wires());
+			if (Globals.rand.nextBoolean())
+				addItem(new Wires());
+		}
+		
+		if (owner instanceof Watchman) {
+			if (Globals.rand.nextBoolean())
+				addItem(new Mercury());
+			if (Globals.rand.nextBoolean())
+				addItem(new Mercury());
+			if (Globals.rand.nextBoolean())
+				addItem(new Mercury());
+			if (Globals.rand.nextBoolean())
+				addItem(new Wires());
+			if (Globals.rand.nextBoolean())
+				addItem(new HealthPotion());
+			if (Globals.rand.nextBoolean())
+				addItem(new VoltCell());
+			if (Globals.rand.nextBoolean())
+				addItem(new VoltCell());
+			if (Globals.rand.nextBoolean())
+				addItem(new VoltCell());
+		}
+
+	}
+	
+	public WeaponSlot getWeaponSlot(){
+		return null;
 	}
 
 	public void tick(float deltaTime) {}

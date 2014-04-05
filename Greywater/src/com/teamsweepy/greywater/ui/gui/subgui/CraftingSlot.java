@@ -9,7 +9,7 @@ public class CraftingSlot extends ItemSlot {
 
 	public CraftingSlot(Inventory inventory, float x, float y, float w, float h) {
 		super(inventory, x, y, w, h);
-		sprite = new Sprite("slot_craft");
+		sprite = new Sprite("slot_craft", true);
 	}
 	
 	

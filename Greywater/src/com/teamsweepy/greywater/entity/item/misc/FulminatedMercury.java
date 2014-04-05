@@ -9,7 +9,7 @@ import com.teamsweepy.greywater.entity.item.Item;
 public class FulminatedMercury extends Item {
 
 	public FulminatedMercury() {
-		super("FulminatedMercury", "FulminatedMercury", 0, 0, 62, 62);
+		super("FulminatedMercury", "FulminatedMercury_Floor", 0, 0, 62, 62);
 	}
 
 	@Override

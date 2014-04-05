@@ -8,7 +8,7 @@ import com.teamsweepy.greywater.entity.item.IDs;
 public class Wrench extends Weapon {
 
 	public Wrench() {
-		super("tavwrench", "tavwrench", 8, 2, 3, 105f);
+		super("wrench", "wrench_floor", 20, 4, 3, 105f);
 	}
 
 	@Override

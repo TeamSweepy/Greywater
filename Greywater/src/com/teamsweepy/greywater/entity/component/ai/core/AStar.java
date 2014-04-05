@@ -65,7 +65,6 @@ public class AStar extends Pathfinder<java.util.List<Point>> {
 		int x = node.x;
 		int y = node.y;
 		int mx, my;
-
 		if (y < map[0].length - 1 && map[x][y + 1] != 1)
 			ret.add(new Point(x, y + 1)); // Up
 		if (y > 0 && map[x][y - 1] != 1)

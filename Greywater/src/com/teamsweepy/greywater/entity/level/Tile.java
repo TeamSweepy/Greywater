@@ -36,7 +36,14 @@ public class Tile extends Entity {
 		super();
 		this.graphicsComponent = graphicsComponent;
 		// speed is 0 because tiles don't move, silly
-		this.physicsComponent = new Hitbox(xPos, yPos, widthAndHeight, widthAndHeight, 0);
+		this.physicsComponent = new Hitbox(xPos, yPos, widthAndHeight, widthAndHeight, 0, true);
+	}
+	
+	public Tile(TextureRegion tex, float xPos, float yPos, int widthAndHeight, boolean walkable) {
+		super();
+		this.graphicsComponent = new Sprite(tex);
+		// speed is 0 because tiles don't move, silly
+		this.physicsComponent = new Hitbox(xPos, yPos, widthAndHeight, widthAndHeight, 0, !walkable);
 	}
 
 	/**
@@ -50,7 +57,7 @@ public class Tile extends Entity {
 	public Tile(TextureRegion tex, float xPos, float yPos, int widthAndHeight) {
 		this.graphicsComponent = new Sprite(tex);
 		// speed is 0 because tiles don't move, silly
-		this.physicsComponent = new Hitbox(xPos, yPos, widthAndHeight, widthAndHeight, 0);
+		this.physicsComponent = new Hitbox(xPos, yPos, widthAndHeight, widthAndHeight, 0, true);
 	}
 	
 	public void render(SpriteBatch g){
@@ -69,14 +76,14 @@ public class Tile extends Entity {
 	
 	public void setTransparency(boolean tr){
 		if(trans == null){
-			trans = new Sprite("Transparent");
+			trans = new Sprite("Transparent", true);
 		}
 		transparent = tr;
 	}
 	
 	public void setTransparency(boolean tr, boolean x){
 		if(trans == null){
-			trans = new Sprite("Transparent");
+			trans = new Sprite("Transparent", true);
 		}
 		transparent = tr;
 		if(x){

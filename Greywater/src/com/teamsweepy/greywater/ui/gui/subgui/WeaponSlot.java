@@ -14,12 +14,12 @@ public class WeaponSlot extends ItemSlot {
 
 	public WeaponSlot(Inventory inventory, float x, float y, float w, float h) {
 		super(inventory, x, y, w, h);
-		sprite = new Sprite("slot_weapon");
+		sprite = new Sprite("slot_weapon", true);
 	}
 
 	@Override
 	/** Only accepts a weapon */
-	protected void clicked() {
+	protected void clicked(boolean rightClick) {
 		Cursor cursor = GUI.getCursor();
 
 		if (item == null) {
@@ -40,12 +40,12 @@ public class WeaponSlot extends ItemSlot {
 			} else { // swap the items
 				if (getCharge() > 0) {
 					if (((Chargeable) item).isCharger(cursor.getItem())) {
-						if(((Chargeable) item).addCharge(cursor.getItem()))
-						cursor.setItem(null);
+						if (((Chargeable) item).addCharge(cursor.getItem()))
+							cursor.setItem(null);
 						return;
 					}
 				}
-				
+
 				if (!(cursor.getItem() instanceof Weapon))// do the check
 					return;
 				Item temp = item;
@@ -55,16 +55,18 @@ public class WeaponSlot extends ItemSlot {
 		}
 	}
 
-	public int getCharge() {
-		if (item != null) {
-			if (item instanceof Chargeable) {
-				int charge = ((Chargeable) item).getCharge();
-				if (charge <= 0) {
-					item = ((Chargeable) item).getNoChargeItem();
-				}
-				return charge;
-			}
+	public boolean addChargeItem(Item charger) {
+		if (item == null)
+			return false;
+		if(!(item instanceof Chargeable))
+			return false;
+
+		if (((Chargeable) item).isCharger(charger)) {
+			if (((Chargeable) item).addCharge(charger))
+				return true;
 		}
-		return 0;
+		return false;
 	}
+
+
 }

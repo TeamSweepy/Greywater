@@ -16,7 +16,7 @@ import com.badlogic.gdx.Gdx;
 public class HUD extends GUIComponent {
 
 	public HUD() {
-		sprite = new Sprite("HUD-1600");
+		sprite = new Sprite("HUD-1600", true);
 		pos = new Point2F(0, 0);
 		size = new Point2F(Gdx.graphics.getWidth(), sprite.getImageHeight());
 		initSubComponents();
@@ -29,7 +29,7 @@ public class HUD extends GUIComponent {
 		subComponents.add(new ButtonCircular(800, 290 - 39, 37) {
 
 			@Override
-			protected void clicked() {
+			protected void clicked(boolean rightClick) {
 				Player.getLocalPlayer().getInventory().toggleVisibility();
 
 			}

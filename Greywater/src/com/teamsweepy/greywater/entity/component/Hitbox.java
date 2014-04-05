@@ -34,6 +34,7 @@ public class Hitbox {
 	private float speed = 0f; //per second
 	private float xDelta = 0f;
 	private float yDelta = 0f;
+	private boolean collideable;
 
 	// physics object
 	private Rectangle hitBox;
@@ -52,11 +53,13 @@ public class Hitbox {
 	 * @param hitWidth- width of the hitBox
 	 * @param hitHeight- height of hitBox
 	 */
-	public Hitbox(float x, float y, int hitWidth, int hitHeight, float spd) {
+	public Hitbox(float x, float y, int hitWidth, int hitHeight, float spd, boolean collide) {
 		destination = new Point2F(x, y);
 		this.speed = spd;
 		hitBox = new Rectangle(x, y, hitWidth, hitHeight);
+		collideable = collide;
 	}
+	
 
 	/** Used to move the object if it has a destination. If not, does nothing. */
 	public void tick(float deltaTime) {
@@ -81,6 +84,10 @@ public class Hitbox {
 		boolean intersectsOnX = hitBox.getX() < point.x && hitBox.getX() + hitBox.getWidth() > point.x;
 		boolean intersectsOnY = hitBox.getY() < point.y && hitBox.getY() + hitBox.getHeight() > point.y;
 		return intersectsOnX && intersectsOnY;
+	}
+	
+	public boolean isCollideable(){
+		return collideable;
 	}
 
 	/** Updates the hitspace (teleports) to this given location */

@@ -2,6 +2,8 @@
 package com.teamsweepy.greywater.ui.gui.subgui;
 
 import com.teamsweepy.greywater.entity.component.Sprite;
+import com.teamsweepy.greywater.entity.component.events.FetchEvent;
+import com.teamsweepy.greywater.entity.item.Chargeable;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.Cursor;
@@ -21,9 +23,9 @@ public class ItemSlot extends GUIComponent {
 	public ItemSlot(Inventory inventory, float x, float y, float w, float h) {
 		super(x, y, w, h);
 		this.inventory = inventory;
-		sprite = new Sprite("slot");
+		sprite = new Sprite("slot", true);
 	}
-	
+
 	public ItemSlot(Inventory inventory) {
 		this.inventory = inventory;
 	}
@@ -33,7 +35,7 @@ public class ItemSlot extends GUIComponent {
 	/**
 	 * Handle on click. Move the items from and to the cursor when needed
 	 * */
-	protected void clicked() {
+	protected void clicked(boolean rightClick) {
 		Cursor cursor = GUI.getCursor();
 
 		if (item == null) {
@@ -43,11 +45,22 @@ public class ItemSlot extends GUIComponent {
 			}
 
 		} else if (item != null) { // there is an item in the slot
-			if (cursor.getItem() == null) {// move the item from the slot to the cursor
+			if (cursor.getItem() == null && !rightClick) {// move the item from the slot to the cursor
 				cursor.setItem(item);
 				this.item = null;
 
+			} else if (cursor.getItem() == null) {
+				item.use(inventory.getOwner(), this, inventory);
 			} else { // swap the items
+
+				if (getCharge() > 0) {
+					if (((Chargeable) item).isCharger(cursor.getItem())) {
+						if (((Chargeable) item).addCharge(cursor.getItem()))
+							cursor.setItem(null);
+						return;
+					}
+				}
+
 				Item temp = item;
 				item = cursor.getItem();
 				cursor.setItem(temp);
@@ -74,9 +87,9 @@ public class ItemSlot extends GUIComponent {
 	}
 
 	public void setItem(Item item) {
-		if(item != null && item.getName().toUpperCase().contains("TAZER"))
-			System.out.println("BAMB");
 		this.item = item;
+		if (item != null)
+			inventory.getOwner().fireEvent(new FetchEvent(inventory.getOwner(), item));
 	}
 
 	public Item removeItem() {
@@ -89,5 +102,18 @@ public class ItemSlot extends GUIComponent {
 		if (item != null)
 			return false;
 		return true;
+	}
+
+	public int getCharge() {
+		if (item != null) {
+			if (item instanceof Chargeable) {
+				int charge = ((Chargeable) item).getCharge();
+				if (charge <= 0) {
+					item = ((Chargeable) item).getNoChargeItem();
+				}
+				return charge;
+			}
+		}
+		return 0;
 	}
 }

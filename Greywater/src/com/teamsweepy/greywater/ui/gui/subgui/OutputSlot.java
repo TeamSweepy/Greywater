@@ -16,7 +16,7 @@ public class OutputSlot extends ItemSlot {
 	}
 
 	@Override
-	protected void clicked() {
+	protected void clicked(boolean rightClick) {
 		Cursor cursor = GUI.getCursor();
 
 		if (item != null) { // there is an item in the slot

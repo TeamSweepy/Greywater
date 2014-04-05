@@ -14,19 +14,21 @@ import com.badlogic.gdx.audio.Sound;
 import java.awt.Point;
 
 
-public class Watchman extends Mob {
+public class Vagrant extends Mob {
+
+	boolean jitter;
 
 	/**
-	 * Creates a new Watchman standing in the center of the tile specified.
+	 * Creates a new Vagrant standing in the center of the tile specified.
 	 * 
 	 * @param x - Tile X Position, not objective position
 	 * @param y - Tile Y Position, not objective position
 	 * @param focus - whoever (player) the watchman is pursuing
 	 */
-	public Watchman(float x, float y, Level level, Entity focus) {
-		super("Watchman", x, y, 35, 35, 1.3f, level, true);
+	public Vagrant(float x, float y, Level level, Entity focus) {
+		super("Vagrant", x, y, 35, 35, 2.8f, level, true);
 		currentDirection = "South";
-		this.walkCycleDuration = 1;
+		this.walkCycleDuration = .58f;
 		graphicsComponent.setImage(.6f, "Walk_South", Sprite.LOOP);
 		focusTarget = focus;
 		inventory = new AIInventory(this);
@@ -37,8 +39,19 @@ public class Watchman extends Mob {
 		if (attacking || sendInteract())
 			return;
 
+		if (!physicsComponent.isMoving() && !jitter && !pather.hasPath() && !canSeeTarget()) {
+			pather.createPath(getTileLocation(), Globals.calculateRandomTileIndex(this.getTileLocation(), world, 20));
+			if(!pather.hasPath()){
+				pather.createPath(getTileLocation(), Globals.calculateRandomTileIndex(this.getTileLocation(), world, 10));
+			}
+			jitter = true;
+		} else {
+			jitter = false;
+
+		}
+
 		if (!physicsComponent.isMoving() && canSeeTarget() && Globals.rand.nextBoolean()) {
-			if(Globals.rand.nextBoolean() && Globals.rand.nextBoolean() && Globals.rand.nextBoolean() && Globals.rand.nextBoolean()){
+			if (Globals.rand.nextBoolean() && Globals.rand.nextBoolean() && Globals.rand.nextBoolean() && Globals.rand.nextBoolean()) {
 				pather.createPath(Globals.toTileIndices(getLocation()), ((Mob) focusTarget).getFinalDestination());
 			}
 			pather.createPath(Globals.toTileIndices(getLocation()), Globals.toTileIndices(focusTarget.getLocation()));
@@ -63,11 +76,11 @@ public class Watchman extends Mob {
 
 	@Override
 	protected void attack(Mob enemy) {
-
+		
 		if (enemy == null || attacking)
 			return;
 		
-		((Sound)AssetLoader.getAsset(Sound.class, "WATCHMAN_ATTACK_" + (Globals.rand.nextInt(3) + 1)+ ".wav")).play();
+		((Sound)AssetLoader.getAsset(Sound.class, "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1 ) + ".wav")).play();
 
 		physicsComponent.stopMovement();
 		pather.reset();
@@ -75,7 +88,7 @@ public class Watchman extends Mob {
 		attacking = true;
 
 		int chanceToHit = Globals.D(20); //20 sided dice, bitch
-		missing = !(chanceToHit > ((Mob)focusTarget).getArmor());
+		missing = !(chanceToHit > ((Mob) focusTarget).getArmor());
 
 	}
 
@@ -87,17 +100,16 @@ public class Watchman extends Mob {
 				attack((Mob) focusTarget);
 				return true;
 			} else {
-				System.out.println("already attacking");//TODO QUEUE UP NEXT ATTACK
+				System.out.println("already attacking");
 			}
 		}
-
 		return false;
 	}
 
 	@Override
 	public void executeAttack() {
-		int damage = Globals.D(3);
-		((Mob)focusTarget).changeHP(damage);
+		int damage = Globals.D(5);
+		((Mob) focusTarget).changeHP(damage);
 		missing = true;
 	}
 

@@ -40,10 +40,10 @@ public class GUIComponent {
 		size = new Point2F(w, h);
 		if (centered) {
 			pos = centerOnPosition(x, y);
-			hitbox = new Hitbox(pos.x, pos.y, (int) w, (int) h, 0f);
+			hitbox = new Hitbox(pos.x, pos.y, (int) w, (int) h, 0f, true);
 		} else {
 			pos = new Point2F(x, y);
-			hitbox = new Hitbox((int) x, (int) y, (int) w, (int) h, 0f);
+			hitbox = new Hitbox((int) x, (int) y, (int) w, (int) h, 0f, true);
 		}
 		visible = false; // no need for empty render method, just flag imageless components
 	}
@@ -51,14 +51,14 @@ public class GUIComponent {
 	public GUIComponent(float x, float y, float w, float h) {
 		pos = new Point2F(x, y);
 		size = new Point2F(w, h);
-		hitbox = new Hitbox((int) x, (int) y, (int) w, (int) h, 0f);
+		hitbox = new Hitbox((int) x, (int) y, (int) w, (int) h, 0f, true);
 		visible = false; // no need for empty render method, just flag imageless components
 	}
 
 
 	protected void initSubComponents() {}
 
-	public void handleInput(Point2F mousePosition, int event) {
+	public void handleInput(Point2F mousePosition, int event, boolean rightClick) {
 		GUIComponent childOnTop = null;
 
 		for (GUIComponent child : subComponents) {
@@ -67,11 +67,11 @@ public class GUIComponent {
 			}
 		}
 		if (childOnTop != null)
-			childOnTop.handleInput(mousePosition, event);
+			childOnTop.handleInput(mousePosition, event, rightClick);
 		else {
 			switch (event) {
 				case InputGUI.MOUSE_DOWN:
-					clicked();
+					clicked(rightClick);
 					break;
 				case InputGUI.MOUSE_MOVED:
 					break;
@@ -81,7 +81,7 @@ public class GUIComponent {
 		}
 	}
 
-	protected void clicked() {
+	protected void clicked(boolean rightClick) {
 		System.out.println("Click function not defined for GUIComponent");
 	}
 

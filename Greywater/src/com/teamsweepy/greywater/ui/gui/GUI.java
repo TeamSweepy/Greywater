@@ -78,11 +78,10 @@ public class GUI {
 	}
 
 	/** Passes input to all GUIComponents. If they do not handle it, returns false to indicate the game needs to deal with it */
-	public static boolean handleInput(int event, Point2F mousePosition) {
-		// guiC.visible is protected, how can we reference it from here....
+	public static boolean handleInput(int event, Point2F mousePosition, boolean rightClick) {
 		for (GUIComponent guiC : topGuiComponents) {
 			if (guiC.isVisible() && guiC.intersects(mousePosition)) {
-				guiC.handleInput(mousePosition, event);
+				guiC.handleInput(mousePosition, event, rightClick);
 				return true;
 			}
 		}
@@ -93,7 +92,7 @@ public class GUI {
 		for (int i = midGuiComponents.size() - 1; i >= 0; i--) {
 			GUIComponent guiC = midGuiComponents.get(i);
 			if (guiC.isVisible() && guiC.intersects(mousePosition)) {
-				guiC.handleInput(mousePosition, event);
+				guiC.handleInput(mousePosition, event, rightClick);
 
 				if (event == InputHandler.MOUSE_DOWN) {
 					GUIComponent tempGUI = guiC;

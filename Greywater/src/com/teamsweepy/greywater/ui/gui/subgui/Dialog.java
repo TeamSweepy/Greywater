@@ -32,9 +32,9 @@ public class Dialog extends GUIComponent {
 		sprite = new Sprite("ui/menu", null, Texture.class);
 		visible = true;
 
-		style = new TextStyle("data/font/times.fnt", 0xFF0000FF, TextStyle.WordStyle.WRAPPING);
+		style = new TextStyle("data/font/times.fnt", 0xD6B36EFF, TextStyle.WordStyle.WRAPPING);
 
-		text = new Text(pos.x + 4, pos.y + 4, w - 20, h - titleOffset);
+		text = new Text(pos.x + 4, pos.y + 4, w - 35, h - titleOffset);
 		text.setStyle(style);
 		subComponents.add(text);
 		
@@ -44,14 +44,14 @@ public class Dialog extends GUIComponent {
 		titleText.centerTextOnPosition(w/2,  0);
 		subComponents.add(titleText);
 
-		scrollBar = new Scrollbar(false, pos.x + w - 20, pos.y, 20, h- titleOffset);
+		scrollBar = new Scrollbar(false, pos.x + w - 24, pos.y + 3, 20, h- titleOffset);
 		subComponents.add(scrollBar);
 		setText("");
 		final Dialog dialog = this; // Used for the button
 
 		closeButton = new Button(pos.x + w - 25, pos.y + h - 25, "ui/cross") {
 			@Override
-			protected void clicked() {
+			protected void clicked(boolean rightClick) {
 				dialog.visible = false;
 			}
 		};

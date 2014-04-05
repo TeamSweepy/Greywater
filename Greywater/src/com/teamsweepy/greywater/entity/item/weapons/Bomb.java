@@ -9,8 +9,13 @@ import com.teamsweepy.greywater.entity.item.Chargeable;
 import com.teamsweepy.greywater.entity.item.IDs;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.entity.level.Level;
+import com.teamsweepy.greywater.ui.gui.Inventory;
+import com.teamsweepy.greywater.ui.gui.subgui.ItemSlot;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -21,9 +26,11 @@ public class Bomb extends RangedWeapon implements Chargeable {
 
 	private int charge = 1;
 	private int maxCharge = 100;
+	private BitmapFontCache cache;
 
 	public Bomb() {
-		super("Bomb", "Floor-Bomb", 100, 2, 30, 550f);
+		super("Bomb", "Bomb_floor", 100, 2, 30, 550f);
+		cache = new BitmapFontCache(new BitmapFont());
 	}
 
 	@Override
@@ -51,7 +58,7 @@ public class Bomb extends RangedWeapon implements Chargeable {
 		Level currentWorld = attacker.getLevel();
 		AOESpell aoe = new AOESpell("particle/explosion.p", currentWorld.getTiles(tileIndices), currentWorld.getTile(centralTile.x, centralTile.y), 0, 200, currentWorld, attacker);
 		victim.addSpell(aoe);
-		((Sound) AssetLoader.getAsset(Sound.class, "bomb.wav")).play(1f);
+		((Sound) AssetLoader.getAsset(Sound.class, "electric_wrench.wav")).play(1f);
 		return !victim.isAlive();
 	}
 
@@ -90,6 +97,20 @@ public class Bomb extends RangedWeapon implements Chargeable {
 	@Override
 	public Item getNoChargeItem() {
 		return null;
+	}
+	
+	public void render(SpriteBatch g, float x, float y) {
+		cache.setText(charge+"", x + 3, y + 15);
+		super.render(g, x, y);
+		cache.draw(g);
+		
+	}
+	
+	public void use(Mob owner, ItemSlot holder, Inventory inventory) {
+		if(inventory.getWeaponSlot() == null)
+			return;
+		if(inventory.getWeaponSlot().addChargeItem(this))
+			holder.setItem(null);
 	}
 
 

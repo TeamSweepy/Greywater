@@ -29,13 +29,13 @@ public class Scrollbar extends GUIComponent {
 	}
 
 	@Override
-	public void handleInput(Point2F mousePosition, int event) {
+	public void handleInput(Point2F mousePosition, int event, boolean rightClick) {
 		if (event == InputHandler.MOUSE_DRAGGED || event == InputHandler.MOUSE_DOWN) {
 			float offsetY = (pos.y + size.y) - mousePosition.y;
 			updatePosition(0, offsetY);
 		}
 
-		super.handleInput(mousePosition, event);
+		super.handleInput(mousePosition, event, rightClick);
 	}
 
 	public void scroll(int amount) {

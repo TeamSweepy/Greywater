@@ -25,7 +25,7 @@ public class ProgressBarCircular extends GUIComponent {
 
 
 	public ProgressBarCircular(float x, float y) {
-		sprite = new Sprite("health-dial-rotate0001");
+		sprite = new Sprite("health-dial-rotate0001", true);
 		pos = new Point2F(x, y);
 		visible = true;
 	}

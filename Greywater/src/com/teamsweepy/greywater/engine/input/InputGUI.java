@@ -17,6 +17,7 @@ import com.teamsweepy.greywater.engine.Engine;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.GUI;
 
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 
 public class InputGUI extends InputHandler {
@@ -39,7 +40,7 @@ public class InputGUI extends InputHandler {
 		Point2F mousePositionInGame = Camera.getDefault().unproject(mousePosition);
 		position = mousePositionInGame;
 
-		boolean touchedGUI = GUI.handleInput(MOUSE_DOWN, mousePositionInGame);
+		boolean touchedGUI = GUI.handleInput(MOUSE_DOWN, mousePositionInGame, button == Buttons.RIGHT);
 		if (!touchedGUI) { // throw item from the cursor
 			return GUI.getCursor().handleClick();
 		}
@@ -56,7 +57,7 @@ public class InputGUI extends InputHandler {
 		Point2F mousePositionInGame = Camera.getDefault().unproject(mousePosition);
 		position = mousePositionInGame;
 
-		return GUI.handleInput(MOUSE_UP, mousePositionInGame);
+		return GUI.handleInput(MOUSE_UP, mousePositionInGame, button == Buttons.RIGHT);
 	}
 
 	@Override
@@ -67,7 +68,7 @@ public class InputGUI extends InputHandler {
 		Point2F mousePositionInGame = Camera.getDefault().unproject(mousePosition);
 		position = mousePositionInGame;
 
-		return GUI.handleInput(MOUSE_MOVED, mousePositionInGame);
+		return GUI.handleInput(MOUSE_MOVED, mousePositionInGame, false);
 	}
 
 	@Override
@@ -77,27 +78,13 @@ public class InputGUI extends InputHandler {
 		Point2F mousePositionInGame = Camera.getDefault().unproject(mousePosition);
 		position = mousePositionInGame;
 
-		return GUI.handleInput(MOUSE_DRAGGED, mousePositionInGame);
+		return GUI.handleInput(MOUSE_DRAGGED, mousePositionInGame, false);
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Keys.ESCAPE) {
 			Engine.inGame = !Engine.inGame; //go to main menu
-		}
-
-		//move the camera for testing, TODO remove later
-		if (keycode == Keys.W) {
-			Camera.getDefault().move(0, 200);
-		}
-		if (keycode == Keys.A) {
-			Camera.getDefault().move(-200, 0);
-		}
-		if (keycode == Keys.S) {
-			Camera.getDefault().move(0, -200);
-		}
-		if (keycode == Keys.D) {
-			Camera.getDefault().move(200, 0);
 		}
 		// TODO Implement the keys
 		return false;

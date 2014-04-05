@@ -74,22 +74,26 @@ public class Sprite {
 	 * Constructor for sprite that rely on TextureAtlases
 	 * @param name - The name of the character/entity (Such as Tavish) This should match the name of their .atlas file!
 	 * @param ident - image to start with (Such as Stand_South). It will be added to the name to find the image - Tavish + Stand_South
+	 * @param setImage - if true, will actually set up the Texture, if false, just initializes and sets names. Useful for mobs.
 	 */
-	public Sprite(String name, String ident) {
+	public Sprite(String name, String ident, boolean setImage) {
 		this.name = name;
 		currentImageName = ident;
-		setImage(.5f, ident, STILL_IMAGE, TextureAtlas.class); // arbitrary default
+		if (setImage)
+			setImage(.5f, ident, STILL_IMAGE, TextureAtlas.class); // arbitrary default
 		listeners = new ArrayList<AnimEventListener>();
 	}
 
 	/**
 	 * Constructor for sprites that use single, unatlased textures.
 	 * @param imageName - the name of the image to use, such as "HUD-1600" (no file extension needed, it had better be PNG)
+	 * @param setImage - if true, will actually set up the Texture, if false, just initializes and sets names. Useful for mobs.
 	 */
-	public Sprite(String imageName) {
+	public Sprite(String imageName, boolean setImage) {
 		this.name = imageName;
 		currentImageName = "";
-		setImage(0, name, STILL_IMAGE, Texture.class); // arbitrary default
+		if (setImage)
+			setImage(0, name, STILL_IMAGE, Texture.class); // arbitrary default
 		listeners = new ArrayList<AnimEventListener>();
 	}
 
@@ -98,6 +102,7 @@ public class Sprite {
 	 * @param fileName - name of the image file (.PNG) or Atlas file (.ATLAS) - Do not include extension
 	 * @param ident - name of subimage if from an Atlas file. Pass null otherwise.
 	 * @param fileType - Texture or TextureAtlas .class
+	 * @param setImage - whether to actually set the image or just set up the strings
 	 */
 	public Sprite(String fileName, String ident, Class<?> fileType) {
 		currentImageName = fileName;
@@ -109,7 +114,7 @@ public class Sprite {
 		listeners = new ArrayList<AnimEventListener>();
 	}
 
-	/** Constructor for sprites that use a single, unatlased textureregion that was loaded elsewhere. */
+	/** Constructor for sprites that use a single, unatlased textureregion that was loaded elsewhere (Tiles). Sets still image. */
 	public Sprite(TextureRegion texture) {
 		sprite = texture;
 		playMode = STILL_IMAGE;
@@ -296,6 +301,8 @@ public class Sprite {
 			Array<AtlasRegion> ar = ta.findRegions(currentImageName);
 			animation = ar.toArray(AtlasRegion.class);
 			seriesLength = animation.length;
+			if(seriesLength == 0)
+				System.out.println(currentImageName);
 			frameDurationMillis = sequenceDurationMillis / seriesLength;
 			animation[0].getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 			if (playMode == STILL_IMAGE || playMode == NINEPATCH) {
@@ -340,6 +347,7 @@ public class Sprite {
 			this.playMode = playMode;
 		}
 	}
+	
 
 	/** Add a class that implements AnimEventListener Interface who wants to listen to this sprite */
 	public void addAnimListener(AnimEventListener listener) {

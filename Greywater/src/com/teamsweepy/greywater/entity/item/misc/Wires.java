@@ -8,7 +8,7 @@ import com.teamsweepy.greywater.entity.item.Item;
 public class Wires extends Item {
 
 	public Wires() {
-		super("Wires", "Wires", 0, 0, 62, 62);
+		super("Wires", "Wires_Floor", 0, 0, 62, 62);
 	}
 
 	@Override

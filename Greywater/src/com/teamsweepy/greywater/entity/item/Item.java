@@ -6,13 +6,9 @@ import com.teamsweepy.greywater.entity.Mob;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.component.Hitbox;
 import com.teamsweepy.greywater.entity.component.Sprite;
-import com.teamsweepy.greywater.entity.item.misc.VoltCell;
-import com.teamsweepy.greywater.entity.item.potions.HealthPotion;
-import com.teamsweepy.greywater.entity.item.potions.Mercury;
-import com.teamsweepy.greywater.entity.item.weapons.Bomb;
-import com.teamsweepy.greywater.entity.item.weapons.TazerWrench;
-import com.teamsweepy.greywater.entity.item.weapons.Wrench;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.ui.gui.Inventory;
+import com.teamsweepy.greywater.ui.gui.subgui.ItemSlot;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -34,13 +30,12 @@ public abstract class Item extends Entity {
 
 	public Item(String inventoryImageName, String floorImageName, float x, float y, int width, int height) {
 		this.name = inventoryImageName;
-		physicsComponent = new Hitbox(x * 50 + 25, y * 50 + 25, width, height, 0);
-		this.graphicsComponent = new Sprite(inventoryImageName);
-		this.groundSprite = new Sprite(floorImageName);
+		physicsComponent = new Hitbox(x * 50 + 25, y * 50 + 25, width, height, 0, true);
+		this.graphicsComponent = new Sprite("Items",inventoryImageName, true);
+		this.groundSprite = new Sprite("Items", floorImageName, true);
 	}
-	
-	public Item() {
-	}
+
+	public Item() {}
 
 
 
@@ -50,12 +45,12 @@ public abstract class Item extends Entity {
 		startLoc = thrower.getLocation();
 		physicsComponent.setLocation(startLoc.x, startLoc.y);
 		thrower.getLevel().addNewFloorItem(this);
-		
+
 		angle = startLoc.angle(landingLoc);
 		x = y = z = 0;
 		maxDistance = startLoc.distance(landingLoc);
 	}
-	
+
 	public void throwItemAtTarget(Mob thrower, Entity target) {
 		thrown = true;
 		landingLoc = target.getLocation();
@@ -63,7 +58,7 @@ public abstract class Item extends Entity {
 		physicsComponent.setLocation(startLoc.x, startLoc.y);
 
 		thrower.getLevel().addNewThrownItem(this);
-		
+
 		angle = startLoc.angle(landingLoc);
 		x = y = z = 0;
 		maxDistance = startLoc.distance(landingLoc);
@@ -102,7 +97,7 @@ public abstract class Item extends Entity {
 
 			physicsComponent.setLocation(x, y);
 			if (curDistance >= maxDistance) {
-				if(dropped){
+				if (dropped) {
 					onGround = true;
 					physicsComponent.setLocation(landingLoc.x, landingLoc.y);
 				}
@@ -124,8 +119,8 @@ public abstract class Item extends Entity {
 			return (maxLength * dif);
 		}
 	}
-	
-	public boolean isWorldItem(){
+
+	public boolean isWorldItem() {
 		return (dropped || thrown || onGround);
 	}
 
@@ -167,5 +162,7 @@ public abstract class Item extends Entity {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		return groundSprite.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate, p.y + mainCamera.yOffsetAggregate).contains(point.x, point.y);
 	}
+
+	public void use(Mob user, ItemSlot slot, Inventory inventory) {}
 
 }

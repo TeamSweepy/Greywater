@@ -4,6 +4,7 @@ package com.teamsweepy.greywater.ui.gui;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.Mob;
 import com.teamsweepy.greywater.entity.component.Sprite;
+import com.teamsweepy.greywater.entity.component.events.FetchEvent;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.entity.item.crafting.Crafting;
 import com.teamsweepy.greywater.entity.item.misc.VoltCell;
@@ -38,7 +39,7 @@ public class Inventory extends GUIComponent {
 	public Inventory(Mob owner) {
 		super(1000, 250, 437, 608);
 		this.owner = owner;
-		sprite = new Sprite("inventory");
+		sprite = new Sprite("inventory", true);
 
 		initSubComponents();
 
@@ -46,24 +47,9 @@ public class Inventory extends GUIComponent {
  			int i = 0;
  			itemSlots.get(0).setItem(new HealthPotion());
  			itemSlots.get(1).setItem(new Mercury());
+ 			itemSlots.get(1).setItem(new Mercury());
  			itemSlots.get(2).setItem(new Wrench());
  			itemSlots.get(3).setItem(new VoltCell());
- 			i = 5;
- 			itemSlots.get(0 + i).setItem(new HealthPotion());
- 			itemSlots.get(1 + i).setItem(new Bomb());
- 			itemSlots.get(2 + i).setItem(new Wrench());
- 			itemSlots.get(3 + i).setItem(new VoltCell());
- 			i = 10;
- 			itemSlots.get(0 + i).setItem(new HealthPotion());
- 			itemSlots.get(1 + i).setItem(new Mercury());
- 			itemSlots.get(2 + i).setItem(new Wrench());
- 			itemSlots.get(3 + i).setItem(new VoltCell());
- 			this.addItem(new Bomb());
- 			this.addItem(new Bomb());
- 			this.addItem(new Bomb());
- 			this.addItem(new Bomb());
- 			this.addItem(new Bomb());
- 			this.addItem(new Bomb());
  		}
 		
 		visible = true;
@@ -108,6 +94,7 @@ public class Inventory extends GUIComponent {
 		if (a == -1)
 			return false;
 		itemSlots.get(a).setItem(i);
+		owner.fireEvent(new FetchEvent(owner, i));
 		return true;
 	}
 
@@ -189,6 +176,14 @@ public class Inventory extends GUIComponent {
 				return i;
 		}
 		return -1;
+	}
+	
+	public WeaponSlot getWeaponSlot(){
+		return weaponSlots.get(0);
+	}
+	
+	public Mob getOwner(){
+		return owner;
 	}
 
 }

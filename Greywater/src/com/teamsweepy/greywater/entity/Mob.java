@@ -9,7 +9,6 @@
 
 package com.teamsweepy.greywater.entity;
 
-import com.teamsweepy.greywater.effect.spell.Spell;
 import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.component.Entity;
@@ -36,6 +35,7 @@ public abstract class Mob extends Entity implements AnimEventListener {
 
 	/* ********* ANIMATION VARIABLES *********** */
 	protected String name; //indicates what Atlas to get sprites from
+	protected String weapon = "";
 	protected String currentDirection = "South";   //used to indicate what direction Mob is facing to get the corresponding sprite
 	protected float walkCycleDuration = 1f; //duration in seconds of animation
 
@@ -54,6 +54,7 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	protected Inventory inventory;
 	protected ArrayList<Entity> killList;
 	private List<GameEventListener> listeners;
+	protected List<Mob> followerList;
 
 	protected int armorRating = 10;
 	protected int reflexRating = 14;
@@ -70,8 +71,8 @@ public abstract class Mob extends Entity implements AnimEventListener {
 	 */
 	public Mob(String name, float x, float y, int width, int height, float speed, Level level, boolean isAStar) {
 		this.name = name;
-		physicsComponent = new Hitbox(x * 50 + 25, y * 50 + 25, width, height, speed * 50);
-		this.graphicsComponent = new Sprite(getName(), "Stand_South");
+		physicsComponent = new Hitbox(x * 50 + 25, y * 50 + 25, width, height, speed * 50, true);
+		this.graphicsComponent = new Sprite(getName(), "", false);
 		graphicsComponent.addAnimListener(this);
 		world = level;
 
@@ -81,6 +82,7 @@ public abstract class Mob extends Entity implements AnimEventListener {
 			pather = new PathfinderMotor(PathfinderMotor.Method.POTENTIAL_FIELD);
 
 		pather.setLevel(level);
+		followerList = new ArrayList<Mob>();
 	}
 
 
@@ -104,15 +106,21 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		} else { //if alive
 			getInput();
 			if (attacking) {
-				graphicsComponent.setImage(.25f, "Attack_" + currentDirection, Sprite.FORWARD); // TODO if multiple attacks clicked, pingpong
+				graphicsComponent.setImage(.25f, weapon + "Attack_" + currentDirection, Sprite.FORWARD); // TODO if multiple attacks clicked, pingpong
 				physicsComponent.stopMovement();
 				return;
 			} else if (physicsComponent.isMoving()) {
 				currentDirection = Globals.getDirectionString(physicsComponent.destination.x - getX(), physicsComponent.destination.y - getY());
-				graphicsComponent.setImage(walkCycleDuration, "Walk_" + currentDirection, Sprite.LOOP);
+				if (weapon.equalsIgnoreCase("bomb_"))
+					graphicsComponent.setImage(walkCycleDuration, "Walk_" + currentDirection, Sprite.LOOP);
+				else
+					graphicsComponent.setImage(walkCycleDuration, weapon + "Walk_" + currentDirection, Sprite.LOOP);
 			} else {
 				physicsComponent.stopMovement();
-				graphicsComponent.setImage(1f, "Stand_" + currentDirection, Sprite.STILL_IMAGE);
+				if (weapon.equalsIgnoreCase("bomb_"))
+					graphicsComponent.setImage(1f, "Stand_" + currentDirection, Sprite.STILL_IMAGE);
+				else
+					graphicsComponent.setImage(1f, weapon + "Stand_" + currentDirection, Sprite.STILL_IMAGE);
 			}
 		}
 	}
@@ -124,10 +132,10 @@ public abstract class Mob extends Entity implements AnimEventListener {
 			if (!missing)
 				executeAttack();
 		} else if (e.action.contains("WALK") && !e.beginning) {
-			((Sound) AssetLoader.getAsset(Sound.class, "TavWalk1V1.wav")).play(); //replace with proper naming convention TODO	
+			((Sound) AssetLoader.getAsset(Sound.class, name.toUpperCase() + "_WALK_" + (Globals.rand.nextInt(3) + 1) + ".wav")).play(.6f);
 		} else if (e.action.contains("Die") && e.ending) {
 			System.out.println(name + " died: " + HP);
-			graphicsComponent = new Sprite(this.name, name + "Dead");
+			graphicsComponent.setImage("Dead");
 			attacking = false;
 		}
 
@@ -139,7 +147,8 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		HP -= damage;
 		if (HP <= 0) {
 			graphicsComponent.setImage(0.7f, "Die", Sprite.FORWARD);
-			inventory.dumpSlots();
+			if (inventory != null)
+				inventory.dumpSlots();
 			world.removeFromInteractiveList(this);
 		}
 	}
@@ -226,6 +235,8 @@ public abstract class Mob extends Entity implements AnimEventListener {
 
 	public void setLevel(Level world) {
 		this.world = world;
+		pather.setLevel(world);
+		pather.reset();
 	}
 
 	public int getArmor() {
@@ -247,15 +258,37 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		return p;
 	}
 
+	public void follow(Mob leader) {
+		if (leader == null)
+			focusTarget = null;
+		leader.addFollower(this);
+		focusTarget = leader;
+	}
+
+	public void addFollower(Mob follower) {
+		followerList.add(follower);
+	}
+
+	public void removeFollower(Mob follower) {
+		followerList.remove(follower);
+		follower.follow(null);
+	}
+
+	public List<Mob> getFollowers() {
+		return followerList;
+	}
 
 	/** Gets next action for this mob, can be AI logic or player input, subclasses can deal with it. */
 	protected abstract void getInput();
 
+	/** Deal with friendly entities or attack enemy mobs */
+	public abstract boolean sendInteract();
+
+	public abstract void receiveInteract(Mob interlocutor);
+
 	/** Deal damage and pursue clicked Mobs */
 	protected abstract void attack(Mob enemy);
 
-	/** Deal with friendly entities or attack enemy mobs */
-	public abstract boolean interact();
-
 	public abstract void executeAttack();
+
 }

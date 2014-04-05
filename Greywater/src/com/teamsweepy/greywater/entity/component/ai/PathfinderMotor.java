@@ -52,8 +52,8 @@ public class PathfinderMotor {
 	}
 
 	public void createPath(Point from, Point end) {
-            if (pathfinder.isGoal(end)) //no need to find same path twice
-                return;
+		if (pathfinder.isGoal(end)) //no need to find same path twice
+			return;
 
 		pathfinder.reset();
 		pathfinder.setStart(from);
@@ -132,11 +132,23 @@ public class PathfinderMotor {
 	}
 
 	public void updateMap() {
+		if(level == null)
+			return;
 		pathfinder.setMap(level.getMapAsCosts());
 	}
 
 	public void setLevel(Level level) {
 		this.level = level;
+		updateMap();
+	}
+
+	public boolean hasPath() {
+		if (currentMethod == Method.ASTAR) {
+			if (aStarMap != null)
+				return pathIndex != aStarMap.size();
+			return false;
+		}
+		return false;
 	}
 
 	public enum Method {
