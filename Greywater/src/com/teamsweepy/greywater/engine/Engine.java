@@ -11,9 +11,19 @@
 
 package com.teamsweepy.greywater.engine;
 
+import java.awt.Point;
+
+import javax.swing.JOptionPane;
+
 import com.teamsweepy.greywater.engine.input.InputGUI;
 import com.teamsweepy.greywater.engine.input.InputGame;
 import com.teamsweepy.greywater.engine.input.InputHandler;
+import com.teamsweepy.greywater.entity.Player;
+import com.teamsweepy.greywater.entity.PlayerMP;
+import com.teamsweepy.greywater.entity.level.Level;
+import com.teamsweepy.greywater.net.GameClient;
+import com.teamsweepy.greywater.net.GameServer;
+import com.teamsweepy.greywater.net.packet.Packet00Login;
 import com.teamsweepy.greywater.ui.GameScreen;
 import com.teamsweepy.greywater.ui.MainMenuScreen;
 
@@ -50,6 +60,10 @@ public class Engine extends Game {
 	private GameScreen gs;
 	private MainMenuScreen ms;
 
+	/* ********************* MULTIPLAYER VARIABLES ************************ */
+	private GameClient client;
+	private GameServer server; // null on everyone connecting to someone else
+	private boolean isServer;
 
 	public static boolean inGame = false;
 
@@ -60,7 +74,7 @@ public class Engine extends Game {
 	public void create() {
 		AssetLoader.init();
 		Camera.getDefault().setViewPort(NATIVE_WIDTH, NATIVE_HEIGHT);
-		
+
 		gameBatch = new SpriteBatch();
 		gameBatch.setProjectionMatrix(Camera.getDefault().getProjectionMatrix());
 		guiBatch = new SpriteBatch();
@@ -166,4 +180,27 @@ public class Engine extends Game {
 		System.out.println();
 	}
 
+
+	public GameClient getClient() {
+		return client;
+	}
+
+	public GameServer getServer() {
+		return server;
+	}
+
+	public boolean isServer() {
+		return isServer;
+	}
+
+	/** Init the server, called from the menu */
+	public void initServer() {
+		server = new GameServer();
+	}
+
+	/** Init the client, called from the menu */
+	public void initClient(boolean isServer) {
+		this.isServer = isServer;
+		client = new GameClient(isServer);
+	}
 }

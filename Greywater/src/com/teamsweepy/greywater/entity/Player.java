@@ -46,7 +46,7 @@ public class Player extends Mob {
 	 */
 	public static Player initLocalPlayer(float x, float y, Level level) {
 		if (localPlayer == null)
-			localPlayer = new Player(x, y, level);
+			localPlayer = new Player("Tavish", x, y, 35, 35, 1.75f, level, true);
 		return localPlayer;
 	}
 
@@ -56,8 +56,8 @@ public class Player extends Mob {
 	 * @param x - Tile X Position, not objective position
 	 * @param y - Tile Y Position, not objective position
 	 */
-	private Player(float x, float y, Level level) {
-		super("Tavish", x, y, 35, 35, 1.75f, level, true);
+	protected Player(String name, float x, float y, int width, int height, float speed, Level level, boolean isAStar) {
+		super(name, x, y, width, height, speed, level, true);
 		currentDirection = "South";
 		this.walkCycleDuration = .5f;
 		killList = new ArrayList<Entity>();
@@ -84,6 +84,8 @@ public class Player extends Mob {
 			healthBar.setValue(HP);
 			manaBar.setValue(inventory.getCharge());
 		}
+		
+		//System.out.println(physicsComponent.getHitBox().x + " " + physicsComponent.getHitBox().y);
 	}
 
 	@Override
@@ -102,8 +104,8 @@ public class Player extends Mob {
 			Point2F objectiveClick = Globals.toNormalCoord(mouseLocation.x, mouseLocation.y);
 			Point clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
 
-			System.out.println("Player starts at " + startTile);
-			System.out.println("Clicked to move to " + clickedTile);
+			//System.out.println("Player starts at " + startTile);
+			//System.out.println("Clicked to move to " + clickedTile);
 
 			pather.createPath(startTile, clickedTile);
 			Point newPoint = pather.getNextStep();
@@ -209,7 +211,7 @@ public class Player extends Mob {
 			}
 			return;
 		}
-		((Sound)AssetLoader.getAsset(Sound.class, "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1)+ ".wav")).play();
+		((Sound) AssetLoader.getAsset(Sound.class, "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1) + ".wav")).play();
 
 		missing = !equippedWeapon.swing(this, enemy);
 		physicsComponent.stopMovement();
@@ -242,7 +244,7 @@ public class Player extends Mob {
 		equippedWeapon.attack((Mob) this, (Mob) focusTarget);
 		missing = true;
 	}
-	
+
 
 	@Override
 	public void receiveInteract(Mob interlocutor) {}

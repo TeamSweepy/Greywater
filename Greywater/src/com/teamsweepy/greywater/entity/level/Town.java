@@ -70,11 +70,11 @@ public class Town extends Level {
 		mainCamera = Camera.getDefault();
 		mapCostList = new int[tileList.length][tileList[0].length];
 		setUpMapCosts();
-		
+
 		interactiveList.addAll(mobList);
 		exitTiles.add(tileList[0][0]);
 		currentLevel = this;
-		
+
 
 	}
 
@@ -111,34 +111,7 @@ public class Town extends Level {
 
 	/** Tick logic of all components in the world - mobs, doodads, loot, etc */
 	public void tick(float deltaTime) {
-
-		for (int x = 0; x < tileList.length; x++) {
-			for (int y = 0; y < tileList[x].length; y++) {
-				if (tileList[x][y] != null)
-					tileList[x][y].tick(deltaTime);
-				if (wallList[x][y] != null && wallList[x][y].getPhysics().isCollideable()) {
-
-					wallList[x][y].tick(deltaTime);
-					mapCostList[x][y] = 1;
-				} else {
-					mapCostList[x][y] = 0;
-				}
-			}
-		}
-		
-		for (Tile exit : exitTiles) {
-			if (Player.getLocalPlayer().getTileLocation().distance(exit.getTileLocation()) < 2) {
-				for (Mob m : Player.getLocalPlayer().getFollowers()) {
-					mobList.remove(m);
-					swapLevel.addMobAtGate(m);
-				}
-				Player.getLocalPlayer().getPhysics().stopMovement();
-				mobList.remove(Player.getLocalPlayer());
-				swapLevel.addMobAtGate(Player.getLocalPlayer());
-				currentLevel = swapLevel;
-				return;
-			}
-		}
+		super.tick(deltaTime);
 
 		Point p;
 		for (Mob mob : mobList) {
@@ -147,63 +120,8 @@ public class Town extends Level {
 			p = Globals.toTileIndices(mob.getLocation());
 			mapCostList[p.x][p.y] = 1;
 		}
-
-		for (Mob mob : mobList) {
-			mob.tick(deltaTime);
-
-		}
-
-		for (int i = 0; i < floorItemsList.size(); i++) {
-			Item it = floorItemsList.get(i);
-			it.tick(deltaTime);
-			if (!it.isWorldItem()) {
-				i--;
-				floorItemsList.remove(it);
-				continue;
-			}
-		}
-
-		Camera.getDefault().moveTo(Globals.toIsoCoord(Player.getLocalPlayer().getX(), Player.getLocalPlayer().getY()));
 	}
 
-	/** Creates 2D grid that indicates if a tile is obstructed with a closed door/ wall/ etc */
-	public boolean isTileWalkable(int x, int y) {
-		if (x < 0 || x >= wallList.length || y < 0 || y >= wallList[0].length || (wallList[x][y] != null && wallList[x][y].getPhysics().isCollideable()))
-			return false;
-		return true;
-	}
-
-	/** Check to see if a given shape collides with the level geometry */
-	public boolean checkLevelCollision(Shape collisionVolume) {
-		if (collisionVolume == null)
-			return false;
-		Point area = Globals.toTileIndices(collisionVolume.getBounds().x, collisionVolume.getBounds().y);
-
-		// only check tiles near the shape, not the whole map
-		int areaX = Math.round(area.x);
-		int areaY = Math.round(area.y);
-		if (areaX < 0)
-			areaX = 0;
-		if (areaY < 0)
-			areaY = 0;
-		int areaXEnd = areaX + 21;
-		int areaYEnd = areaY + 21;
-		if (areaXEnd > tileList.length)
-			areaXEnd = tileList.length;
-		if (areaYEnd > tileList[0].length)
-			areaYEnd = tileList[0].length;
-
-		for (int x = areaX; x < areaXEnd; x++) {
-			for (int y = areaY; y < areaYEnd; y++) {
-				if (wallList[x][y] == null)
-					continue;
-				Rectangle r = wallList[x][y].getHitbox();
-				if (collisionVolume.intersects(r.x, r.y, r.width, r.height))
-					return true;
-			}
-		}
-		return false;
-	}
 
 	/** Finds if an entity's logical hitbox collides with another hitbox in objective coordinates */
 	public Entity getCollidedEntity(Rectangle intersectionArea) {
@@ -278,8 +196,8 @@ public class Town extends Level {
 					wallList[x][y] = new Tile(region, x * 50, y * 50, 50, true);
 				else
 					wallList[x][y] = new Tile(region, x * 50, y * 50, 50);
-				
-				if (cell.getTile().getProperties() != null && cell.getTile().getProperties().containsKey("GATE")){
+
+				if (cell.getTile().getProperties() != null && cell.getTile().getProperties().containsKey("GATE")) {
 					this.exitTiles.add(wallList[x][y]);
 				}
 			}
@@ -287,10 +205,10 @@ public class Town extends Level {
 
 
 		MapLayer objLayer = (MapLayer) map.getLayers().get("Object Layer 1");
-		for(MapObject mo : objLayer.getObjects()){
-			if(mo.getProperties().containsKey("Tinkerer")){
-				float xLoc = Float.parseFloat(mo.getProperties().get("x").toString())/56;
-				float yLoc = Float.parseFloat(mo.getProperties().get("y").toString())/56;
+		for (MapObject mo : objLayer.getObjects()) {
+			if (mo.getProperties().containsKey("Tinkerer")) {
+				float xLoc = Float.parseFloat(mo.getProperties().get("x").toString()) / 56;
+				float yLoc = Float.parseFloat(mo.getProperties().get("y").toString()) / 56;
 				mobList.add(new Tinkerer(xLoc, yLoc, this));
 			}
 		}

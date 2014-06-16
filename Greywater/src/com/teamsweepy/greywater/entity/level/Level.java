@@ -7,20 +7,12 @@
 
 package com.teamsweepy.greywater.entity.level;
 
-import com.teamsweepy.greywater.engine.AssetLoader;
-import com.teamsweepy.greywater.engine.Camera;
-import com.teamsweepy.greywater.engine.Globals;
-import com.teamsweepy.greywater.entity.ClockWorm;
-import com.teamsweepy.greywater.entity.Mob;
-import com.teamsweepy.greywater.entity.Player;
-import com.teamsweepy.greywater.entity.Sweepy;
-import com.teamsweepy.greywater.entity.Tinkerer;
-import com.teamsweepy.greywater.entity.Vagrant;
-import com.teamsweepy.greywater.entity.Watchman;
-import com.teamsweepy.greywater.entity.component.Entity;
-import com.teamsweepy.greywater.entity.item.Item;
-import com.teamsweepy.greywater.math.Point2F;
-import com.teamsweepy.greywater.ui.gui.subgui.ItemSlot;
+import java.awt.Point;
+import java.awt.Shape;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,15 +24,22 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
-
-import java.awt.Point;
-import java.awt.Shape;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import com.teamsweepy.greywater.engine.Camera;
+import com.teamsweepy.greywater.engine.Globals;
+import com.teamsweepy.greywater.entity.ClockWorm;
+import com.teamsweepy.greywater.entity.Mob;
+import com.teamsweepy.greywater.entity.Player;
+import com.teamsweepy.greywater.entity.PlayerMP;
+import com.teamsweepy.greywater.entity.Sweepy;
+import com.teamsweepy.greywater.entity.Vagrant;
+import com.teamsweepy.greywater.entity.Watchman;
+import com.teamsweepy.greywater.entity.component.Entity;
+import com.teamsweepy.greywater.entity.item.Item;
+import com.teamsweepy.greywater.math.Point2F;
 
 public class Level {
+
+	public static Level level;
 
 	protected TiledMap map;
 	protected ArrayList<Entity> depthSortList;
@@ -50,6 +49,8 @@ public class Level {
 	protected ArrayList<Mob> mobList;
 	protected ArrayList<Item> floorItemsList;
 	protected ArrayList<Entity> interactiveList;
+
+	protected volatile ArrayList<Point2F> scheduledPlayers = new ArrayList<Point2F>();
 
 	Camera mainCamera;
 
@@ -77,6 +78,8 @@ public class Level {
 	public Level() {};
 
 	public Level(String mapPath) {
+		level = this;
+
 		map = new TmxMapLoader().load(mapPath);
 		mobList = new ArrayList<Mob>();
 		floorItemsList = new ArrayList<Item>();
@@ -89,12 +92,10 @@ public class Level {
 		mapCostList = new int[tileList.length][tileList[0].length];
 		setUpMapCosts();
 
-		
-		
 
 
 		//		mobList.add(new Watchman(20, 70, this, TestTavishMob));
-		
+
 		mobList.add(new Sweepy(30, 5, this));
 		mobList.add(new ClockWorm(this, Player.getLocalPlayer()));
 		interactiveList.addAll(mobList);
@@ -107,7 +108,7 @@ public class Level {
 	public void addNewFloorItem(Item e) {
 		floorItemsList.add(e);
 		interactiveList.add(e);
-	} //HAPPY BIRTHDAY TO THE GROUND
+	}
 
 	/** Removes an item from the ground */
 	public void removeFloorItem(Item e) {
@@ -148,7 +149,7 @@ public class Level {
 	}
 
 	/** Tick logic of all components in the world - mobs, doodads, loot, etc */
-	public void tick(float deltaTime) {
+	public synchronized void tick(float deltaTime) {
 
 		for (int x = 0; x < tileList.length; x++) {
 			for (int y = 0; y < tileList[x].length; y++) {
@@ -189,8 +190,6 @@ public class Level {
 			mob.tick(deltaTime);
 		}
 
-
-
 		for (int i = 0; i < floorItemsList.size(); i++) {
 			Item it = floorItemsList.get(i);
 			it.tick(deltaTime);
@@ -200,6 +199,15 @@ public class Level {
 				continue;
 			}
 
+		}
+		if (scheduledPlayers.size() > 0)
+			System.out.println(scheduledPlayers.size());
+
+		for (int i = 0; i < scheduledPlayers.size(); i++) {
+			System.out.println("adding a player");
+
+			Point2F spawnPoint = scheduledPlayers.get(1);
+			mobList.add(new PlayerMP("Tavish", spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, this));
 		}
 
 		Camera.getDefault().moveTo(Globals.toIsoCoord(Player.getLocalPlayer().getX(), Player.getLocalPlayer().getY()));
@@ -349,30 +357,30 @@ public class Level {
 				TextureRegion region = tile.getTextureRegion();
 				region.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 				wallList[x][y] = new Tile(region, x * 50, y * 50, 50);
-				if (cell.getTile().getProperties() != null && cell.getTile().getProperties().containsKey("GATE")){
+				if (cell.getTile().getProperties() != null && cell.getTile().getProperties().containsKey("GATE")) {
 					this.exitTiles.add(wallList[x][y]);
 				}
 			}
 		}
-		
-		
+
+
 		MapLayer objLayer = (MapLayer) map.getLayers().get("Object Layer 1");
-		for(MapObject mo : objLayer.getObjects()){
-			if(mo.getProperties().containsKey("WATCHMAN")){
-				float xLoc = Float.parseFloat(mo.getProperties().get("x").toString())/56;
-				float yLoc = Float.parseFloat(mo.getProperties().get("y").toString())/56;
+		for (MapObject mo : objLayer.getObjects()) {
+			if (mo.getProperties().containsKey("WATCHMAN")) {
+				float xLoc = Float.parseFloat(mo.getProperties().get("x").toString()) / 56;
+				float yLoc = Float.parseFloat(mo.getProperties().get("y").toString()) / 56;
 				mobList.add(new Watchman(xLoc, yLoc, this, Player.getLocalPlayer()));
 			}
-			
-			if(mo.getProperties().containsKey("VAGRANT")){
-				float xLoc = Float.parseFloat(mo.getProperties().get("x").toString())/56;
-				float yLoc = Float.parseFloat(mo.getProperties().get("y").toString())/56;
+
+			if (mo.getProperties().containsKey("VAGRANT")) {
+				float xLoc = Float.parseFloat(mo.getProperties().get("x").toString()) / 56;
+				float yLoc = Float.parseFloat(mo.getProperties().get("y").toString()) / 56;
 				mobList.add(new Vagrant(xLoc, yLoc, this, Player.getLocalPlayer()));
 			}
-			
+
 		}
 
-		
+
 	}
 
 	/** Returns point with map X and Y dimensions */
@@ -414,8 +422,8 @@ public class Level {
 		}
 		return tileAList;
 	}
-	
-	public void addMobAtGate(Mob m){
+
+	public void addMobAtGate(Mob m) {
 		currentLevel = this;
 		Point2F loc = Globals.calculateRandomLocation(exitTiles.get(0).getLocation(), this, 4);
 		m.setLevel(this);
@@ -423,20 +431,26 @@ public class Level {
 		m.getPhysics().stopMovement();
 		mobList.add(m);
 	}
-	
-	public void addMobAtLoc(Mob m, Point loc){
+
+	public void addMobAtLoc(Mob m, Point loc) {
 		currentLevel = this;
 		m.setLevel(this);
 		m.getPhysics().setLocation(loc.x * 50, loc.y * 50);
 		m.getPhysics().stopMovement();
 		mobList.add(m);
 	}
-	
-	public Level getCurrentLevel(){
+
+	public synchronized void schedulePlayer(Point2F p) {
+		System.out.println(p.x);
+		scheduledPlayers.add(p); // doesn't work
+		System.out.println(scheduledPlayers.get(0));
+	}
+
+	public Level getCurrentLevel() {
 		return currentLevel;
 	}
-	
-	public void setSwapLevel(Level swap){
+
+	public void setSwapLevel(Level swap) {
 		swapLevel = swap;
 	}
 

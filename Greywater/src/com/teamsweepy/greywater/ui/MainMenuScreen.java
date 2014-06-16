@@ -1,4 +1,3 @@
-
 /**
  * Used to control logic and rendering for the main game menu.
  * 
@@ -9,9 +8,13 @@
 
 package com.teamsweepy.greywater.ui;
 
+import javax.swing.JOptionPane;
+
 import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Engine;
 import com.teamsweepy.greywater.entity.component.Sprite;
+import com.teamsweepy.greywater.net.GameClient;
+import com.teamsweepy.greywater.net.GameServer;
 import com.teamsweepy.greywater.ui.gui.GUI;
 import com.teamsweepy.greywater.ui.gui.GUIComponent;
 import com.teamsweepy.greywater.ui.gui.subgui.Button;
@@ -35,6 +38,7 @@ public class MainMenuScreen implements Screen {
 
 			@Override
 			protected void clicked(boolean rightClick) {
+				initMultiplayer();
 				Engine.inGame = true;
 			}
 		};
@@ -52,6 +56,23 @@ public class MainMenuScreen implements Screen {
 		mainMenu.addGUIComponent(exitButton);
 		mainMenu.setVisible(true);
 		GUI.addGUIComponent(mainMenu);
+
+	}
+
+	/**
+	 * Prompt the player to start the server -> start server. Connect his client to a server
+	 * 
+	 * Always start the client
+	 * */
+	private void initMultiplayer() {
+		// ask if the player wants to run the server;
+		int temp = JOptionPane.showConfirmDialog(null, "Do you want to start the server?"); // yes = 0
+		boolean startServer = temp == 0;
+
+		if (startServer)
+			engine.initServer();
+
+		engine.initClient(startServer);
 
 	}
 
