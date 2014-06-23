@@ -55,6 +55,8 @@ public class Town extends Level {
 	};
 
 	public Town(String mapPath) {
+		level = this;
+		
 		map = new TmxMapLoader().load(mapPath);
 		while (AssetLoader.tick() < 1f) {
 			// do nothing TODO remove later

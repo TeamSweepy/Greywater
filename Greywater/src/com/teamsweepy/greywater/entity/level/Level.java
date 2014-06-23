@@ -51,6 +51,8 @@ public class Level {
 	protected ArrayList<Entity> interactiveList;
 
 	protected volatile ArrayList<Point2F> scheduledPlayers = new ArrayList<Point2F>();
+	protected volatile ArrayList<Integer> scheduledPlayersIDs = new ArrayList<Integer>();
+	protected volatile ArrayList<PlayerMP> players = new ArrayList<PlayerMP>();
 
 	Camera mainCamera;
 
@@ -78,7 +80,6 @@ public class Level {
 	public Level() {};
 
 	public Level(String mapPath) {
-		level = this;
 
 		map = new TmxMapLoader().load(mapPath);
 		mobList = new ArrayList<Mob>();
@@ -149,7 +150,10 @@ public class Level {
 	}
 
 	/** Tick logic of all components in the world - mobs, doodads, loot, etc */
-	public synchronized void tick(float deltaTime) {
+	public void tick(float deltaTime) {
+
+		//System.out.println(this);
+		//System.out.println(Level.level);
 
 		for (int x = 0; x < tileList.length; x++) {
 			for (int y = 0; y < tileList[x].length; y++) {
@@ -200,14 +204,20 @@ public class Level {
 			}
 
 		}
-		if (scheduledPlayers.size() > 0)
-			System.out.println(scheduledPlayers.size());
 
 		for (int i = 0; i < scheduledPlayers.size(); i++) {
-			System.out.println("adding a player");
 
-			Point2F spawnPoint = scheduledPlayers.get(1);
-			mobList.add(new PlayerMP("Tavish", spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, this));
+			if (Player.localPlayerID == -1) {
+				System.out.println("adding a local player");
+				Player.localPlayerID = scheduledPlayersIDs.get(i);
+			}
+
+			Point2F spawnPoint = scheduledPlayers.get(i);
+			PlayerMP pMP = new PlayerMP("Tavish", spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, this, scheduledPlayersIDs.get(i));
+			mobList.add(pMP);
+			players.add(pMP);
+			scheduledPlayers.remove(i);
+			scheduledPlayersIDs.remove(i);
 		}
 
 		Camera.getDefault().moveTo(Globals.toIsoCoord(Player.getLocalPlayer().getX(), Player.getLocalPlayer().getY()));
@@ -440,9 +450,9 @@ public class Level {
 		mobList.add(m);
 	}
 
-	public synchronized void schedulePlayer(Point2F p) {
-		System.out.println(p.x);
+	public synchronized void schedulePlayer(Point2F p, int ID) {
 		scheduledPlayers.add(p); // doesn't work
+		scheduledPlayersIDs.add(ID); // doesn't work
 		System.out.println(scheduledPlayers.get(0));
 	}
 
@@ -454,4 +464,36 @@ public class Level {
 		swapLevel = swap;
 	}
 
+	public PlayerMP getPlayerByID(int ID) {
+		for (PlayerMP p : players) {
+			if (ID == p.ID) {
+				return p;
+			}
+		}
+		System.err.println("Player with ID " + ID + " not found");
+		return null;
+	}
+
+	public int getFreeID() {
+		int x = 0;
+		boolean free = true;
+		do {
+			x++;
+			free = true;
+			for (PlayerMP p : players) {
+				if (p.ID == x) {
+					free = false;
+					break;
+				}
+			}
+			for (Integer p : scheduledPlayersIDs) {
+				if (p == x) {
+					free = false;
+					break;
+				}
+			}
+		} while (!free);
+		System.out.println("[SERVER] Gave a client ID : " + x);
+		return x;
+	}
 }

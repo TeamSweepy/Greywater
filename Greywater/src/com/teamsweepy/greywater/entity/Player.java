@@ -1,7 +1,12 @@
 
 package com.teamsweepy.greywater.entity;
 
+import java.awt.Point;
+import java.util.ArrayList;
+
+import com.badlogic.gdx.audio.Sound;
 import com.teamsweepy.greywater.engine.AssetLoader;
+import com.teamsweepy.greywater.engine.Engine;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.component.Sprite;
@@ -15,18 +20,15 @@ import com.teamsweepy.greywater.entity.item.weapons.Wrench;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.entity.level.Tile;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.net.packet.Packet02SetPlayerPath;
 import com.teamsweepy.greywater.ui.gui.subgui.ProgressBarCircular;
-
-import com.badlogic.gdx.audio.Sound;
-
-import java.awt.Point;
-import java.util.ArrayList;
 
 public class Player extends Mob {
 
 	private static Point2F mouseLocation;
 	private static boolean mouseClicked;
 	private static Player localPlayer;
+	public static int localPlayerID = -1;
 
 	private ProgressBarCircular healthBar;
 	private ProgressBarCircular manaBar;
@@ -70,13 +72,15 @@ public class Player extends Mob {
 	@Override
 	public void tick(float deltaTime) {
 		super.tick(deltaTime);
-		Weapon equippedWeapon = inventory.getWeapon();
+		Weapon equippedWeapon = null;
+		if (inventory != null)
+			equippedWeapon = inventory.getWeapon();
 		if (equippedWeapon != null) {
-			if(equippedWeapon.getClass() == Wrench.class || equippedWeapon.getClass() == TazerWrench.class)
+			if (equippedWeapon.getClass() == Wrench.class || equippedWeapon.getClass() == TazerWrench.class)
 				weapon = "Wrench_";
-			if(equippedWeapon instanceof Bomb)
+			if (equippedWeapon instanceof Bomb)
 				weapon = "Bomb_";
-		} else{
+		} else {
 			weapon = "";
 		}
 
@@ -84,7 +88,8 @@ public class Player extends Mob {
 			healthBar.setValue(HP);
 			manaBar.setValue(inventory.getCharge());
 		}
-		
+
+
 		//System.out.println(physicsComponent.getHitBox().x + " " + physicsComponent.getHitBox().y);
 	}
 
@@ -103,6 +108,14 @@ public class Player extends Mob {
 
 			Point2F objectiveClick = Globals.toNormalCoord(mouseLocation.x, mouseLocation.y);
 			Point clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
+
+			{ // sending data to the server
+				if (this == localPlayer) {
+					Packet02SetPlayerPath movePacket = new Packet02SetPlayerPath();
+					movePacket.init(localPlayerID, Point2F.convertPoint(startTile), Point2F.convertPoint(clickedTile));
+					Engine.engine.getClient().client.sendTCP(movePacket);
+				}
+			}
 
 			//System.out.println("Player starts at " + startTile);
 			//System.out.println("Clicked to move to " + clickedTile);
@@ -128,7 +141,6 @@ public class Player extends Mob {
 			}
 		}
 	} // END PATHFINDING CODE
-
 
 	@Override
 	public boolean sendInteract() {

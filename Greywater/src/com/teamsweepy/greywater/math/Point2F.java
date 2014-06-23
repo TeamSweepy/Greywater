@@ -10,6 +10,8 @@
 
 package com.teamsweepy.greywater.math;
 
+import java.awt.Point;
+
 public class Point2F {
 
 	public float x;
@@ -31,24 +33,24 @@ public class Point2F {
 	}
 
 	public float distance(Point2F p2) {
-        return distance(p2.x, p2.y);
+		return distance(p2.x, p2.y);
 	}
 
 	public float distance(float x, float y) {
-        float dx = x - this.x;
-        float dy = y - this.y;
-        return (float)Math.sqrt(dx * dx + dy * dy);
+		float dx = x - this.x;
+		float dy = y - this.y;
+		return (float) Math.sqrt(dx * dx + dy * dy);
 	}
 
-    public float angle(Point2F p2) {
-        return angle(p2.x, p2.y);
-    }
+	public float angle(Point2F p2) {
+		return angle(p2.x, p2.y);
+	}
 
-    public float angle(float x, float y) {
-        float dx = x - this.x;
-        float dy = y - this.y;
-        return (float)(Math.atan2(dy, dx));
-    }
+	public float angle(float x, float y) {
+		float dx = x - this.x;
+		float dy = y - this.y;
+		return (float) (Math.atan2(dy, dx));
+	}
 
 	public String toString() {
 		return "Point2F x:" + x + " y:" + y;
@@ -71,6 +73,15 @@ public class Point2F {
 	public float getY() {
 		return y;
 	}
+
+	public static Point2F convertPoint(Point p) {
+		return new Point2F(p.x, p.y);
+	}
+
+	public static Point convertPoint2F(Point2F p) {
+		return new Point((int) p.x, (int) p.y);
+	}
+
 
 	// Some basic mathematical operatios, adding vectors and such
 

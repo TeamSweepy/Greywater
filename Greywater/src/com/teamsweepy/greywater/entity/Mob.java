@@ -278,6 +278,10 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		return followerList;
 	}
 
+	public PathfinderMotor getPather() {
+		return pather;
+	}
+
 	/** Gets next action for this mob, can be AI logic or player input, subclasses can deal with it. */
 	protected abstract void getInput();
 

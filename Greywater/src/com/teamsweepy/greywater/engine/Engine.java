@@ -36,6 +36,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Engine extends Game {
 
+	public static Engine engine; // this
+
 	/* ********************* SACRED GAME ANIMATION/WINDOW CONSTANTS ************************ */
 	public static final short NATIVE_WIDTH = 1600;
 	public static final short NATIVE_HEIGHT = 900;
@@ -72,6 +74,7 @@ public class Engine extends Game {
 	 */
 	@Override
 	public void create() {
+		engine = this;
 		AssetLoader.init();
 		Camera.getDefault().setViewPort(NATIVE_WIDTH, NATIVE_HEIGHT);
 
