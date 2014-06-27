@@ -22,6 +22,8 @@ public class PlayerMP extends Player {
 	@Override
 	public void tick(float deltaTime) {
 		super.tick(deltaTime);
+		if (ID == localPlayerID)
+			physicsComponent = getLocalPlayer().getPhysics();
 	}
 
 	public void setPath(Point2F start, Point2F end) {

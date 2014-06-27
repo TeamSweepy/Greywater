@@ -2,9 +2,10 @@
 package com.teamsweepy.greywater.net.packet;
 
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
+import com.teamsweepy.greywater.entity.level.Level;
 
-//TODO whole disconnect thing
 public class Packet01Disconnect extends Packet {
 
 	public int ID;
@@ -14,9 +15,11 @@ public class Packet01Disconnect extends Packet {
 	}
 
 	@Override
-	public void processServer(Server server) {}
+	public void processServer(Server server, Connection con) {}
 
 	@Override
-	public void processClient(Client client) {}
+	public void processClient(Client client) {
+		Level.level.removePlayer(Level.level.getPlayerByID(ID));
+	}
 
 }

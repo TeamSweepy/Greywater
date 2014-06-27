@@ -14,6 +14,8 @@ import com.teamsweepy.greywater.net.packet.Packet;
 import com.teamsweepy.greywater.net.packet.Packet00Login;
 import com.teamsweepy.greywater.net.packet.Packet01Disconnect;
 import com.teamsweepy.greywater.net.packet.Packet02SetPlayerPath;
+import com.teamsweepy.greywater.net.packet.Packet03AddPlayer;
+import com.teamsweepy.greywater.net.packet.Packet04RequestAllPlayers;
 
 
 public class GameClient {
@@ -42,6 +44,8 @@ public class GameClient {
 		kryo.register(Packet00Login.class);
 		kryo.register(Packet01Disconnect.class);
 		kryo.register(Packet02SetPlayerPath.class);
+		kryo.register(Packet03AddPlayer.class);
+		kryo.register(Packet04RequestAllPlayers.class);
 	}
 
 	public void send(Object o) {
@@ -73,7 +77,7 @@ class ClientListener extends Listener {
 	@Override
 	public void received(Connection con, Object data) {
 		if (data instanceof Packet) {
-			System.out.println("[CLIENT] received " + data.getClass() + "  from " + con.getRemoteAddressTCP());
+			System.out.println("[CLIENT] received " + data.getClass().getName() + "  from " + con.getRemoteAddressTCP());
 			Packet p = (Packet) data;
 			p.processClient(client);
 		}

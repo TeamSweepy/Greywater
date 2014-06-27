@@ -24,6 +24,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
+import com.teamsweepy.greywater.engine.Engine;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.ClockWorm;
@@ -36,6 +37,7 @@ import com.teamsweepy.greywater.entity.Watchman;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.net.packet.Packet04RequestAllPlayers;
 
 public class Level {
 
@@ -207,19 +209,25 @@ public class Level {
 
 		for (int i = 0; i < scheduledPlayers.size(); i++) {
 
+			Point2F spawnPoint = scheduledPlayers.get(i);
+			PlayerMP pMP = new PlayerMP("Tavish", spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, this, scheduledPlayersIDs.get(i));
+
 			if (Player.localPlayerID == -1) {
 				System.out.println("adding a local player");
 				Player.localPlayerID = scheduledPlayersIDs.get(i);
-			}
 
-			Point2F spawnPoint = scheduledPlayers.get(i);
-			PlayerMP pMP = new PlayerMP("Tavish", spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, this, scheduledPlayersIDs.get(i));
-			mobList.add(pMP);
+				Packet04RequestAllPlayers requestPacket = new Packet04RequestAllPlayers();
+				Engine.engine.getClient().send(requestPacket);
+
+			} else {
+				mobList.add(pMP);
+			}
+			System.out.println(pMP.getLocation());
 			players.add(pMP);
 			scheduledPlayers.remove(i);
 			scheduledPlayersIDs.remove(i);
-		}
 
+		}
 		Camera.getDefault().moveTo(Globals.toIsoCoord(Player.getLocalPlayer().getX(), Player.getLocalPlayer().getY()));
 	}
 
@@ -495,5 +503,14 @@ public class Level {
 		} while (!free);
 		System.out.println("[SERVER] Gave a client ID : " + x);
 		return x;
+	}
+
+	public ArrayList<PlayerMP> getAllPlayers() {
+		return players;
+	}
+
+	public void removePlayer(PlayerMP player) {
+		mobList.remove(player);
+		players.remove(player);
 	}
 }
