@@ -17,6 +17,7 @@ public class Packet03AddPlayer extends Packet {
 	public void init(int ID, Point2F position) {
 		this.ID = ID;
 		this.position = position;
+		System.out.println("ADD PLAYER AT " + position);
 	}
 
 	@Override

@@ -4,6 +4,7 @@ package com.teamsweepy.greywater.net.packet;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
+import com.teamsweepy.greywater.entity.Player;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
 
@@ -28,7 +29,10 @@ public class Packet02SetPlayerPath extends Packet {
 	@Override
 	public void processClient(Client client) {
 		System.out.println("[CLIENT] Setting path to player " + ID + ", from " + start + " to " + end);
-		Level.level.getPlayerByID(ID).getPather().createPath(Point2F.convertPoint2F(start), Point2F.convertPoint2F(end));
+		Player player = Level.level.getPlayerByID(ID);
+		if (player == null)
+			return;
+		player.getPather().createPath(Point2F.convertPoint2F(start), Point2F.convertPoint2F(end));
 	}
 
 }

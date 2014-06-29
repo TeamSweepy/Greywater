@@ -35,6 +35,7 @@ public class GameClient {
 			client.connect(500, ipAdress, 54555, 54556);
 		} catch (IOException e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Connecting to " + ipAdress + " failed.", "Connection timed out", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

@@ -21,7 +21,11 @@ public class Packet04RequestAllPlayers extends Packet {
 		ArrayList<PlayerMP> players = Level.level.getAllPlayers();
 		for (PlayerMP p : players) {
 			Packet03AddPlayer packet = new Packet03AddPlayer();
-			packet.init(p.ID, Point2F.convertPoint(p.getTileLocation()));
+			if (p.ID == Player.localPlayerID) {
+				Player p1 = PlayerMP.getLocalPlayer();
+				packet.init(p.ID, Point2F.convertPoint(p1.getTileLocation()));
+			} else
+				packet.init(p.ID, Point2F.convertPoint(p.getTileLocation()));
 			System.out.println("SPAWNING SOMEONE AT :" + Point2F.convertPoint(p.getTileLocation()));
 			System.out.println("[SERVER] Sending client " + con.getID() + " a player already on with ID " + p.ID);
 			con.sendTCP(packet);

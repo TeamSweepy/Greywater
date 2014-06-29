@@ -63,6 +63,7 @@ public class Level {
 	Level currentLevel;
 
 	Mob TestAIMob;
+	 
 
 
 
@@ -213,7 +214,6 @@ public class Level {
 			PlayerMP pMP = new PlayerMP("Tavish", spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, this, scheduledPlayersIDs.get(i));
 
 			if (Player.localPlayerID == -1) {
-				System.out.println("adding a local player");
 				Player.localPlayerID = scheduledPlayersIDs.get(i);
 
 				Packet04RequestAllPlayers requestPacket = new Packet04RequestAllPlayers();
@@ -222,7 +222,6 @@ public class Level {
 			} else {
 				mobList.add(pMP);
 			}
-			System.out.println(pMP.getLocation());
 			players.add(pMP);
 			scheduledPlayers.remove(i);
 			scheduledPlayersIDs.remove(i);
@@ -461,7 +460,6 @@ public class Level {
 	public synchronized void schedulePlayer(Point2F p, int ID) {
 		scheduledPlayers.add(p); // doesn't work
 		scheduledPlayersIDs.add(ID); // doesn't work
-		System.out.println(scheduledPlayers.get(0));
 	}
 
 	public Level getCurrentLevel() {

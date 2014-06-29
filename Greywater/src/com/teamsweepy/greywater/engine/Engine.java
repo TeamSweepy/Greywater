@@ -24,6 +24,7 @@ import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.net.GameClient;
 import com.teamsweepy.greywater.net.GameServer;
 import com.teamsweepy.greywater.net.packet.Packet00Login;
+import com.teamsweepy.greywater.net.packet.Packet01Disconnect;
 import com.teamsweepy.greywater.ui.GameScreen;
 import com.teamsweepy.greywater.ui.MainMenuScreen;
 
@@ -101,9 +102,15 @@ public class Engine extends Game {
 		Gdx.input.setInputProcessor(inputs);
 	}
 
-	/** Dispose of unmanaged assets such as the spritebatch and all textures */
+	/**
+	 * Dispose of unmanaged assets such as the spritebatch and all textures. Disconnect the player
+	 * */
 	@Override
 	public void dispose() {
+		Packet01Disconnect packet = new Packet01Disconnect();
+		packet.init(Player.localPlayerID);
+		client.send(packet);
+
 		gameBatch.dispose();
 		AssetLoader.disposeAll();
 	}
