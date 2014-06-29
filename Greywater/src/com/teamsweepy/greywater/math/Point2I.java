@@ -10,6 +10,7 @@
 
 package com.teamsweepy.greywater.math;
 
+// TODO: There is no need to extend Object, every class is already an Object.
 public class Point2I extends Object {
 
 	public int x;
@@ -51,6 +52,14 @@ public class Point2I extends Object {
 		this.x = p.x;
 		this.y = p.y;
 	}
+
+    public boolean equals(Point2I p) {
+        return equals(p.x, p.y);
+    }
+
+    public boolean equals(int x, int y) {
+        return (this.x == x) && (this.y == y);
+    }
 
 	public int getX() {
 		return x;

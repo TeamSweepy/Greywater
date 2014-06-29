@@ -15,11 +15,11 @@ import com.teamsweepy.greywater.entity.item.weapons.Wrench;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.entity.level.Tile;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.math.Point2I;
 import com.teamsweepy.greywater.ui.gui.subgui.ProgressBarCircular;
 
 import com.badlogic.gdx.audio.Sound;
 
-import java.awt.Point;
 import java.util.ArrayList;
 
 public class Player extends Mob {
@@ -93,26 +93,26 @@ public class Player extends Mob {
 			mouseClicked = false;
 			if (attacking || sendInteract()) // no need to walk if you're fighting/talking
 				return;
-			Point startTile;
+            Point2I startTile;
 			if (!physicsComponent.isMoving())
 				startTile = Globals.toTileIndices(getLocation().x, getLocation().y);
 			else
 				startTile = Globals.toTileIndices(physicsComponent.destination);
 
 			Point2F objectiveClick = Globals.toNormalCoord(mouseLocation.x, mouseLocation.y);
-			Point clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
+			Point2I clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
 
-			System.out.println("Player starts at " + startTile);
-			System.out.println("Clicked to move to " + clickedTile);
+//			System.out.println("Player starts at " + startTile);
+//			System.out.println("Clicked to move to " + clickedTile);
 
 			pather.createPath(startTile, clickedTile);
-			Point newPoint = pather.getNextStep();
+            Point2I newPoint = pather.getNextStep();
 			if (newPoint != null) {
 				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 				physicsComponent.moveTo(newLoc.x, newLoc.y);
 			}
 		} else if (!physicsComponent.isMoving()) {  // if no recent click, continue along pre-established path
-			Point newPoint = pather.getNextStep();
+            Point2I newPoint = pather.getNextStep();
 
 			if (newPoint != null) {
 				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
@@ -145,10 +145,10 @@ public class Player extends Mob {
 				if (interactedMob.getLocation().distance(getLocation()) > getWidth() * 3.5)
 					return false;
 
-				physicsComponent.stopMovement();
-				pather.reset();
-				this.currentDirection = Globals.getDirectionString(interactedMob, this); // face target
-				interactedMob.receiveInteract(this);
+//				physicsComponent.stopMovement();
+//				pather.reset();
+//				this.currentDirection = Globals.getDirectionString(interactedMob, this); // face target
+//				interactedMob.receiveInteract(this);
 			} else { // clicked a dead guy
 				return false;
 			}
@@ -166,7 +166,7 @@ public class Player extends Mob {
 				}
 			} else {
 				pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(interacted.getLocation()));
-				Point newPoint = pather.getNextStep();
+				Point2I newPoint = pather.getNextStep();
 				newPoint = pather.getNextStep();
 
 				if (newPoint != null) {
@@ -202,7 +202,7 @@ public class Player extends Mob {
 
 		if (enemy.getLocation().distance(getLocation()) > equippedWeapon.getRange() && visible) { // if cant reach
 			pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(enemy.getLocation()));
-			Point newPoint = pather.getNextStep();
+            Point2I newPoint = pather.getNextStep();
 			if (newPoint != null) {
 				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 				physicsComponent.moveTo(newLoc.x, newLoc.y);

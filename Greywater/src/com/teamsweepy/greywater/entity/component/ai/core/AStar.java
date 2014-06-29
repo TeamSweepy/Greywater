@@ -5,45 +5,15 @@
 
 package com.teamsweepy.greywater.entity.component.ai.core;
 
-import java.awt.Point;
+import com.teamsweepy.greywater.math.Point2I;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.PriorityQueue;
 
 
-public class AStar extends Pathfinder<java.util.List<Point>> {
-
-	private PriorityQueue<AStarPath<Point>> paths;
-	private Map<Point, Float> mindists; // Map<K, V> needs two objects
-	private double lastCost;
-	private int expandedCounter;
-
-	private LinkedList<Point> nodes;
-	private int pathIndex;
-
-	public AStar() {
-		super(); // Reset is called when super() is called
-	}
-
-	@Override
-	public void reset() {
-		paths = new PriorityQueue<AStarPath<Point>>();
-		nodes = new LinkedList<Point>();
-		mindists = new HashMap<Point, Float>();
-		expandedCounter = 0;
-		lastCost = 0.0;
-	}
-
-	@Override
-	public boolean isGoal(Point from) {
-		if (end == null) {
-			return false;
-		}
-		return (from.x == end.x) && (from.y == end.y);
-	}
-
-	private float g(int x, int y) {
+public class AStar {
+	private static float g(int x, int y) {
 		int posX = Math.abs(x);
 		int posY = Math.abs(y);
 		if ((posX > 1 && posY == 0) || (posY > 1 && posX == 0)) {
@@ -53,59 +23,58 @@ public class AStar extends Pathfinder<java.util.List<Point>> {
 		}
 	}
 
-	@Override
-	protected float h(Point from, Point to) {
+	private static float h(Point2I from, Point2I to) {
         float dx = from.x - to.x;
         float dy = from.y - to.y;
 		return 10.0f * (Math.abs(dx) + Math.abs(dy));
 	}
 
-	private java.util.List<Point> generateSuccesor(Point node) {
-		java.util.List<Point> ret = new LinkedList<Point>();
+	private static java.util.List<Point2I> generateSuccesor(Point2I node, int[][] map) {
+		java.util.List<Point2I> ret = new LinkedList<Point2I>();
 		int x = node.x;
 		int y = node.y;
 		int mx, my;
 		if (y < map[0].length - 1 && map[x][y + 1] != 1)
-			ret.add(new Point(x, y + 1)); // Up
+			ret.add(new Point2I(x, y + 1)); // Up
 		if (y > 0 && map[x][y - 1] != 1)
-			ret.add(new Point(x, y - 1)); // Down
+			ret.add(new Point2I(x, y - 1)); // Down
 		if (x > 0 && map[x - 1][y] != 1)
-			ret.add(new Point(x - 1, y)); // Left
+			ret.add(new Point2I(x - 1, y)); // Left
 		if (x < map.length - 1 && map[x + 1][y] != 1)
-			ret.add(new Point(x + 1, y)); // Right
+			ret.add(new Point2I(x + 1, y)); // Right
 
 		if (x < map.length - 1 && y < map[0].length - 1 && map[x + 1][y + 1] != 1) {
 			mx = map[x + 1][y];
 			my = map[x][y + 1];
 			if ((mx | my) != 1 || (mx != 1 ^ my != 1))
-				ret.add(new Point(x + 1, y + 1)); // Up-Right
+				ret.add(new Point2I(x + 1, y + 1)); // Up-Right
 		}
 		if (x < map.length - 1 && y > 0 && map[x + 1][y - 1] != 1) {
 			mx = map[x + 1][y];
 			my = map[x][y - 1];
 			if ((mx | my) != 1 || (mx != 1 ^ my != 1))
-				ret.add(new Point(x + 1, y - 1)); // Down-Right
+				ret.add(new Point2I(x + 1, y - 1)); // Down-Right
 		}
 		if (x > 0 && y < map[0].length - 1 && map[x - 1][y + 1] != 1) {
 			mx = map[x - 1][y];
 			my = map[x][y + 1];
 			if ((mx | my) != 1 || (mx != 1 ^ my != 1))
-				ret.add(new Point(x - 1, y + 1)); // Up-Left
+				ret.add(new Point2I(x - 1, y + 1)); // Up-Left
 		}
 		if (x > 0 && y > 0 && map[x - 1][y - 1] != 1) {
 			mx = map[x - 1][y];
 			my = map[x][y - 1];
 			if ((mx | my) != 1 || (mx != 1 ^ my != 1))
-				ret.add(new Point(x - 1, y - 1)); // Down-Left
+				ret.add(new Point2I(x - 1, y - 1)); // Down-Left
 		}
 
 		return ret;
 	}
 
-	private float f(AStarPath p, Point from, Point to) {
+	private static float f(AStarPath p, Point2I from, Point2I to) {
         float g;
 		if (p.parent != null) {
-			Point parent = (Point) p.parent.point;
+			Point2I parent = (Point2I) p.parent.point;
 			g = g(parent.x - from.x, parent.y - from.y) + p.parent.g;
 		} else {
 			g = g(from.x, from.y);
@@ -119,8 +88,8 @@ public class AStar extends Pathfinder<java.util.List<Point>> {
 		return p.f;
 	}
 
-	private void expand(AStarPath<Point> path) {
-		Point p = path.point;
+	private static void expand(Map<Point2I, Float> mindists, PriorityQueue<AStarPath<Point2I>> paths, AStarPath<Point2I> path, Point2I end, int[][] map) {
+		Point2I p = path.point;
 		Float min = mindists.get(path.point);
 
 		if (min == null || min.floatValue() > path.f) {
@@ -129,54 +98,48 @@ public class AStar extends Pathfinder<java.util.List<Point>> {
 			return;
 		}
 
-		java.util.List<Point> successors = generateSuccesor(p);
+		java.util.List<Point2I> successors = generateSuccesor(p, map);
 
-		for (Point t : successors) {
+		for (Point2I t : successors) {
 			AStarPath newPath = new AStarPath(path);
 			newPath.point = t;
-			f(newPath, (Point) newPath.point, end);
+			f(newPath, (Point2I) newPath.point, end);
 			paths.offer(newPath);
 		}
-
-		expandedCounter++;
 	}
 
-	@Override
-	public java.util.List<Point> create() {
+	public static java.util.List<Point2I> create(Point2I start, Point2I end, int[][] map) {
+        PriorityQueue<AStarPath<Point2I>> paths = new PriorityQueue<AStarPath<Point2I>>();
+        Map<Point2I, Float> mindists = new HashMap<Point2I, Float>(); // Map<K, V> needs two objects
+
 		try {
-			AStarPath root = new AStarPath<Point>();
+			AStarPath root = new AStarPath<Point2I>();
 			root.point = start;
 
-			//                if(isGoal(start))
-			//                	return new LinkedList<Point>();
-
 			f(root, start, end);
-			expand(root);
+			expand(mindists, paths, root, end, map);
 
 		
-			for (int iterations = 0;iterations < 500; iterations++) {
+			for (int iterations = 0; iterations < 500; iterations++) {
 
-				AStarPath<Point> p = paths.poll();
+				AStarPath<Point2I> p = paths.poll();
 
 				if (p == null) {
-					lastCost = 0;
 					return null;
 				}
 
-				Point last = p.point;
-				lastCost = p.g;
-				if (isGoal(last)) {
-					LinkedList<Point> retPath = new LinkedList<Point>();
+				Point2I last = p.point;
+				if (last.equals(end)) {
+					LinkedList<Point2I> retPath = new LinkedList<Point2I>();
 
-					for (AStarPath<Point> i = p; i != null; i = i.parent) {
+					for (AStarPath<Point2I> i = p; i != null; i = i.parent) {
 						retPath.addFirst(i.point);
 					}
-					nodes = retPath;
+
 					return retPath;
 				}
 
-				expand(p);
-
+				expand(mindists, paths, p, end, map);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -184,16 +147,6 @@ public class AStar extends Pathfinder<java.util.List<Point>> {
 
 
 		return null;
-	}
-
-	// Used for debugging
-	public Double getCost() {
-		return lastCost;
-	}
-
-	//Used for debugging
-	public int getExpandedCounter() {
-		return expandedCounter;
 	}
 }
 

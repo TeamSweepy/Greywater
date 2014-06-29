@@ -11,8 +11,8 @@ import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
 
 import com.badlogic.gdx.math.Vector2;
+import com.teamsweepy.greywater.math.Point2I;
 
-import java.awt.Point;
 import java.util.Random;
 
 public class Globals {
@@ -83,13 +83,13 @@ public class Globals {
 	}
 
 	/** Converts objective coordinates to tile indices */
-	public static Point toTileIndices(Point2F objectiveLocation) {
+	public static Point2I toTileIndices(Point2F objectiveLocation) {
 		return toTileIndices(objectiveLocation.x, objectiveLocation.y);
 	}
 
 	/** Converts objective coordinates to tile indices */
-	public static Point toTileIndices(float xCoord, float yCoord) {
-		Point tileIndex = new Point((int) Math.floor(xCoord / tileGridWidth), (int) Math.floor(yCoord / tileGridHeight));
+	public static Point2I toTileIndices(float xCoord, float yCoord) {
+        Point2I tileIndex = new Point2I((int) Math.floor(xCoord / tileGridWidth), (int) Math.floor(yCoord / tileGridHeight));
 		return tileIndex;
 	}
 
@@ -162,7 +162,7 @@ public class Globals {
 	public static Point2F calculateRandomLocation(Point2F location, Level level, float tileRadius){
 		float newX;
 		float newY;
-		Point loc;
+        Point2I loc;
 		do{
 		 newX = location.x + Globals.rand.nextInt((int)(50+50*tileRadius))*Integer.signum(Globals.rand.nextInt());
 		 newY = location.y + Globals.rand.nextInt((int)(50+50*tileRadius))*Integer.signum(Globals.rand.nextInt());
@@ -177,16 +177,16 @@ public class Globals {
 	 * @param Level - the level to generate a random point in
 	 * @param tileRadius - how many tiles away the point can be from the original point
 	 **/
-	public static Point calculateRandomTileIndex(Point location, Level level, int tileRadius){
+	public static Point2I calculateRandomTileIndex(Point2I location, Level level, int tileRadius){
 		int newX;
 		int newY;
-		Point loc;
+        Point2I loc;
 		do{
 		 newX = location.x + Globals.rand.nextInt(tileRadius)*Integer.signum(Globals.rand.nextInt());
 		 newY = location.y + Globals.rand.nextInt(tileRadius)*Integer.signum(Globals.rand.nextInt());
 		
 		} while(!level.isTileWalkable(newX, newY));
 			
-		return new Point(newX, newY);
+		return new Point2I(newX, newY);
 	}
 }

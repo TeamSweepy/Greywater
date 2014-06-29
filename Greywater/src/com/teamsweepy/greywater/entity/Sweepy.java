@@ -11,13 +11,12 @@ import com.teamsweepy.greywater.entity.item.potions.HealthPotion;
 import com.teamsweepy.greywater.entity.item.potions.Mercury;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.math.Point2I;
 import com.teamsweepy.greywater.ui.gui.AIInventory;
 import com.teamsweepy.greywater.ui.gui.GUI;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Rectangle;
-
-import java.awt.Point;
 import java.util.ArrayList;
 
 
@@ -79,7 +78,7 @@ public class Sweepy extends Mob {
 			}
 		}
 		if (!physicsComponent.isMoving()) {
-			Point newPoint = pather.getNextStep();
+            Point2I newPoint = pather.getNextStep();
 			if (newPoint != null) {
 				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 				physicsComponent.moveTo(newLoc.x, newLoc.y);

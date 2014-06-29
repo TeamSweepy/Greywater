@@ -7,20 +7,18 @@
 
 package com.teamsweepy.greywater.entity.level;
 
-import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.ClockWorm;
 import com.teamsweepy.greywater.entity.Mob;
 import com.teamsweepy.greywater.entity.Player;
 import com.teamsweepy.greywater.entity.Sweepy;
-import com.teamsweepy.greywater.entity.Tinkerer;
 import com.teamsweepy.greywater.entity.Vagrant;
 import com.teamsweepy.greywater.entity.Watchman;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.math.Point2F;
-import com.teamsweepy.greywater.ui.gui.subgui.ItemSlot;
+import com.teamsweepy.greywater.math.Point2I;
 
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -33,7 +31,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
 
-import java.awt.Point;
 import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -164,13 +161,6 @@ public class Level {
 			}
 		}
 
-		Point p;
-		//		for (Mob mob : mobList) {
-		//			if ((mob instanceof Player))
-		//				continue;
-		//			p = Globals.toTileIndices(mob.getLocation());
-		//			mapCostList[p.x][p.y] = 1;
-		//		}
 		for (Tile exit : exitTiles) {
 			if (Player.getLocalPlayer().getTileLocation().distance(exit.getTileLocation()) < 2) {
 				for (Mob m : Player.getLocalPlayer().getFollowers()) {
@@ -216,7 +206,7 @@ public class Level {
 	public boolean checkLevelCollision(Shape collisionVolume) {
 		if (collisionVolume == null)
 			return false;
-		Point area = Globals.toTileIndices(collisionVolume.getBounds().x, collisionVolume.getBounds().y);
+        Point2I area = Globals.toTileIndices(collisionVolume.getBounds().x, collisionVolume.getBounds().y);
 
 		// only check tiles near the shape, not the whole map
 		int areaX = Math.round(area.x);
@@ -277,7 +267,7 @@ public class Level {
 	}
 
 	public void removeOccludingWalls() {
-		Point pLoc = Player.getLocalPlayer().getTileLocation();
+		Point2I pLoc = Player.getLocalPlayer().getTileLocation();
 		for (int i = 0; i < 6; i++) {
 			removeOccludingWalls(pLoc.x + i, pLoc.y, false);
 			removeOccludingWalls(pLoc.x, pLoc.y - i, true);
@@ -376,8 +366,8 @@ public class Level {
 	}
 
 	/** Returns point with map X and Y dimensions */
-	public Point getMapDimensions() {
-		return new Point(tileList.length, tileList[0].length);
+	public Point2I getMapDimensions() {
+		return new Point2I(tileList.length, tileList[0].length);
 	}
 
 	public int[][] getMapAsCosts() {
@@ -405,9 +395,9 @@ public class Level {
 		return tileList[x][y];
 	}
 
-	public List<Tile> getTiles(List<Point> tileindices) {
+	public List<Tile> getTiles(List<Point2I> tileindices) {
 		ArrayList<Tile> tileAList = new ArrayList<Tile>();
-		for (Point tile : tileindices) {
+		for (Point2I tile : tileindices) {
 			if (tile.x < 0 || tile.y < 0 || tile.x > tileList.length || tile.y > tileList[0].length)
 				continue;
 			tileAList.add(tileList[tile.x][tile.y]);
@@ -424,7 +414,7 @@ public class Level {
 		mobList.add(m);
 	}
 	
-	public void addMobAtLoc(Mob m, Point loc){
+	public void addMobAtLoc(Mob m, Point2I loc){
 		currentLevel = this;
 		m.setLevel(this);
 		m.getPhysics().setLocation(loc.x * 50, loc.y * 50);

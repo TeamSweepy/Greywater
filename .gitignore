@@ -1,3 +1,14 @@
+# IntelliJ specific
+.idea/
+*.iml
+
+#Stupid android
+Greywater-android/
+
+#Assets
+assets/
+
+
 # Compiled source #
 ###################
 *.com

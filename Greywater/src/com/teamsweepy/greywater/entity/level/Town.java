@@ -10,15 +10,12 @@ package com.teamsweepy.greywater.entity.level;
 import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Globals;
-import com.teamsweepy.greywater.entity.ClockWorm;
 import com.teamsweepy.greywater.entity.Mob;
 import com.teamsweepy.greywater.entity.Player;
 import com.teamsweepy.greywater.entity.Tinkerer;
-import com.teamsweepy.greywater.entity.Vagrant;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.math.Point2F;
-
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -28,8 +25,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
-
-import java.awt.Point;
+import com.teamsweepy.greywater.math.Point2I;
 import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -140,7 +136,7 @@ public class Town extends Level {
 			}
 		}
 
-		Point p;
+        Point2I p;
 		for (Mob mob : mobList) {
 			if ((mob instanceof Player))
 				continue;
@@ -177,7 +173,7 @@ public class Town extends Level {
 	public boolean checkLevelCollision(Shape collisionVolume) {
 		if (collisionVolume == null)
 			return false;
-		Point area = Globals.toTileIndices(collisionVolume.getBounds().x, collisionVolume.getBounds().y);
+        Point2I area = Globals.toTileIndices(collisionVolume.getBounds().x, collisionVolume.getBounds().y);
 
 		// only check tiles near the shape, not the whole map
 		int areaX = Math.round(area.x);
@@ -316,9 +312,9 @@ public class Town extends Level {
 		return mapCostList;
 	}
 
-	public List<Tile> getTiles(List<Point> tileindices) {
+	public List<Tile> getTiles(List<Point2I> tileindices) {
 		ArrayList<Tile> tileAList = new ArrayList<Tile>();
-		for (Point tile : tileindices) {
+		for (Point2I tile : tileindices) {
 			if (tile.x < 0 || tile.y < 0 || tile.x > tileList.length || tile.y > tileList[0].length)
 				continue;
 			tileAList.add(tileList[tile.x][tile.y]);

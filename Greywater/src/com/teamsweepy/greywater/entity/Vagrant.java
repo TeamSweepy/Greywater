@@ -7,12 +7,10 @@ import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.math.Point2I;
 import com.teamsweepy.greywater.ui.gui.AIInventory;
 
 import com.badlogic.gdx.audio.Sound;
-
-import java.awt.Point;
-
 
 public class Vagrant extends Mob {
 
@@ -56,7 +54,7 @@ public class Vagrant extends Mob {
 			}
 			pather.createPath(Globals.toTileIndices(getLocation()), Globals.toTileIndices(focusTarget.getLocation()));
 
-			Point newPoint = pather.getNextStep();
+			Point2I newPoint = pather.getNextStep();
 			if (newPoint != null) {
 				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 				physicsComponent.moveTo(newLoc.x, newLoc.y);
@@ -65,7 +63,7 @@ public class Vagrant extends Mob {
 			}
 		} else { //if no recent click, continue along pre-established path
 			if (!physicsComponent.isMoving()) {
-				Point newPoint = pather.getNextStep();
+                Point2I newPoint = pather.getNextStep();
 				if (newPoint != null) {
 					Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 					physicsComponent.moveTo(newLoc.x, newLoc.y);

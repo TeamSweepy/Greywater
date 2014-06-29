@@ -21,12 +21,12 @@ import com.teamsweepy.greywater.entity.component.events.GameEvent;
 import com.teamsweepy.greywater.entity.component.events.GameEventListener;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.math.Point2I;
 import com.teamsweepy.greywater.ui.gui.Inventory;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import java.awt.Point;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -251,8 +251,8 @@ public abstract class Mob extends Entity implements AnimEventListener {
 		return killList;
 	}
 
-	public Point getFinalDestination() {
-		Point p = pather.getFinalStep();
+	public Point2I getFinalDestination() {
+        Point2I p = pather.getFinalStep();
 		if (p == null)
 			return Globals.toTileIndices(getLocation());
 		return p;

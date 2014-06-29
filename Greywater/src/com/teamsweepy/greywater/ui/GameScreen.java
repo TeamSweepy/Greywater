@@ -17,6 +17,7 @@ import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.entity.level.Town;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.math.Point2I;
 import com.teamsweepy.greywater.ui.gui.Cursor;
 import com.teamsweepy.greywater.ui.gui.GUI;
 import com.teamsweepy.greywater.ui.gui.HUD;
@@ -24,8 +25,6 @@ import com.teamsweepy.greywater.ui.gui.Inventory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-
-import java.awt.Point;
 
 public class GameScreen implements Screen {
 
@@ -49,7 +48,7 @@ public class GameScreen implements Screen {
 		
 		
 		Level town = new Town("data/map/Greywater.tmx");
-		town.addMobAtLoc(TestTavishMob, new Point(4, 9));
+		town.addMobAtLoc(TestTavishMob, new Point2I(4, 9));
 		currentLevel = town;
 		Level dungeon = new Level("data/map/Dungeon.tmx");
 		currentLevel.setSwapLevel(dungeon);
