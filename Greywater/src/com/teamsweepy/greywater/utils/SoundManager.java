@@ -32,6 +32,8 @@ public class SoundManager {
         master_volume = Preferences.getDefault().getFloat("master_volume", 1F);
         sfx_volume = Preferences.getDefault().getFloat("sfx_volume", 1F);
         music_volume = Preferences.getDefault().getFloat("music_volume", 1F);
+
+        soundsCount = new Integer(0);
     }
 
 
