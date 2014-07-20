@@ -1,7 +1,6 @@
 
 package com.teamsweepy.greywater.entity;
 
-import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.component.Sprite;
@@ -17,8 +16,7 @@ import com.teamsweepy.greywater.entity.level.Tile;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.math.Point2I;
 import com.teamsweepy.greywater.ui.gui.subgui.ProgressBarCircular;
-
-import com.badlogic.gdx.audio.Sound;
+import com.teamsweepy.greywater.utils.SoundManager;
 
 import java.util.ArrayList;
 
@@ -209,7 +207,10 @@ public class Player extends Mob {
 			}
 			return;
 		}
-		((Sound)AssetLoader.getAsset(Sound.class, "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1)+ ".wav")).play();
+//		((Sound)AssetLoader.getAsset(Sound.class, )).play();
+
+        String sound_file = "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1)+ ".wav";
+        SoundManager.playSound(sound_file);
 
 		missing = !equippedWeapon.swing(this, enemy);
 		physicsComponent.stopMovement();

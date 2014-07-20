@@ -19,6 +19,7 @@ import com.teamsweepy.greywater.ui.gui.subgui.Button;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.teamsweepy.greywater.utils.SoundManager;
 
 public class MainMenuScreen implements Screen {
 
@@ -26,7 +27,8 @@ public class MainMenuScreen implements Screen {
 	private GUIComponent mainMenu;
 
 	public MainMenuScreen(Engine eng) {
-		((Music) AssetLoader.getAsset(Music.class, "Escadre.wav")).play();
+        SoundManager.playMusic("Escadre.wav");
+
 		engine = eng;
 
 		mainMenu = new GUIComponent();

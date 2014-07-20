@@ -17,6 +17,8 @@ import com.teamsweepy.greywater.ui.gui.GUI;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Rectangle;
+import com.teamsweepy.greywater.utils.SoundManager;
+
 import java.util.ArrayList;
 
 
@@ -140,7 +142,8 @@ public class Sweepy extends Mob {
 
 	@Override
 	public void receiveInteract(Mob interlocutor) {
-		((Sound)AssetLoader.getAsset(Sound.class, "sweepy_chirp.wav")).play();
+//		((Sound)AssetLoader.getAsset(Sound.class, "sweepy_chirp.wav")).play();
+        SoundManager.playSound("sweepy_chirp.wav");
 
 		if (interlocutor != focusTarget)
 			follow(interlocutor);

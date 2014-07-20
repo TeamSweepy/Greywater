@@ -11,6 +11,7 @@ import com.teamsweepy.greywater.math.Point2I;
 import com.teamsweepy.greywater.ui.gui.AIInventory;
 
 import com.badlogic.gdx.audio.Sound;
+import com.teamsweepy.greywater.utils.SoundManager;
 
 public class Watchman extends Mob {
 
@@ -65,7 +66,8 @@ public class Watchman extends Mob {
 		if (enemy == null || attacking)
 			return;
 		
-		((Sound)AssetLoader.getAsset(Sound.class, "WATCHMAN_ATTACK_" + (Globals.rand.nextInt(3) + 1)+ ".wav")).play();
+        String sound_file = "WATCHMAN_ATTACK_" + (Globals.rand.nextInt(3) + 1)+ ".wav";
+        SoundManager.playSound(sound_file);
 
 		physicsComponent.stopMovement();
 		pather.reset();

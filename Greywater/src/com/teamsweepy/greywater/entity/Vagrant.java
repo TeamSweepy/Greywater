@@ -11,6 +11,7 @@ import com.teamsweepy.greywater.math.Point2I;
 import com.teamsweepy.greywater.ui.gui.AIInventory;
 
 import com.badlogic.gdx.audio.Sound;
+import com.teamsweepy.greywater.utils.SoundManager;
 
 public class Vagrant extends Mob {
 
@@ -74,11 +75,12 @@ public class Vagrant extends Mob {
 
 	@Override
 	protected void attack(Mob enemy) {
-		
+
 		if (enemy == null || attacking)
 			return;
-		
-		((Sound)AssetLoader.getAsset(Sound.class, "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1 ) + ".wav")).play();
+
+        String sound_file = "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1 ) + ".wav";
+        SoundManager.playSound(sound_file);
 
 		physicsComponent.stopMovement();
 		pather.reset();

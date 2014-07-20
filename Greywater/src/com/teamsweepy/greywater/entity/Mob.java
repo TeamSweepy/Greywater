@@ -26,6 +26,7 @@ import com.teamsweepy.greywater.ui.gui.Inventory;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.teamsweepy.greywater.utils.SoundManager;
 
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
@@ -132,7 +133,11 @@ public abstract class Mob extends Entity implements AnimEventListener {
 			if (!missing)
 				executeAttack();
 		} else if (e.action.contains("WALK") && !e.beginning) {
-			((Sound) AssetLoader.getAsset(Sound.class, name.toUpperCase() + "_WALK_" + (Globals.rand.nextInt(3) + 1) + ".wav")).play(.6f);
+//			((Sound) AssetLoader.getAsset(Sound.class, )).play(.6f);
+
+            // TODO: Play sound with volume?
+            String sound_file = name.toUpperCase() + "_WALK_" + (Globals.rand.nextInt(3) + 1) + ".wav";
+            SoundManager.playSound(sound_file);
 		} else if (e.action.contains("Die") && e.ending) {
 			System.out.println(name + " died: " + HP);
 			graphicsComponent.setImage("Dead");

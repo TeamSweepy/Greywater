@@ -2,16 +2,14 @@
 package com.teamsweepy.greywater.entity;
 
 import com.teamsweepy.greywater.effect.spell.Spell;
-import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.component.events.AnimEvent;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.AIInventory;
-
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.teamsweepy.greywater.utils.SoundManager;
 
 
 public class ClockWorm extends Mob {
@@ -116,7 +114,8 @@ public class ClockWorm extends Mob {
 			return;
 		this.currentDirection = Globals.getDirectionString(enemy, this);
 		attacking = true;
-		((Sound) AssetLoader.getAsset(Sound.class, "worm_roar.wav")).play(1f);
+
+        SoundManager.playSound("worm_roar.wav");
 
 		int chanceToHit = Globals.D(20) + 4; //20 sided dice, bitch
 		missing = !(chanceToHit > ((Mob) focusTarget).getReflex());
