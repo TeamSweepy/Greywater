@@ -23,6 +23,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.teamsweepy.greywater.utils.Preferences;
 
 public class Engine extends Game {
 
@@ -58,6 +59,10 @@ public class Engine extends Game {
 	 */
 	@Override
 	public void create() {
+        Preferences preferences = Preferences.getDefault();
+        preferences.create("Greywater");
+
+
 		AssetLoader.init();
 		Camera.getDefault().setViewPort(NATIVE_WIDTH, NATIVE_HEIGHT);
 		

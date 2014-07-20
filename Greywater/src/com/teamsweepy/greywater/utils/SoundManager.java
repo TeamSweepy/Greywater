@@ -18,16 +18,21 @@ import java.util.Map;
  */
 
 public class SoundManager {
-    // TODO: Have a config file, where the music volumes are saved
-    private static float master_volume = 1F;
-    private static float sfx_volume = 1F;
-    private static float music_volume = 1F;
+    private static float master_volume;
+    private static float sfx_volume;
+    private static float music_volume;
 
     private static Map<String, Integer> sound_playing = new HashMap<String, Integer>();
     private static Map<Integer, Sound> sound_map = new HashMap<Integer, Sound>();
     private static Integer soundsCount;
 
     private static Music current_music;
+
+    static {
+        master_volume = Preferences.getDefault().getFloat("master_volume", 1F);
+        sfx_volume = Preferences.getDefault().getFloat("sfx_volume", 1F);
+        music_volume = Preferences.getDefault().getFloat("music_volume", 1F);
+    }
 
 
     public static void playSound(String file) {
