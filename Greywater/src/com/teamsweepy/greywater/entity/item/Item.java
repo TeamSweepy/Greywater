@@ -1,6 +1,7 @@
 
 package com.teamsweepy.greywater.entity.item;
 
+import com.badlogic.gdx.graphics.Color;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.Mob;
 import com.teamsweepy.greywater.entity.component.Entity;
@@ -17,6 +18,8 @@ public abstract class Item extends Entity {
 
 	protected boolean onGround = false;
 	private Sprite groundSprite;
+    private Sprite hoverImage; // TODO: Do this with shaders?
+
 	private String name;
 
 	private boolean dropped = false;
@@ -27,15 +30,29 @@ public abstract class Item extends Entity {
 	private float angle;
 	private float maxDistance;
 
+    private Color drawColor;
+
 
 	public Item(String inventoryImageName, String floorImageName, float x, float y, int width, int height) {
 		this.name = inventoryImageName;
 		physicsComponent = new Hitbox(x * 50 + 25, y * 50 + 25, width, height, 0, true);
 		this.graphicsComponent = new Sprite("Items",inventoryImageName, true);
 		this.groundSprite = new Sprite("Items", floorImageName, true);
+
+        hoverImage = new Sprite("Items", floorImageName, true);
+
+        drawColor = Color.WHITE;
 	}
 
 	public Item() {}
+
+    public void hover(boolean state) {
+        if(state) {
+            drawColor = Color.RED;
+        } else {
+            drawColor = Color.WHITE;
+        }
+    }
 
 
 
@@ -141,7 +158,10 @@ public abstract class Item extends Entity {
 			if (dropped || thrown) {
 				p.y += z;
 			}
+
+            g.setColor(drawColor);
 			groundSprite.render(g, p.x, p.y);
+            g.setColor(Color.WHITE);
 		} else {
 			System.out.println("WARNING " + name + " is out of state! A inventory item is being drawn like a floor item.");
 		}

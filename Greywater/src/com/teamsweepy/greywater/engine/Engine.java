@@ -11,9 +11,12 @@
 
 package com.teamsweepy.greywater.engine;
 
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.teamsweepy.greywater.engine.input.InputGUI;
 import com.teamsweepy.greywater.engine.input.InputGame;
 import com.teamsweepy.greywater.engine.input.InputHandler;
+import com.teamsweepy.greywater.ui.EngineScreen;
 import com.teamsweepy.greywater.ui.GameScreen;
 import com.teamsweepy.greywater.ui.MainMenuScreen;
 
@@ -52,6 +55,9 @@ public class Engine extends Game {
 	private MainMenuScreen ms;
 
 
+    // TESTING
+    private FrameBuffer fbo;
+
 	public static boolean inGame = false;
 
 	/**
@@ -62,10 +68,16 @@ public class Engine extends Game {
         Preferences preferences = Preferences.getDefault();
         preferences.create("Greywater");
 
-
 		AssetLoader.init();
 		Camera.getDefault().setViewPort(NATIVE_WIDTH, NATIVE_HEIGHT);
-		
+
+//        fbo = new FrameBuffer(
+//                Pixmap.Format.RGBA8888,
+//                Gdx.graphics.getWidth(),
+//                Gdx.graphics.getHeight(),
+//                false
+//        );
+
 		gameBatch = new SpriteBatch();
 		gameBatch.setProjectionMatrix(Camera.getDefault().getProjectionMatrix());
 		guiBatch = new SpriteBatch();
@@ -139,11 +151,13 @@ public class Engine extends Game {
 
 	/** Called by libGDX's render method - update physics and logic components */
 	public void tick(float deltaTime) {
-		if (this.getScreen() == gs) {
-			gs.tick(deltaTime);
-		} else if (this.getScreen() == ms) {
-			ms.tick(deltaTime);
-		}
+//		if (this.getScreen() == gs) {
+//			gs.tick(deltaTime);
+//		} else if (this.getScreen() == ms) {
+//			ms.tick(deltaTime);
+//		}
+
+        ((EngineScreen) getScreen()).tick(deltaTime);
 	}
 
 	@Override

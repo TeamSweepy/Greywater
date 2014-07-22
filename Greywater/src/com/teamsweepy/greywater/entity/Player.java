@@ -30,6 +30,9 @@ public class Player extends Mob {
 	private ProgressBarCircular manaBar;
 	public Sprite selection;
 
+    // Used so we can reset the hover state
+    private Item last_hovered_item;
+
 	private Fist fist; // default weapon
 
 	public static Player getLocalPlayer() {
@@ -82,6 +85,22 @@ public class Player extends Mob {
 			healthBar.setValue(HP);
 			manaBar.setValue(inventory.getCharge());
 		}
+
+
+        // Are we hovering on an object?
+//        Entity interacted = world.getClickedEntity(mouseLocation, this);
+//        if(interacted instanceof Item) {
+//            if(interacted == last_hovered_item) {
+//                last_hovered_item.hover(true);
+//            } else {
+//                if(last_hovered_item != null) {
+//                    last_hovered_item.hover(false);
+//                }
+//
+//                last_hovered_item = (Item) interacted;
+//                last_hovered_item.hover(true);
+//            }
+//        }
 	}
 
 	@Override
@@ -129,7 +148,7 @@ public class Player extends Mob {
 	@Override
 	public boolean sendInteract() {
 
-		Entity interacted = (Entity) world.getClickedEntity(mouseLocation, this);
+		Entity interacted = world.getClickedEntity(mouseLocation, this);
 		focusTarget = null;
 		if (interacted == null)
 			return false;
