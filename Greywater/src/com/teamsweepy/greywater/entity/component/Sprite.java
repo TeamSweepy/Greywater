@@ -222,7 +222,6 @@ public class Sprite {
 				} else {
 					seriesPosition = seriesLength - 1; // stay at last position
 					stopAnimating();
-					fireEvent(currentImageName, true, false);
 				}
 			}
 		}// end forward/loop
@@ -239,7 +238,6 @@ public class Sprite {
 				} else { //stop in last position
 					seriesPosition = 0;
 					stopAnimating();
-					fireEvent(currentImageName, true, false);
 				}
 			}
 		}// end reverseloop/reverse
@@ -300,7 +298,7 @@ public class Sprite {
 	/** Actually handles the logic of setting up the sprite image. */
 	private void setImage(float durationSeconds, String ident, int playMode, Class<?> classType) {
 		this.playMode = playMode;
-		if (currentImageName.equalsIgnoreCase(name + "_" + ident) && durationSeconds * 1000 == sequenceDurationMillis && playMode == this.playMode)
+		if (currentImageName.equalsIgnoreCase(name + "_" + ident) && durationSeconds * 1000 == sequenceDurationMillis)
 			return;
 
 		Ping = true;

@@ -10,12 +10,14 @@ package com.teamsweepy.greywater.entity.level;
 import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Globals;
+import com.teamsweepy.greywater.entity.ClockWorm;
 import com.teamsweepy.greywater.entity.Mob;
 import com.teamsweepy.greywater.entity.Player;
 import com.teamsweepy.greywater.entity.Tinkerer;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.math.Point2F;
+
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,7 +27,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
+
 import com.teamsweepy.greywater.math.Point2I;
+
 import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,7 +74,7 @@ public class Town extends Level {
 		interactiveList.addAll(mobList);
 		exitTiles.add(tileList[0][0]);
 		currentLevel = this;
-		
+		mobList.add(new ClockWorm(this, Player.getLocalPlayer()));
 
 	}
 

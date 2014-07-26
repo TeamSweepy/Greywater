@@ -19,7 +19,7 @@ public class ClockWorm extends Mob {
 	float timeSinceAttack;
 
 	public ClockWorm(Level level, Mob enemy) {
-		super("clockworm", 20, 20, 50, 50, 4, level, true);
+		super("clockworm", 5, 5, 50, 50, 4, level, true);
 		focusTarget = enemy;
 		graphicsComponent.setImage(1f, "attack_south", Sprite.STILL_IMAGE);
 		inventory = new AIInventory(this);
@@ -27,25 +27,17 @@ public class ClockWorm extends Mob {
 
 	@Override
 	protected void getInput() {
-		System.out.println(getLocation().distance(this.focusTarget.getLocation()));
-
-		if (focusTarget.getLocation().distance(getLocation()) < 200) {
-			if (timeSinceAttack < 7.5 && !pop && !attacking) {
+		if (focusTarget.getLocation().distance(getLocation()) < 2000) {
+			if (timeSinceAttack < 7.5 && !pop && !attacking && !recede) { //if it has been less than 7.5 seconds since attack, telegraph
 				System.out.println("pop");
 				Point2F surpriseLoc = Globals.calculateRandomLocation(focusTarget.getLocation(), world, 6);
 				physicsComponent.setLocation(surpriseLoc.x, surpriseLoc.y);
 				pop = true;
-				graphicsComponent.setImage(1f, "Pop", Sprite.FORWARD);
+				graphicsComponent.setImage(.7f, "Pop", Sprite.FORWARD);
 				return;
-			} else if (timeSinceAttack >= 7.5 && sendInteract())
-				return;
-
-		} else {
-			System.out.println("GIVE UP");
-			timeSinceAttack = 0f;
+			} else if (timeSinceAttack >= 7.5) //otherwise, attack
+				sendInteract();
 		}
-
-
 	}
 
 	/** Draws the current sprite for this entity. */
@@ -77,14 +69,14 @@ public class ClockWorm extends Mob {
 			attacking = false;
 		} else { //if alive
 			getInput();
-			if (attacking)
-				graphicsComponent.setImage(.25f, "Attack_" + currentDirection, Sprite.FORWARD); // TODO if multiple attacks clicked, pingpong
+			if (attacking && !pop)
+				graphicsComponent.setImage(.4f, "Attack_" + currentDirection, Sprite.FORWARD); // TODO if multiple attacks clicked, pingpong
 		}
 	}
 
 	@Override
 	public boolean sendInteract() {
-		if (((Mob) focusTarget).isAlive() && !attacking) {
+		if (((Mob) focusTarget).isAlive() && !attacking && !pop && !recede) { //start attack by appearing near target
 			Point2F surpriseLoc = Globals.calculateRandomLocation(focusTarget.getLocation(), world, 1);
 			physicsComponent.setLocation(surpriseLoc.x, surpriseLoc.y);
 			attack((Mob) focusTarget);
@@ -99,10 +91,10 @@ public class ClockWorm extends Mob {
 	@Override
 	protected void attack(Mob enemy) {
 		this.currentDirection = Globals.getDirectionString(enemy, this);
+		pop = true;
 		attacking = true;
-
-        SoundManager.playSound("worm_roar.wav");
-
+		graphicsComponent.setImage(.4f, "Pop", Sprite.FORWARD);
+		SoundManager.playSound("worm_roar.wav");
 		int chanceToHit = Globals.D(20) + 4; //20 sided dice, bitch
 		missing = !(chanceToHit > ((Mob) focusTarget).getReflex());
 	}
@@ -126,20 +118,25 @@ public class ClockWorm extends Mob {
 
 	/** Generic implementation for walk and attack sounds based on Animation Events */
 	public void handleEvent(AnimEvent e) {
-		if (e.action.contains("ATTACK") && e.ending && !e.beginning) {
+		System.out.println(e.action + " " + e.beginning + " " + e.ending);
+
+		if (e.action.contains("ATTACK") && e.ending) {
 			timeSinceAttack = 0f;
 			if (!missing)
 				executeAttack();
-			graphicsComponent.setImage(.4f, "POP", Sprite.REVERSED);
-		} else if (e.action.contains("POP") && e.ending && !e.beginning && pop) {
-			graphicsComponent.setImage(.4f, "POP", Sprite.REVERSED);
-			pop = false;
-		} else if (e.action.contains("POP") && e.ending && !e.beginning) {
 			recede = true;
-		} else if (e.action.contains("POP") && recede) {
+			attacking = false;
+			graphicsComponent.setImage(.6f, "POP", Sprite.REVERSED);
+		} else if (e.action.contains("POP") && e.ending && pop) {
+			if (!attacking){
+				graphicsComponent.setImage(.6f, "POP", Sprite.REVERSED);
+				recede = true;
+			}
+			pop = false;
+		} else if (e.action.contains("POP") && e.ending && recede && !pop) {
+			pop = false;
 			recede = false;
-			graphicsComponent.setImage(1, "POP", Sprite.STILL_IMAGE);
-			System.out.println("ENDING");
+			graphicsComponent.stopAnimating();
 		}
 	}
 

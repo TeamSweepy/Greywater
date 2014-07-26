@@ -252,6 +252,8 @@ public class Level {
 
 	/** Finds if an entity's sprite is clicked by a given screen location. Will not return the same entity who is searching */
 	public Entity getClickedEntity(Point2F clickLocation, Entity clicker) {
+		if(clickLocation == null || clicker == null)
+			return null;
 		for (Entity e : interactiveList) {
 			if (e.equals(clicker))
 				continue;
