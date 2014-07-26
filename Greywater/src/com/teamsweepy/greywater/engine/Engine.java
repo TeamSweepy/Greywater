@@ -37,6 +37,9 @@ public class Engine extends Game {
 	public static final int ANIMATION_PERIOD_NANOSEC = 16666666; // 60 FPS
 	public static final byte MAX_FRAME_SKIPS = 40; //not more than 40 frames can be skipped due to lag.
 
+    public static final String WINDOW_TITLE = "Greywater";
+    public final boolean SHOW_FPS_IN_TITLE = true;
+
 	/* ********************* STATISTICS AND TIMEKEEPING VARIABLES ************************ */
 	private double secondsElapsed = 0.0;
 	private double excessTime = 0.0;
@@ -53,10 +56,6 @@ public class Engine extends Game {
 	private InputGame inputHandlerGame;
 	private GameScreen gs;
 	private MainMenuScreen ms;
-
-
-    // TESTING
-    private FrameBuffer fbo;
 
 	public static boolean inGame = false;
 
@@ -151,11 +150,11 @@ public class Engine extends Game {
 
 	/** Called by libGDX's render method - update physics and logic components */
 	public void tick(float deltaTime) {
-//		if (this.getScreen() == gs) {
-//			gs.tick(deltaTime);
-//		} else if (this.getScreen() == ms) {
-//			ms.tick(deltaTime);
-//		}
+        if(SHOW_FPS_IN_TITLE) {
+            Gdx.graphics.setTitle(WINDOW_TITLE+", FPS: "+Gdx.graphics.getFramesPerSecond());
+        } else {
+            Gdx.graphics.setTitle(WINDOW_TITLE);
+        }
 
         ((EngineScreen) getScreen()).tick(deltaTime);
 	}

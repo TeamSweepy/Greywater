@@ -41,21 +41,16 @@ public class GameScreen extends EngineScreen {
 
 
     // TODO: CLEANUP
-    private String vertexShader, fragmentShader;
-    private ShaderProgram shader;
+//    private String vertexShader, fragmentShader;
+//    private ShaderProgram shader;
 
 	public GameScreen(Engine eng) {
         super(eng);
 
         // Load the vertex and fragment shaders
-        System.out.println(ShaderProgram.POSITION_ATTRIBUTE);
-        System.out.println(ShaderProgram.COLOR_ATTRIBUTE);
-        System.out.println(ShaderProgram.TEXCOORD_ATTRIBUTE);
-
-        vertexShader = IO.readFile(getClass().getResource("/vertex/main.vert"));
-        fragmentShader = IO.readFile(getClass().getResource("/fragment/main.frag"));
-        ShaderProgram.pedantic = false;
-        shader = new ShaderProgram(vertexShader, fragmentShader);
+//        System.out.println(ShaderProgram.POSITION_ATTRIBUTE);
+//        System.out.println(ShaderProgram.COLOR_ATTRIBUTE);
+//        System.out.println(ShaderProgram.TEXCOORD_ATTRIBUTE);
 
         // TODO: Uhmmmm, what....?
 		while (AssetLoader.tick() < 1f) {
@@ -66,7 +61,8 @@ public class GameScreen extends EngineScreen {
 
 
 		Level town = new Town("data/map/Greywater.tmx");
-		town.addMobAtLoc(TestTavishMob, new Point2I(4, 9));
+//		town.addMobAtLoc(TestTavishMob, new Point2I(4, 9));
+		town.addMobAtLoc(TestTavishMob, new Point2I(9, 13));
 		currentLevel = town;
 		Level dungeon = new Level("data/map/Dungeon.tmx");
 		currentLevel.setSwapLevel(dungeon);
@@ -76,7 +72,10 @@ public class GameScreen extends EngineScreen {
 		playerInventory = new Inventory(Player.getLocalPlayer());
 		playerHUD = new HUD();
 		playerCursor = new Cursor();
-		Player.getLocalPlayer().setInventory(playerInventory);
+
+        Player.getLocalPlayer().setInventory(playerInventory);
+        Player.getLocalPlayer().getInventory().dumpSlots();
+
 		GUI.addGUIComponent(playerHUD, GUI.TOP_LAYER);
 		GUI.addGUIComponent(playerInventory);
 		GUI.addGUIComponent(playerCursor, GUI.TOP_LAYER);
@@ -93,14 +92,14 @@ public class GameScreen extends EngineScreen {
 		Point2F offsetPoint = Camera.getDefault().getTranslatedMatrix();
 		engine.gameBatch.setProjectionMatrix(engine.gameBatch.getProjectionMatrix().translate(offsetPoint.x, offsetPoint.y, 0));
 
-        engine.gameBatch.setShader(shader);
+//        engine.gameBatch.setShader(shader);
 
 		engine.gameBatch.begin();// start render
-        shader.begin(); // Bind before the shader begins
+//        shader.begin(); // Bind before the shader begins
 
 		currentLevel.render(engine.gameBatch);
 
-        shader.end();
+//        shader.end();
 		engine.gameBatch.end();// end render
 		
 		engine.guiBatch.begin();
@@ -150,9 +149,9 @@ public class GameScreen extends EngineScreen {
 
 	@Override
 	public void resize(int width, int height) {
-        shader.begin();
-        shader.setUniformf("resolution", width, height);
-        shader.end();
+//        shader.begin();
+//        shader.setUniformf("resolution", width, height);
+//        shader.end();
     }
 
 	@Override

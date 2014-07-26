@@ -75,7 +75,7 @@ public class MainMenuScreen extends EngineScreen {
 	@Override
 	public void hide() {
 		mainMenu.setVisible(false);
-		((Music) AssetLoader.getAsset(Music.class, "Escadre.wav")).stop();
+        SoundManager.stopMusic();
 	}
 
 	@Override

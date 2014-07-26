@@ -65,7 +65,6 @@ public class Player extends Mob {
 		graphicsComponent.setImage(3f, "Walk_South", Sprite.LOOP);
 		fist = new Fist();
 		armorRating = 14;
-
 	}
 
 	@Override
@@ -88,19 +87,24 @@ public class Player extends Mob {
 
 
         // Are we hovering on an object?
-//        Entity interacted = world.getClickedEntity(mouseLocation, this);
-//        if(interacted instanceof Item) {
-//            if(interacted == last_hovered_item) {
-//                last_hovered_item.hover(true);
-//            } else {
-//                if(last_hovered_item != null) {
-//                    last_hovered_item.hover(false);
-//                }
-//
-//                last_hovered_item = (Item) interacted;
-//                last_hovered_item.hover(true);
-//            }
-//        }
+        Entity interacted = world.getClickedEntity(mouseLocation, this);
+        if(interacted instanceof Item) {
+            if(interacted == last_hovered_item) {
+                last_hovered_item.hover(true);
+            } else {
+                if(last_hovered_item != null) {
+                    last_hovered_item.hover(false);
+                }
+
+                last_hovered_item = (Item) interacted;
+                last_hovered_item.hover(true);
+            }
+        } else {
+            if(last_hovered_item != null) {
+                last_hovered_item.hover(false);
+                last_hovered_item = null;
+            }
+        }
 	}
 
 	@Override

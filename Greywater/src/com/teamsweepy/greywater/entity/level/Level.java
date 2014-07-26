@@ -161,6 +161,8 @@ public class Level {
 			}
 		}
 
+        // NOTE: Having the player as a sort of singleton is not the way to do things!
+        // Let the Level class create a player object, then add that object to the stage
 		for (Tile exit : exitTiles) {
 			if (Player.getLocalPlayer().getTileLocation().distance(exit.getTileLocation()) < 2) {
 				for (Mob m : Player.getLocalPlayer().getFollowers()) {
