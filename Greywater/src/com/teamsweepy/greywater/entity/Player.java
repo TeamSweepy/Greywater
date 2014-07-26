@@ -1,7 +1,6 @@
 
 package com.teamsweepy.greywater.entity;
 
-import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.component.Sprite;
@@ -15,11 +14,10 @@ import com.teamsweepy.greywater.entity.item.weapons.Wrench;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.entity.level.Tile;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.math.Point2I;
 import com.teamsweepy.greywater.ui.gui.subgui.ProgressBarCircular;
+import com.teamsweepy.greywater.utils.SoundManager;
 
-import com.badlogic.gdx.audio.Sound;
-
-import java.awt.Point;
 import java.util.ArrayList;
 
 public class Player extends Mob {
@@ -31,6 +29,9 @@ public class Player extends Mob {
 	private ProgressBarCircular healthBar;
 	private ProgressBarCircular manaBar;
 	public Sprite selection;
+
+    // Used so we can reset the hover state
+    private Item last_hovered_item;
 
 	private Fist fist; // default weapon
 
@@ -64,7 +65,6 @@ public class Player extends Mob {
 		graphicsComponent.setImage(3f, "Walk_South", Sprite.LOOP);
 		fist = new Fist();
 		armorRating = 14;
-
 	}
 
 	@Override
@@ -84,6 +84,27 @@ public class Player extends Mob {
 			healthBar.setValue(HP);
 			manaBar.setValue(inventory.getCharge());
 		}
+
+
+        // Are we hovering on an object?
+        Entity interacted = world.getClickedEntity(mouseLocation, this);
+        if(interacted instanceof Item) {
+            if(interacted == last_hovered_item) {
+                last_hovered_item.hover(true);
+            } else {
+                if(last_hovered_item != null) {
+                    last_hovered_item.hover(false);
+                }
+
+                last_hovered_item = (Item) interacted;
+                last_hovered_item.hover(true);
+            }
+        } else {
+            if(last_hovered_item != null) {
+                last_hovered_item.hover(false);
+                last_hovered_item = null;
+            }
+        }
 	}
 
 	@Override
@@ -93,26 +114,26 @@ public class Player extends Mob {
 			mouseClicked = false;
 			if (attacking || sendInteract()) // no need to walk if you're fighting/talking
 				return;
-			Point startTile;
+            Point2I startTile;
 			if (!physicsComponent.isMoving())
 				startTile = Globals.toTileIndices(getLocation().x, getLocation().y);
 			else
 				startTile = Globals.toTileIndices(physicsComponent.destination);
 
 			Point2F objectiveClick = Globals.toNormalCoord(mouseLocation.x, mouseLocation.y);
-			Point clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
+			Point2I clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
 
-			System.out.println("Player starts at " + startTile);
-			System.out.println("Clicked to move to " + clickedTile);
+//			System.out.println("Player starts at " + startTile);
+//			System.out.println("Clicked to move to " + clickedTile);
 
 			pather.createPath(startTile, clickedTile);
-			Point newPoint = pather.getNextStep();
+            Point2I newPoint = pather.getNextStep();
 			if (newPoint != null) {
 				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 				physicsComponent.moveTo(newLoc.x, newLoc.y);
 			}
 		} else if (!physicsComponent.isMoving()) {  // if no recent click, continue along pre-established path
-			Point newPoint = pather.getNextStep();
+            Point2I newPoint = pather.getNextStep();
 
 			if (newPoint != null) {
 				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
@@ -131,7 +152,7 @@ public class Player extends Mob {
 	@Override
 	public boolean sendInteract() {
 
-		Entity interacted = (Entity) world.getClickedEntity(mouseLocation, this);
+		Entity interacted = world.getClickedEntity(mouseLocation, this);
 		focusTarget = null;
 		if (interacted == null)
 			return false;
@@ -145,10 +166,10 @@ public class Player extends Mob {
 				if (interactedMob.getLocation().distance(getLocation()) > getWidth() * 3.5)
 					return false;
 
-				physicsComponent.stopMovement();
-				pather.reset();
-				this.currentDirection = Globals.getDirectionString(interactedMob, this); // face target
-				interactedMob.receiveInteract(this);
+//				physicsComponent.stopMovement();
+//				pather.reset();
+//				this.currentDirection = Globals.getDirectionString(interactedMob, this); // face target
+//				interactedMob.receiveInteract(this);
 			} else { // clicked a dead guy
 				return false;
 			}
@@ -166,7 +187,7 @@ public class Player extends Mob {
 				}
 			} else {
 				pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(interacted.getLocation()));
-				Point newPoint = pather.getNextStep();
+				Point2I newPoint = pather.getNextStep();
 				newPoint = pather.getNextStep();
 
 				if (newPoint != null) {
@@ -202,14 +223,17 @@ public class Player extends Mob {
 
 		if (enemy.getLocation().distance(getLocation()) > equippedWeapon.getRange() && visible) { // if cant reach
 			pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(enemy.getLocation()));
-			Point newPoint = pather.getNextStep();
+            Point2I newPoint = pather.getNextStep();
 			if (newPoint != null) {
 				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 				physicsComponent.moveTo(newLoc.x, newLoc.y);
 			}
 			return;
 		}
-		((Sound)AssetLoader.getAsset(Sound.class, "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1)+ ".wav")).play();
+//		((Sound)AssetLoader.getAsset(Sound.class, )).play();
+
+        String sound_file = "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1)+ ".wav";
+        SoundManager.playSound(sound_file);
 
 		missing = !equippedWeapon.swing(this, enemy);
 		physicsComponent.stopMovement();

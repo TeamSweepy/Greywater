@@ -9,6 +9,7 @@ import com.teamsweepy.greywater.entity.item.Chargeable;
 import com.teamsweepy.greywater.entity.item.IDs;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.entity.level.Level;
+import com.teamsweepy.greywater.math.Point2I;
 import com.teamsweepy.greywater.ui.gui.Inventory;
 import com.teamsweepy.greywater.ui.gui.subgui.ItemSlot;
 
@@ -16,8 +17,6 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,13 +45,13 @@ public class Bomb extends RangedWeapon implements Chargeable {
 	@Override
 	public boolean attack(Mob attacker, Mob victim) {
 		removeCharge(1);
-		List<Point> tileIndices = new ArrayList<Point>();
-		Point centralTile = Globals.toTileIndices(victim.getLocation());
+		List<Point2I> tileIndices = new ArrayList<Point2I>();
+        Point2I centralTile = Globals.toTileIndices(victim.getLocation());
 //		tileIndices.add(centralTile);
 
 		for (int x = -2; x <= 2; x++) {
 			for (int y = 2; y >= -2; y--) {
-				tileIndices.add(new Point(centralTile.x + x, centralTile.y + y));
+				tileIndices.add(new Point2I(centralTile.x + x, centralTile.y + y));
 			}
 		}
 		Level currentWorld = attacker.getLevel();

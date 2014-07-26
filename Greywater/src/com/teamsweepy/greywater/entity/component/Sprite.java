@@ -121,6 +121,21 @@ public class Sprite {
 		listeners = new ArrayList<AnimEventListener>();
 	}
 
+    /**
+     * A wrapper for binding textures, not sure how this works with animations or ninepatch
+     */
+    public void bind(int id) {
+        if(playMode == STILL_IMAGE) {
+//            sprite.getTexture().bind(id);
+        }
+    }
+
+    public void unbind() {
+        if(playMode == STILL_IMAGE) {
+
+        }
+    }
+
 	/** Returns the current Name + Ident to let you know what animation is active currently */
 	public String getCurrentImageName() {
 		return currentImageName;

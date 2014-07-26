@@ -8,6 +8,7 @@
 
 package com.teamsweepy.greywater.ui;
 
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Camera;
 import com.teamsweepy.greywater.engine.Engine;
@@ -17,6 +18,7 @@ import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.entity.level.Town;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.math.Point2I;
 import com.teamsweepy.greywater.ui.gui.Cursor;
 import com.teamsweepy.greywater.ui.gui.GUI;
 import com.teamsweepy.greywater.ui.gui.HUD;
@@ -24,13 +26,11 @@ import com.teamsweepy.greywater.ui.gui.Inventory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.teamsweepy.greywater.utils.IO;
 
-import java.awt.Point;
-
-public class GameScreen implements Screen {
-
-	private Engine engine;
+public class GameScreen extends EngineScreen {
 	Sprite fog;
+
 
 	//testvar
 	Level currentLevel;
@@ -39,17 +39,30 @@ public class GameScreen implements Screen {
 	Cursor playerCursor;
 	boolean ticking = true;
 
+
+    // TODO: CLEANUP
+//    private String vertexShader, fragmentShader;
+//    private ShaderProgram shader;
+
 	public GameScreen(Engine eng) {
+        super(eng);
+
+        // Load the vertex and fragment shaders
+//        System.out.println(ShaderProgram.POSITION_ATTRIBUTE);
+//        System.out.println(ShaderProgram.COLOR_ATTRIBUTE);
+//        System.out.println(ShaderProgram.TEXCOORD_ATTRIBUTE);
+
+        // TODO: Uhmmmm, what....?
 		while (AssetLoader.tick() < 1f) {
 			// do nothing TODO remove later
 		}
 		fog = new Sprite("light", true);
 		Mob TestTavishMob = Player.initLocalPlayer(4f, 90f, null);
-		engine = eng;
-		
-		
+
+
 		Level town = new Town("data/map/Greywater.tmx");
-		town.addMobAtLoc(TestTavishMob, new Point(4, 9));
+//		town.addMobAtLoc(TestTavishMob, new Point2I(4, 9));
+		town.addMobAtLoc(TestTavishMob, new Point2I(9, 13));
 		currentLevel = town;
 		Level dungeon = new Level("data/map/Dungeon.tmx");
 		currentLevel.setSwapLevel(dungeon);
@@ -59,7 +72,10 @@ public class GameScreen implements Screen {
 		playerInventory = new Inventory(Player.getLocalPlayer());
 		playerHUD = new HUD();
 		playerCursor = new Cursor();
-		Player.getLocalPlayer().setInventory(playerInventory);
+
+        Player.getLocalPlayer().setInventory(playerInventory);
+        Player.getLocalPlayer().getInventory().dumpSlots();
+
 		GUI.addGUIComponent(playerHUD, GUI.TOP_LAYER);
 		GUI.addGUIComponent(playerInventory);
 		GUI.addGUIComponent(playerCursor, GUI.TOP_LAYER);
@@ -76,8 +92,14 @@ public class GameScreen implements Screen {
 		Point2F offsetPoint = Camera.getDefault().getTranslatedMatrix();
 		engine.gameBatch.setProjectionMatrix(engine.gameBatch.getProjectionMatrix().translate(offsetPoint.x, offsetPoint.y, 0));
 
+//        engine.gameBatch.setShader(shader);
+
 		engine.gameBatch.begin();// start render
+//        shader.begin(); // Bind before the shader begins
+
 		currentLevel.render(engine.gameBatch);
+
+//        shader.end();
 		engine.gameBatch.end();// end render
 		
 		engine.guiBatch.begin();
@@ -86,6 +108,7 @@ public class GameScreen implements Screen {
 		engine.guiBatch.end();
 	}
 
+    @Override
 	public void tick(float delta) {
 		if (!ticking)
 			return;
@@ -125,7 +148,11 @@ public class GameScreen implements Screen {
 	/* **************** PROBABLY USELESS METHODS ********************* */
 
 	@Override
-	public void resize(int width, int height) {}
+	public void resize(int width, int height) {
+//        shader.begin();
+//        shader.setUniformf("resolution", width, height);
+//        shader.end();
+    }
 
 	@Override
 	public void dispose() {}

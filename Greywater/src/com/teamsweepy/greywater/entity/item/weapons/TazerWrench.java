@@ -11,6 +11,7 @@ import com.teamsweepy.greywater.entity.item.misc.VoltCell;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.teamsweepy.greywater.utils.SoundManager;
 
 
 public class TazerWrench extends Weapon implements Chargeable {
@@ -33,7 +34,7 @@ public class TazerWrench extends Weapon implements Chargeable {
 		super.swing(attacker, victim);
 		victim.addSpell(new PersonalSpell("particle/electric.p", 0, 30, victim, attacker));
 		removeCharge(5);
-		((Sound) AssetLoader.getAsset(Sound.class, "electric_wrench.wav")).play(.5f);
+        SoundManager.playSound("electric_wrench.wav");
 		return !victim.isAlive();
 	}
 

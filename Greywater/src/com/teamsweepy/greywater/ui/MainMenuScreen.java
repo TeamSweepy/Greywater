@@ -17,17 +17,17 @@ import com.teamsweepy.greywater.ui.gui.GUIComponent;
 import com.teamsweepy.greywater.ui.gui.subgui.Button;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.teamsweepy.greywater.utils.SoundManager;
 
-public class MainMenuScreen implements Screen {
-
-	private Engine engine;
+public class MainMenuScreen extends EngineScreen {
 	private GUIComponent mainMenu;
 
 	public MainMenuScreen(Engine eng) {
-		((Music) AssetLoader.getAsset(Music.class, "Escadre.wav")).play();
-		engine = eng;
+        super(eng);
+
+        SoundManager.playMusic("Escadre.wav");
+
 
 		mainMenu = new GUIComponent();
 		mainMenu.sprite = new Sprite("MenuBG", true);
@@ -62,10 +62,12 @@ public class MainMenuScreen implements Screen {
 		engine.guiBatch.end();// end rendering
 	}
 
+    @Override
 	public void tick(float delta) {
 		GUI.tick(delta);
 	}
 
+    @Override
 	public void show() {
 		mainMenu.setVisible(true);
 	}
@@ -73,7 +75,7 @@ public class MainMenuScreen implements Screen {
 	@Override
 	public void hide() {
 		mainMenu.setVisible(false);
-		((Music) AssetLoader.getAsset(Music.class, "Escadre.wav")).stop();
+        SoundManager.stopMusic();
 	}
 
 	@Override

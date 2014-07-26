@@ -40,8 +40,8 @@ import com.teamsweepy.greywater.math.Point2F;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.teamsweepy.greywater.math.Point2I;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,7 +123,7 @@ public abstract class Entity {
 		return new Point2F(getX(), getY());
 	}
 
-	public Point getTileLocation() {
+	public Point2I getTileLocation() {
 		return Globals.toTileIndices(getLocation());
 	}
 

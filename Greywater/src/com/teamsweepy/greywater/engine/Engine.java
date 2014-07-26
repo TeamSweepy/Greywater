@@ -11,9 +11,12 @@
 
 package com.teamsweepy.greywater.engine;
 
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.teamsweepy.greywater.engine.input.InputGUI;
 import com.teamsweepy.greywater.engine.input.InputGame;
 import com.teamsweepy.greywater.engine.input.InputHandler;
+import com.teamsweepy.greywater.ui.EngineScreen;
 import com.teamsweepy.greywater.ui.GameScreen;
 import com.teamsweepy.greywater.ui.MainMenuScreen;
 
@@ -23,6 +26,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.teamsweepy.greywater.utils.Preferences;
 
 public class Engine extends Game {
 
@@ -32,6 +36,9 @@ public class Engine extends Game {
 	public static final double NATIVE_ASPECT_RATIO = 16.0 / 9.0;
 	public static final int ANIMATION_PERIOD_NANOSEC = 16666666; // 60 FPS
 	public static final byte MAX_FRAME_SKIPS = 40; //not more than 40 frames can be skipped due to lag.
+
+    public static final String WINDOW_TITLE = "Greywater";
+    public final boolean SHOW_FPS_IN_TITLE = true;
 
 	/* ********************* STATISTICS AND TIMEKEEPING VARIABLES ************************ */
 	private double secondsElapsed = 0.0;
@@ -50,7 +57,6 @@ public class Engine extends Game {
 	private GameScreen gs;
 	private MainMenuScreen ms;
 
-
 	public static boolean inGame = false;
 
 	/**
@@ -58,9 +64,19 @@ public class Engine extends Game {
 	 */
 	@Override
 	public void create() {
+        Preferences preferences = Preferences.getDefault();
+        preferences.create("Greywater");
+
 		AssetLoader.init();
 		Camera.getDefault().setViewPort(NATIVE_WIDTH, NATIVE_HEIGHT);
-		
+
+//        fbo = new FrameBuffer(
+//                Pixmap.Format.RGBA8888,
+//                Gdx.graphics.getWidth(),
+//                Gdx.graphics.getHeight(),
+//                false
+//        );
+
 		gameBatch = new SpriteBatch();
 		gameBatch.setProjectionMatrix(Camera.getDefault().getProjectionMatrix());
 		guiBatch = new SpriteBatch();
@@ -134,11 +150,13 @@ public class Engine extends Game {
 
 	/** Called by libGDX's render method - update physics and logic components */
 	public void tick(float deltaTime) {
-		if (this.getScreen() == gs) {
-			gs.tick(deltaTime);
-		} else if (this.getScreen() == ms) {
-			ms.tick(deltaTime);
-		}
+        if(SHOW_FPS_IN_TITLE) {
+            Gdx.graphics.setTitle(WINDOW_TITLE+", FPS: "+Gdx.graphics.getFramesPerSecond());
+        } else {
+            Gdx.graphics.setTitle(WINDOW_TITLE);
+        }
+
+        ((EngineScreen) getScreen()).tick(deltaTime);
 	}
 
 	@Override

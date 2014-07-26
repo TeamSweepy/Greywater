@@ -7,12 +7,11 @@ import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.math.Point2F;
+import com.teamsweepy.greywater.math.Point2I;
 import com.teamsweepy.greywater.ui.gui.AIInventory;
 
 import com.badlogic.gdx.audio.Sound;
-
-import java.awt.Point;
-
+import com.teamsweepy.greywater.utils.SoundManager;
 
 public class Vagrant extends Mob {
 
@@ -56,7 +55,7 @@ public class Vagrant extends Mob {
 			}
 			pather.createPath(Globals.toTileIndices(getLocation()), Globals.toTileIndices(focusTarget.getLocation()));
 
-			Point newPoint = pather.getNextStep();
+			Point2I newPoint = pather.getNextStep();
 			if (newPoint != null) {
 				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 				physicsComponent.moveTo(newLoc.x, newLoc.y);
@@ -65,7 +64,7 @@ public class Vagrant extends Mob {
 			}
 		} else { //if no recent click, continue along pre-established path
 			if (!physicsComponent.isMoving()) {
-				Point newPoint = pather.getNextStep();
+                Point2I newPoint = pather.getNextStep();
 				if (newPoint != null) {
 					Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 					physicsComponent.moveTo(newLoc.x, newLoc.y);
@@ -76,11 +75,12 @@ public class Vagrant extends Mob {
 
 	@Override
 	protected void attack(Mob enemy) {
-		
+
 		if (enemy == null || attacking)
 			return;
-		
-		((Sound)AssetLoader.getAsset(Sound.class, "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1 ) + ".wav")).play();
+
+        String sound_file = "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1 ) + ".wav";
+        SoundManager.playSound(sound_file);
 
 		physicsComponent.stopMovement();
 		pather.reset();
