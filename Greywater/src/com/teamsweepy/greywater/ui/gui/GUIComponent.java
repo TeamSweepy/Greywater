@@ -140,7 +140,7 @@ public class GUIComponent {
 
 	public void toggleVisibility() {
 		visible = !visible;
-		for (GUIComponent child : subComponents) {
+        for (GUIComponent child : subComponents) {
 			child.toggleVisibility();
 		}
 	}

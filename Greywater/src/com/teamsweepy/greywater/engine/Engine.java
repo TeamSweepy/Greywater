@@ -57,7 +57,7 @@ public class Engine extends Game {
 	private GameScreen gs;
 	private MainMenuScreen ms;
 
-	public static boolean inGame = false;
+	private boolean inGame = false;
 
 	/**
 	 * Initialize core assets, automatically called by LibGDX
@@ -92,7 +92,9 @@ public class Engine extends Game {
 	/** Initialize input as a multiplex. Multiple listeners are added (one for GUI and one for the gameView) */
 	private void initInput() {
 		inputs = new InputMultiplexer();
-		inputHandlerGUI = new InputGUI();
+        // We pass the Engine so it's easier to check if an inventory or any GUI component is still open
+        // TODO: Create a varaible(?) in the GUI which can change the pause behaviour
+		inputHandlerGUI = new InputGUI(this);
 		inputHandlerGame = new InputGame();
 		// The event first goes to the GUI input and if needed to the Game input
 		inputs.addProcessor(inputHandlerGUI);
@@ -184,4 +186,22 @@ public class Engine extends Game {
 		System.out.println();
 	}
 
+    public boolean getInGame() {
+        return inGame;
+    }
+
+    public void pause(boolean pause) {
+        if(pause) {
+//            System.out.println("Can close: "+gs.canClose());
+            if(gs.canClose()) {
+                this.setScreen(ms);
+                inGame = false;
+            } else {
+                gs.closeGUI();
+            }
+        } else {
+            this.setScreen(gs);
+            inGame = true;
+        }
+    }
 }

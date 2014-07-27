@@ -23,6 +23,11 @@ import com.badlogic.gdx.Input.Keys;
 public class InputGUI extends InputHandler {
 
 	public static Point2F position = new Point2F();
+    private Engine engine;
+
+    public InputGUI(Engine engine) {
+        this.engine = engine;
+    }
 
 	/** When the mouse wheel get's scrolled **/
 	@Override
@@ -84,7 +89,9 @@ public class InputGUI extends InputHandler {
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Keys.ESCAPE) {
-			Engine.inGame = !Engine.inGame; //go to main menu
+            engine.pause(engine.getInGame());
+//            Engine.pause(!Engine.inGame);
+//			Engine.inGame = !Engine.inGame; //go to main menu
 		}
 		// TODO Implement the keys
 		return false;
