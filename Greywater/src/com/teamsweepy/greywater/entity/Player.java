@@ -1,7 +1,10 @@
 
 package com.teamsweepy.greywater.entity;
 
+import com.badlogic.gdx.Gdx;
+import com.sun.corba.se.impl.naming.cosnaming.NamingUtils;
 import com.teamsweepy.greywater.engine.Globals;
+import com.teamsweepy.greywater.engine.input.InputHandler;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.component.events.EscortEvent;
@@ -23,7 +26,7 @@ import java.util.ArrayList;
 public class Player extends Mob {
 
 	private static Point2F mouseLocation;
-	private static boolean mouseClicked;
+	private static boolean mouseClicked, mouseDown;
 	private static Player localPlayer;
 
 	private ProgressBarCircular healthBar;
@@ -32,6 +35,15 @@ public class Player extends Mob {
 
     // Used so we can reset the hover state
     private Item last_hovered_item;
+
+    // When we click on a item, but whe're not close enough.
+    // Set the item as queue
+    private Item item_queue;
+
+
+    // When you walk with the mouse button down, have a small timer cancel clicks
+    private final int max_timer_cancel = 10;
+    private int cur_timer_cancel;
 
 	private Fist fist; // default weapon
 
@@ -85,9 +97,9 @@ public class Player extends Mob {
 			manaBar.setValue(inventory.getCharge());
 		}
 
-
         // Are we hovering on an object?
         Entity interacted = world.getClickedEntity(mouseLocation, this);
+
         if(interacted instanceof Item) {
             if(interacted == last_hovered_item) {
                 last_hovered_item.hover(true);
@@ -109,8 +121,17 @@ public class Player extends Mob {
 
 	@Override
 	protected void getInput() {
-		// PATHFINDING CODE
-		if (mouseClicked) {
+        boolean _continue = false;
+        if(mouseDown) {
+            if(cur_timer_cancel < max_timer_cancel) {
+                cur_timer_cancel ++;
+            } else {
+                _continue = true;
+                cur_timer_cancel = 0;
+            }
+        }
+
+		if (_continue) {
 			mouseClicked = false;
 			if (attacking || sendInteract()) // no need to walk if you're fighting/talking
 				return;
@@ -123,15 +144,14 @@ public class Player extends Mob {
 			Point2F objectiveClick = Globals.toNormalCoord(mouseLocation.x, mouseLocation.y);
 			Point2I clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
 
-//			System.out.println("Player starts at " + startTile);
-//			System.out.println("Clicked to move to " + clickedTile);
-
-			pather.createPath(startTile, clickedTile);
-            Point2I newPoint = pather.getNextStep();
-			if (newPoint != null) {
-				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
-				physicsComponent.moveTo(newLoc.x, newLoc.y);
-			}
+            if(pather.getFinalStep() == null || !clickedTile.equals(pather.getFinalStep())) {
+                pather.createPath(startTile, clickedTile);
+                Point2I newPoint = pather.getNextStep();
+                if (newPoint != null) {
+                    Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
+                    physicsComponent.moveTo(newLoc.x, newLoc.y);
+                }
+            }
 		} else if (!physicsComponent.isMoving()) {  // if no recent click, continue along pre-established path
             Point2I newPoint = pather.getNextStep();
 
@@ -144,14 +164,23 @@ public class Player extends Mob {
 						fireEvent(new EscortEvent(this, mob));
 					}
 				}
-			}
+			} else { // Stopped moving
+                if(item_queue != null) {
+                    if (item_queue.getLocation().distance(getLocation()) < getWidth() * 2) {
+                        // Pick up the item
+                        inventory.addItem(item_queue);
+                        getLevel().removeFloorItem(item_queue);
+                        item_queue.pickup();
+                        item_queue = null;
+                    }
+                }
+            }
 		}
 	} // END PATHFINDING CODE
 
 
 	@Override
 	public boolean sendInteract() {
-
 		Entity interacted = world.getClickedEntity(mouseLocation, this);
 		focusTarget = null;
 		if (interacted == null)
@@ -176,23 +205,25 @@ public class Player extends Mob {
 		}// end mob interaction
 
 		if (interacted instanceof Item) { // pickup loot
-			if (interacted.getLocation().distance(getLocation()) < getWidth() * 2) {
+            Item item = (Item)interacted;
+			if (item.getLocation().distance(getLocation()) < getWidth() * 2) {
 				if (inventory.hasSpace()) {
-					inventory.addItem((Item) interacted);
-					getLevel().removeFloorItem((Item) interacted);
-					((Item) interacted).pickup();
+					inventory.addItem(item);
+					getLevel().removeFloorItem(item);
+                    item.pickup();
 				} else {
-					getLevel().removeFloorItem((Item) interacted);
-					((Item) interacted).throwOnGround(Globals.calculateRandomLocation(this.getLocation(), this.getLevel(), -.1f), this);
+					getLevel().removeFloorItem(item);
+                    item.throwOnGround(Globals.calculateRandomLocation(this.getLocation(), this.getLevel(), -.1f), this);
 				}
 			} else {
-				pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(interacted.getLocation()));
+				pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(item.getLocation()));
 				Point2I newPoint = pather.getNextStep();
 				newPoint = pather.getNextStep();
 
 				if (newPoint != null) {
 					Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
 					physicsComponent.moveTo(newLoc.x, newLoc.y);
+                    item_queue = item;
 				}
 			}
 		}
@@ -230,7 +261,6 @@ public class Player extends Mob {
 			}
 			return;
 		}
-//		((Sound)AssetLoader.getAsset(Sound.class, )).play();
 
         String sound_file = "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1)+ ".wav";
         SoundManager.playSound(sound_file);
@@ -245,8 +275,14 @@ public class Player extends Mob {
 
 	/** Sets local player input variables. Used as a callback. */
 	public static void handleInput(Point2F screenLocation, boolean clicked, int keyCode) {
-		mouseClicked = clicked;
-		mouseLocation = screenLocation;
+        mouseLocation = screenLocation;
+        if(keyCode == InputHandler.MOUSE_DRAGGED) {
+            mouseDown = true;
+        } else {
+            mouseClicked = clicked;
+            mouseDown = clicked;
+        }
+
 		if (mouseLocation != null || keyCode != -69) {
 			return; // TODO deal with key input when needed
 		}

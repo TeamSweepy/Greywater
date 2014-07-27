@@ -29,7 +29,7 @@ public class ClockWorm extends Mob {
 	protected void getInput() {
 		if (focusTarget.getLocation().distance(getLocation()) < 2000) {
 			if (timeSinceAttack < 7.5 && !pop && !attacking && !recede) { //if it has been less than 7.5 seconds since attack, telegraph
-				System.out.println("pop");
+//				System.out.println("pop");
 				Point2F surpriseLoc = Globals.calculateRandomLocation(focusTarget.getLocation(), world, 6);
 				physicsComponent.setLocation(surpriseLoc.x, surpriseLoc.y);
 				pop = true;
@@ -118,7 +118,7 @@ public class ClockWorm extends Mob {
 
 	/** Generic implementation for walk and attack sounds based on Animation Events */
 	public void handleEvent(AnimEvent e) {
-		System.out.println(e.action + " " + e.beginning + " " + e.ending);
+//		System.out.println(e.action + " " + e.beginning + " " + e.ending);
 
 		if (e.action.contains("ATTACK") && e.ending) {
 			timeSinceAttack = 0f;

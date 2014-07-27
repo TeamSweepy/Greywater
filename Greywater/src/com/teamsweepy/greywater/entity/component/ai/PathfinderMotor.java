@@ -59,12 +59,6 @@ public class PathfinderMotor {
 
 		pathIndex = 0;
 
-		if (from.equals(end)) { //if clicked self, ignore
-			aStarMap = new LinkedList<Point2I>();
-			aStarMap.add(from);
-			return;
-		}
-
 		if (currentMethod == Method.ASTAR) {
             aStarMap = AStar.create(from, end, level.getMapAsCosts());
 
@@ -78,6 +72,19 @@ public class PathfinderMotor {
 //			pfMap = (double[][]) pathfinder.create();
 		}
 	}
+
+    public boolean finished() {
+        if (currentMethod == Method.ASTAR) {
+            if(aStarMap != null) {
+                return (pathIndex >= aStarMap.size() - 1);
+            } else {
+                return true;
+            }
+        }
+
+        // TODO: implement this for the PF
+        return false;
+    }
 
 	public Point2I getNextStep() {
 		if (currentMethod == Method.ASTAR) {
@@ -98,7 +105,6 @@ public class PathfinderMotor {
 	public Point2I getFinalStep() {
 		if (currentMethod == Method.ASTAR) {
 			if (aStarMap != null && aStarMap.size() > 0) {
-
 				return aStarMap.get(aStarMap.size() - 1);
 			}
 		}
