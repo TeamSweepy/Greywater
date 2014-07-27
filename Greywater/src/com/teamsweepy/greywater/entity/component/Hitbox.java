@@ -25,6 +25,7 @@ package com.teamsweepy.greywater.entity.component;
 import com.teamsweepy.greywater.math.Point2F;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.teamsweepy.greywater.utils.Mathf;
 
 
 public class Hitbox {
@@ -66,14 +67,22 @@ public class Hitbox {
 		//get direction of movement * speed
 		xDelta = Math.signum((destination.getX() - hitBox.getX())) * speed * deltaTime;
 		yDelta = Math.signum((destination.getY() - hitBox.getY())) * speed * deltaTime;
-		if (Math.abs(xDelta) > Math.abs(destination.getX() - hitBox.getX()))
+
+        // Diagonal movement will be as fast as normal movement
+        if(xDelta != 0 && yDelta != 0) {
+            xDelta /= Mathf.ROOT_TWO;
+            yDelta /= Mathf.ROOT_TWO;
+        }
+
+		if (Mathf.fastAbs(xDelta) > Mathf.fastAbs(destination.getX() - hitBox.getX()))
 			xDelta = destination.getX() - hitBox.getX();
 
-		if (Math.abs(yDelta) > Math.abs(destination.getY() - hitBox.getY()))
+		if (Mathf.fastAbs(yDelta) > Mathf.fastAbs(destination.getY() - hitBox.getY()))
 			yDelta = destination.getY() - hitBox.getY();
 
-		if (xDelta != 0 || yDelta != 0)
-			setLocation(xDelta + hitBox.getX(), yDelta + hitBox.getY());
+		if (xDelta != 0 || yDelta != 0) {
+            setLocation(xDelta + hitBox.getX(), yDelta + hitBox.getY());
+        }
 
 		xDelta = 0; //clear out for next cycle
 		yDelta = 0;

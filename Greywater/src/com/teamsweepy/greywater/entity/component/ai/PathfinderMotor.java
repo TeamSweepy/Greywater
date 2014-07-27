@@ -11,8 +11,6 @@
 package com.teamsweepy.greywater.entity.component.ai;
 
 import com.teamsweepy.greywater.entity.component.ai.core.AStar;
-import com.teamsweepy.greywater.entity.component.ai.core.Pathfinder;
-import com.teamsweepy.greywater.entity.component.ai.core.PotentialField;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.math.Point2I;
 
@@ -20,7 +18,6 @@ import java.util.LinkedList;
 
 public class PathfinderMotor {
 
-	private Pathfinder pathfinder;
 	private Method currentMethod;
 
 	// A* specific
@@ -45,8 +42,6 @@ public class PathfinderMotor {
 	}
 
 	public void reset() {
-		if (pathfinder != null)
-			pathfinder.reset();
 		if (aStarMap != null)
 			aStarMap.clear();
 		pathIndex = 0;
@@ -80,7 +75,7 @@ public class PathfinderMotor {
 					level.getMapAsCosts()[p.x][p.y] = 1;
 				}
 		} else if (currentMethod == Method.POTENTIAL_FIELD) {
-			pfMap = (double[][]) pathfinder.create();
+//			pfMap = (double[][]) pathfinder.create();
 		}
 	}
 

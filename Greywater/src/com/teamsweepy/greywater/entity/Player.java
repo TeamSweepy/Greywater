@@ -58,7 +58,7 @@ public class Player extends Mob {
 	 * @param y - Tile Y Position, not objective position
 	 */
 	private Player(float x, float y, Level level) {
-		super("Tavish", x, y, 35, 35, 1.75f, level, true);
+		super("Tavish", x, y, 35, 35, 2.75f, level, true);
 		currentDirection = "South";
 		this.walkCycleDuration = .5f;
 		killList = new ArrayList<Entity>();
