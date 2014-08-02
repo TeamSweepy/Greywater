@@ -21,6 +21,8 @@ import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.entity.level.Tile;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.net.packet.Packet02SetPlayerPath;
+import com.teamsweepy.greywater.ui.gui.GUI;
+import com.teamsweepy.greywater.ui.gui.Inventory;
 import com.teamsweepy.greywater.ui.gui.subgui.ProgressBarCircular;
 
 public class Player extends Mob {
@@ -67,6 +69,13 @@ public class Player extends Mob {
 		fist = new Fist();
 		armorRating = 14;
 
+	}
+
+	/** Setup the inventory for the player */
+	public void initInventory() {
+		inventory = new Inventory(this); // this - the inventory owner
+		setInventory(inventory);
+		GUI.addGUIComponent(inventory);
 	}
 
 	@Override

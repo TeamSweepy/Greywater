@@ -15,6 +15,9 @@ import com.badlogic.gdx.Gdx;
 
 public class HUD extends GUIComponent {
 
+	public static ProgressBarCircular hpBar;
+	public static ProgressBarCircular manaBar;
+
 	public HUD() {
 		sprite = new Sprite("HUD-1600", true);
 		pos = new Point2F(0, 0);
@@ -36,21 +39,21 @@ public class HUD extends GUIComponent {
 		});// The inventory open button
 
 		{// Player bars for health and mana
-			Player local = Player.getLocalPlayer();
-			ProgressBarCircular hpBar = new ProgressBarCircular(64, 12);// health bar
+			
+			hpBar = new ProgressBarCircular(64, 12);// health bar
 			subComponents.add(hpBar);
 			hpBar.setMaxRotation(0);
 			hpBar.setMinRotation(270);
-			hpBar.setMaxValue(local.maxHP());
+			hpBar.setMaxValue(100);
 			hpBar.setMinValue(0);
 
-			ProgressBarCircular manaBar = new ProgressBarCircular(1336, 12);// mana bar
+			manaBar = new ProgressBarCircular(1336, 12);// mana bar
 			subComponents.add(manaBar);
 			manaBar.setMaxRotation(0);
 			manaBar.setMinRotation(270);
 			manaBar.setMaxValue(100);
 			manaBar.setMinValue(0);
-			local.setBars(hpBar, manaBar);
+
 		}
 	}
 }

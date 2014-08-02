@@ -1,6 +1,7 @@
 
 package com.teamsweepy.greywater.ui.gui;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.Mob;
 import com.teamsweepy.greywater.entity.component.Sprite;
@@ -44,15 +45,14 @@ public class Inventory extends GUIComponent {
 		initSubComponents();
 
 		{// Adding some items in the inventory for testing purposes
- 			int i = 0;
- 			itemSlots.get(0).setItem(new HealthPotion());
- 			itemSlots.get(1).setItem(new Mercury());
- 			itemSlots.get(1).setItem(new Mercury());
- 			itemSlots.get(2).setItem(new Wrench());
- 			itemSlots.get(3).setItem(new VoltCell());
- 		}
-		
-		visible = true;
+			int i = 0;
+			itemSlots.get(0).setItem(new HealthPotion());
+			itemSlots.get(1).setItem(new Mercury());
+			itemSlots.get(1).setItem(new Mercury());
+			itemSlots.get(2).setItem(new Wrench());
+			itemSlots.get(3).setItem(new VoltCell());
+		}
+
 	}
 
 	public Inventory(int x, int y, int w, int h) {
@@ -99,9 +99,22 @@ public class Inventory extends GUIComponent {
 	}
 
 
+	public void render(SpriteBatch batch) {
+		if (!visible)
+			return;
+		if (sprite != null) {
+			sprite.render(batch, pos.x, pos.y);
+		}
+		// Render all the subcomponents
+		for (GUIComponent child : subComponents) {
+			child.render(batch);
+		}
+	}
+
 	@Override
 	/** Attempt to craft stuff */
 	public void tick(float deltaTime) {
+		//System.out.println(owner);
 		outputSlot.setItem(Crafting.checkCrafting(craftingSlots));
 		weaponSlots.get(0).getCharge();
 	}
@@ -177,12 +190,12 @@ public class Inventory extends GUIComponent {
 		}
 		return -1;
 	}
-	
-	public WeaponSlot getWeaponSlot(){
+
+	public WeaponSlot getWeaponSlot() {
 		return weaponSlots.get(0);
 	}
-	
-	public Mob getOwner(){
+
+	public Mob getOwner() {
 		return owner;
 	}
 

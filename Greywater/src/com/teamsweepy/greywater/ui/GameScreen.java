@@ -49,19 +49,14 @@ public class GameScreen implements Screen {
 		
 		
 		Level town = new Town("data/map/Greywater.tmx");
-		//town.addMobAtLoc(TestTavishMob, new Point(4, 9));
 		currentLevel = town;
 		Level dungeon = new Level("data/map/Dungeon.tmx");
 		currentLevel.setSwapLevel(dungeon);
 		dungeon.setSwapLevel(town);
 		
-		
-		playerInventory = new Inventory(Player.getLocalPlayer());
 		playerHUD = new HUD();
 		playerCursor = new Cursor();
-		Player.getLocalPlayer().setInventory(playerInventory);
 		GUI.addGUIComponent(playerHUD, GUI.TOP_LAYER);
-		GUI.addGUIComponent(playerInventory);
 		GUI.addGUIComponent(playerCursor, GUI.TOP_LAYER);
 
 		this.hide();

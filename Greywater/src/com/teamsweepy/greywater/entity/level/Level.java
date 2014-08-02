@@ -38,6 +38,8 @@ import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.net.packet.Packet04RequestAllPlayers;
+import com.teamsweepy.greywater.ui.gui.GUI;
+import com.teamsweepy.greywater.ui.gui.HUD;
 
 public class Level {
 
@@ -100,7 +102,7 @@ public class Level {
 		mobList.add(new Sweepy(30, 5, this));
 		mobList.add(new ClockWorm(this, Player.getLocalPlayer()));
 		interactiveList.addAll(mobList);
-		Camera.getDefault().moveTo(Globals.toIsoCoord(Player.getLocalPlayer().getX(), Player.getLocalPlayer().getY()));
+		//Camera.getDefault().moveTo(Globals.toIsoCoord(Player.getLocalPlayer().getX(), Player.getLocalPlayer().getY()));
 
 	}
 
@@ -152,9 +154,36 @@ public class Level {
 	/** Tick logic of all components in the world - mobs, doodads, loot, etc */
 	public void tick(float deltaTime) {
 
-		//System.out.println(this);
-		//System.out.println(Level.level);
+		// Spawn scheduled players
+				for (int i = 0; i < scheduledPlayers.size(); i++) {
 
+					// create the player
+					Point2F spawnPoint = scheduledPlayers.get(i);
+					PlayerMP pMP = new PlayerMP(spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, this, scheduledPlayersIDs.get(i));
+
+					if (Player.localPlayerID == -1) {
+						// Adding a local player
+						Player.localPlayerID = scheduledPlayersIDs.get(i);
+
+						pMP.initInventory();
+						pMP.setBars(HUD.hpBar, HUD.manaBar);
+
+						Packet04RequestAllPlayers requestPacket = new Packet04RequestAllPlayers();
+						Engine.engine.getClient().send(requestPacket);
+
+						Player.localPlayer = pMP;
+					}
+					mobList.add(pMP); // add to mob list
+
+					players.add(pMP); // add to player list
+
+					// remove the scheduled event
+					scheduledPlayers.remove(i);
+					scheduledPlayersIDs.remove(i);
+
+				}
+		
+		
 		for (int x = 0; x < tileList.length; x++) {
 			for (int y = 0; y < tileList[x].length; y++) {
 				if (tileList[x][y] != null)
@@ -169,13 +198,7 @@ public class Level {
 			}
 		}
 
-		Point p;
-		//		for (Mob mob : mobList) {
-		//			if ((mob instanceof Player))
-		//				continue;
-		//			p = Globals.toTileIndices(mob.getLocation());
-		//			mapCostList[p.x][p.y] = 1;
-		//		}
+
 		for (Tile exit : exitTiles) {
 			if (Player.getLocalPlayer().getTileLocation().distance(exit.getTileLocation()) < 2) {
 				for (Mob m : Player.getLocalPlayer().getFollowers()) {
@@ -205,30 +228,7 @@ public class Level {
 
 		}
 
-		// Spawn scheduled players
-		for (int i = 0; i < scheduledPlayers.size(); i++) {
-
-			// create the player
-			Point2F spawnPoint = scheduledPlayers.get(i);
-			PlayerMP pMP = new PlayerMP(spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, this, scheduledPlayersIDs.get(i));
-
-			if (Player.localPlayerID == -1) {
-				Player.localPlayerID = scheduledPlayersIDs.get(i);
-
-				Packet04RequestAllPlayers requestPacket = new Packet04RequestAllPlayers();
-				Engine.engine.getClient().send(requestPacket);
-
-				Player.localPlayer = pMP;
-			}
-			mobList.add(pMP); // add to mob list
-
-			players.add(pMP); // add to player list
-
-			// remove the scheduled event
-			scheduledPlayers.remove(i);
-			scheduledPlayersIDs.remove(i);
-
-		}
+		
 		Camera.getDefault().moveTo(Globals.toIsoCoord(Player.getLocalPlayer().getX(), Player.getLocalPlayer().getY()));
 	}
 
