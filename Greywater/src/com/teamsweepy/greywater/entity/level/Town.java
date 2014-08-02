@@ -70,7 +70,7 @@ public class Town extends Level {
 		mainCamera = Camera.getDefault();
 		mapCostList = new int[tileList.length][tileList[0].length];
 		setUpMapCosts();
-		
+
 		interactiveList.addAll(mobList);
 		exitTiles.add(tileList[0][0]);
 		currentLevel = this;
@@ -125,7 +125,7 @@ public class Town extends Level {
 				}
 			}
 		}
-		
+
 		for (Tile exit : exitTiles) {
 			if (Player.getLocalPlayer().getTileLocation().distance(exit.getTileLocation()) < 2) {
 				for (Mob m : Player.getLocalPlayer().getFollowers()) {
@@ -140,7 +140,7 @@ public class Town extends Level {
 			}
 		}
 
-        Point2I p;
+		Point2I p;
 		for (Mob mob : mobList) {
 			if ((mob instanceof Player))
 				continue;
@@ -177,7 +177,7 @@ public class Town extends Level {
 	public boolean checkLevelCollision(Shape collisionVolume) {
 		if (collisionVolume == null)
 			return false;
-        Point2I area = Globals.toTileIndices(collisionVolume.getBounds().x, collisionVolume.getBounds().y);
+		Point2I area = Globals.toTileIndices(collisionVolume.getBounds().x, collisionVolume.getBounds().y);
 
 		// only check tiles near the shape, not the whole map
 		int areaX = Math.round(area.x);
@@ -228,11 +228,13 @@ public class Town extends Level {
 
 	/** Finds if an entity's sprite is clicked by a given screen location. Will not return the same entity who is searching */
 	public Entity getClickedEntity(Point2F clickLocation, Entity clicker) {
-		for (Entity e : interactiveList) {
-			if (e.equals(clicker))
-				continue;
-			if (e.checkClickedInteraction(clickLocation))
-				return e;
+		if (clickLocation != null && clicker != null) {
+			for (Entity e : interactiveList) {
+				if (e.equals(clicker))
+					continue;
+				if (e.checkClickedInteraction(clickLocation))
+					return e;
+			}
 		}
 		return null;
 	}
@@ -278,8 +280,8 @@ public class Town extends Level {
 					wallList[x][y] = new Tile(region, x * 50, y * 50, 50, true);
 				else
 					wallList[x][y] = new Tile(region, x * 50, y * 50, 50);
-				
-				if (cell.getTile().getProperties() != null && cell.getTile().getProperties().containsKey("GATE")){
+
+				if (cell.getTile().getProperties() != null && cell.getTile().getProperties().containsKey("GATE")) {
 					this.exitTiles.add(wallList[x][y]);
 				}
 			}
@@ -287,10 +289,10 @@ public class Town extends Level {
 
 
 		MapLayer objLayer = (MapLayer) map.getLayers().get("Object Layer 1");
-		for(MapObject mo : objLayer.getObjects()){
-			if(mo.getProperties().containsKey("Tinkerer")){
-				float xLoc = Float.parseFloat(mo.getProperties().get("x").toString())/56;
-				float yLoc = Float.parseFloat(mo.getProperties().get("y").toString())/56;
+		for (MapObject mo : objLayer.getObjects()) {
+			if (mo.getProperties().containsKey("Tinkerer")) {
+				float xLoc = Float.parseFloat(mo.getProperties().get("x").toString()) / 56;
+				float yLoc = Float.parseFloat(mo.getProperties().get("y").toString()) / 56;
 				mobList.add(new Tinkerer(xLoc, yLoc, this));
 			}
 		}

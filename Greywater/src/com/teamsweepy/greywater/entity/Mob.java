@@ -192,6 +192,7 @@ public abstract class Mob extends Entity implements AnimEventListener {
 
 	/** Used to find out if a clicked point intersected Mobs sprite bounding box */
 	protected boolean didPointHitImage(Point2F point) {
+		System.out.println(point);
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		return graphicsComponent.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate - graphicsComponent.getImageWidth() / 2,
 			p.y + mainCamera.yOffsetAggregate + Globals.tileImageHeight / 10).contains(point.x, point.y);

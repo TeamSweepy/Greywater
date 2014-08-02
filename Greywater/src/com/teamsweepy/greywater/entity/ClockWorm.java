@@ -14,9 +14,15 @@ import com.teamsweepy.greywater.utils.SoundManager;
 
 public class ClockWorm extends Mob {
 
+	//WORM STATES
+	private final int STATE_AGGRESSIVE = 0;
+	private final int STATE_FLEEING = 1;
+	private final int STATE_LYING_IN_WAIT = 2;
+	
 	boolean pop;
 	boolean recede;
 	float timeSinceAttack;
+	int state = 2;
 
 	public ClockWorm(Level level, Mob enemy) {
 		super("clockworm", 5, 5, 50, 50, 4, level, true);
@@ -27,16 +33,27 @@ public class ClockWorm extends Mob {
 
 	@Override
 	protected void getInput() {
-		if (focusTarget.getLocation().distance(getLocation()) < 2000) {
-			if (timeSinceAttack < 7.5 && !pop && !attacking && !recede) { //if it has been less than 7.5 seconds since attack, telegraph
-				System.out.println("pop");
+		if(state == STATE_AGGRESSIVE){
+			if(focusTarget.getLocation().distance(getLocation()) > 50){
+				sendInteract();
+			} else{
+				state = STATE_FLEEING;
+				timeSinceAttack = 0;
+			}
+		} else if(state == STATE_FLEEING) {
+			if(timeSinceAttack >= 6f){
+				state = STATE_LYING_IN_WAIT;
+			} else {
+				graphicsComponent.setImage(.6f, "Pop", Sprite.REVERSED);
+				recede = true;
+			}
+		} else {
+			if (focusTarget.getLocation().distance(getLocation()) < 2000 && !pop && !attacking && !recede) {
 				Point2F surpriseLoc = Globals.calculateRandomLocation(focusTarget.getLocation(), world, 6);
 				physicsComponent.setLocation(surpriseLoc.x, surpriseLoc.y);
 				pop = true;
 				graphicsComponent.setImage(.7f, "Pop", Sprite.FORWARD);
-				return;
-			} else if (timeSinceAttack >= 7.5) //otherwise, attack
-				sendInteract();
+			}
 		}
 	}
 
@@ -118,8 +135,8 @@ public class ClockWorm extends Mob {
 
 	/** Generic implementation for walk and attack sounds based on Animation Events */
 	public void handleEvent(AnimEvent e) {
-		System.out.println(e.action + " " + e.beginning + " " + e.ending);
-
+		
+		
 		if (e.action.contains("ATTACK") && e.ending) {
 			timeSinceAttack = 0f;
 			if (!missing)
