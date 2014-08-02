@@ -27,7 +27,7 @@ public class Player extends Mob {
 
 	private static Point2F mouseLocation;
 	private static boolean mouseClicked;
-	private static Player localPlayer;
+	public static Player localPlayer;
 	public static int localPlayerID = -1;
 
 	private ProgressBarCircular healthBar;
@@ -71,8 +71,6 @@ public class Player extends Mob {
 
 	@Override
 	public void tick(float deltaTime) {
-		System.out.println(getLocation());
-
 		super.tick(deltaTime);
 		Weapon equippedWeapon = null;
 		if (inventory != null)
@@ -115,9 +113,6 @@ public class Player extends Mob {
 					Engine.engine.getClient().client.sendTCP(movePacket);
 				}
 			}
-
-			//System.out.println("Player starts at " + startTile);
-			//System.out.println("Clicked to move to " + clickedTile);
 
 			pather.createPath(startTile, clickedTile);
 			Point newPoint = pather.getNextStep();

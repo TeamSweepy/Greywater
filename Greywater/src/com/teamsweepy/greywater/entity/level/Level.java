@@ -63,9 +63,6 @@ public class Level {
 	Level currentLevel;
 
 	Mob TestAIMob;
-	 
-
-
 
 	/** Used for depth sorting */
 	private Comparator<Entity> spriteSorter = new Comparator<Entity>() {
@@ -208,8 +205,10 @@ public class Level {
 
 		}
 
+		// Spawn scheduled players
 		for (int i = 0; i < scheduledPlayers.size(); i++) {
 
+			// create the player
 			Point2F spawnPoint = scheduledPlayers.get(i);
 			PlayerMP pMP = new PlayerMP(spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, this, scheduledPlayersIDs.get(i));
 
@@ -219,10 +218,13 @@ public class Level {
 				Packet04RequestAllPlayers requestPacket = new Packet04RequestAllPlayers();
 				Engine.engine.getClient().send(requestPacket);
 
-			} else {
-				mobList.add(pMP);
+				Player.localPlayer = pMP;
 			}
-			players.add(pMP);
+			mobList.add(pMP); // add to mob list
+
+			players.add(pMP); // add to player list
+
+			// remove the scheduled event
 			scheduledPlayers.remove(i);
 			scheduledPlayersIDs.remove(i);
 

@@ -49,7 +49,7 @@ public class GameScreen implements Screen {
 		
 		
 		Level town = new Town("data/map/Greywater.tmx");
-		town.addMobAtLoc(TestTavishMob, new Point(4, 9));
+		//town.addMobAtLoc(TestTavishMob, new Point(4, 9));
 		currentLevel = town;
 		Level dungeon = new Level("data/map/Dungeon.tmx");
 		currentLevel.setSwapLevel(dungeon);
