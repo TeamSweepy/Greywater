@@ -9,6 +9,7 @@
 
 package com.teamsweepy.greywater.ui;
 
+import com.badlogic.gdx.Input;
 import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Engine;
 import com.teamsweepy.greywater.entity.component.Sprite;
@@ -23,7 +24,7 @@ import com.teamsweepy.greywater.utils.SoundManager;
 public class MainMenuScreen extends EngineScreen {
 	private GUIComponent mainMenu;
 
-	public MainMenuScreen(Engine eng) {
+	public MainMenuScreen(final Engine eng) {
         super(eng);
 
         SoundManager.playMusic("Escadre.wav");
@@ -35,7 +36,7 @@ public class MainMenuScreen extends EngineScreen {
 
 			@Override
 			protected void clicked(boolean rightClick) {
-				Engine.inGame = true;
+				eng.pause(false);
 			}
 		};
 
@@ -65,6 +66,11 @@ public class MainMenuScreen extends EngineScreen {
     @Override
 	public void tick(float delta) {
 		GUI.tick(delta);
+
+//        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+//            Engine.inGame ^= true;
+//
+//        }
 	}
 
     @Override

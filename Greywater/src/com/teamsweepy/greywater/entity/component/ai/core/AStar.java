@@ -13,6 +13,8 @@ import java.util.PriorityQueue;
 
 
 public class AStar {
+    private static final int MAX_ITERATIONS = 2000;
+
 	private static float g(int x, int y) {
 		int posX = Math.abs(x);
 		int posY = Math.abs(y);
@@ -120,7 +122,7 @@ public class AStar {
 			expand(mindists, paths, root, end, map);
 
 		
-			for (int iterations = 0; iterations < 500; iterations++) {
+			for (int iterations = 0; iterations < MAX_ITERATIONS; iterations++) {
 
 				AStarPath<Point2I> p = paths.poll();
 

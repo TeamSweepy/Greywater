@@ -11,8 +11,6 @@
 package com.teamsweepy.greywater.entity.component.ai;
 
 import com.teamsweepy.greywater.entity.component.ai.core.AStar;
-import com.teamsweepy.greywater.entity.component.ai.core.Pathfinder;
-import com.teamsweepy.greywater.entity.component.ai.core.PotentialField;
 import com.teamsweepy.greywater.entity.level.Level;
 import com.teamsweepy.greywater.math.Point2I;
 
@@ -20,7 +18,6 @@ import java.util.LinkedList;
 
 public class PathfinderMotor {
 
-	private Pathfinder pathfinder;
 	private Method currentMethod;
 
 	// A* specific
@@ -45,8 +42,6 @@ public class PathfinderMotor {
 	}
 
 	public void reset() {
-		if (pathfinder != null)
-			pathfinder.reset();
 		if (aStarMap != null)
 			aStarMap.clear();
 		pathIndex = 0;
@@ -64,12 +59,6 @@ public class PathfinderMotor {
 
 		pathIndex = 0;
 
-		if (from.equals(end)) { //if clicked self, ignore
-			aStarMap = new LinkedList<Point2I>();
-			aStarMap.add(from);
-			return;
-		}
-
 		if (currentMethod == Method.ASTAR) {
             aStarMap = AStar.create(from, end, level.getMapAsCosts());
 
@@ -80,9 +69,22 @@ public class PathfinderMotor {
 					level.getMapAsCosts()[p.x][p.y] = 1;
 				}
 		} else if (currentMethod == Method.POTENTIAL_FIELD) {
-			pfMap = (double[][]) pathfinder.create();
+//			pfMap = (double[][]) pathfinder.create();
 		}
 	}
+
+    public boolean finished() {
+        if (currentMethod == Method.ASTAR) {
+            if(aStarMap != null) {
+                return (pathIndex >= aStarMap.size() - 1);
+            } else {
+                return true;
+            }
+        }
+
+        // TODO: implement this for the PF
+        return false;
+    }
 
 	public Point2I getNextStep() {
 		if (currentMethod == Method.ASTAR) {
@@ -103,7 +105,6 @@ public class PathfinderMotor {
 	public Point2I getFinalStep() {
 		if (currentMethod == Method.ASTAR) {
 			if (aStarMap != null && aStarMap.size() > 0) {
-
 				return aStarMap.get(aStarMap.size() - 1);
 			}
 		}

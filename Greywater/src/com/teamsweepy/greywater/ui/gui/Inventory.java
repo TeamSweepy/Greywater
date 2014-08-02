@@ -36,6 +36,9 @@ public class Inventory extends GUIComponent {
 
 	protected Mob owner;
 
+    // TEMP, the function isVisible always returns 0 for me
+    private boolean tempVisible;
+
 	public Inventory(Mob owner) {
 		super(1000, 250, 437, 608);
 		this.owner = owner;
@@ -56,10 +59,10 @@ public class Inventory extends GUIComponent {
 	}
 
 	public Inventory(int x, int y, int w, int h) {
-		super(x, y, w, y);
+		super(x, y, w, h);
 	}
 
-	@Override
+    @Override
 	/** Create all the comopnents of the inventory, such as background and itemslots */
 	protected void initSubComponents() {
 		//subComponents.add(new Plane(pos.x, pos.y, size.x, size.y));

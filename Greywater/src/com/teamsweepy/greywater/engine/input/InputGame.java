@@ -46,7 +46,14 @@ public class InputGame extends InputHandler {
 		return true;
 	}
 
-	@Override
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        mousePosition = Camera.getDefault().unproject(new Point2F(screenX, screenY));
+        Player.handleInput(mousePosition, false, MOUSE_DRAGGED);
+        return true;
+    }
+
+    @Override
 	public boolean keyUp(int keycode) {
 		// TODO Implement the keys
 		return true;

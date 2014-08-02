@@ -8,6 +8,7 @@
 
 package com.teamsweepy.greywater.ui;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Camera;
@@ -115,6 +116,13 @@ public class GameScreen extends EngineScreen {
 		currentLevel = currentLevel.getCurrentLevel();
 		currentLevel.tick(delta);
 		GUI.tick(delta);
+
+        // Check if the ESC key is pressed
+//        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+//            Engine.inGame ^= true;
+//        }
+
+
 	}
 
 	@Override
@@ -157,4 +165,13 @@ public class GameScreen extends EngineScreen {
 	@Override
 	public void dispose() {}
 
+
+    // TODO: Check for more GUI components
+    public void closeGUI() {
+        Player.getLocalPlayer().getInventory().setVisible(false);
+    }
+
+    public boolean canClose() {
+        return !Player.getLocalPlayer().getInventory().isVisible();
+    }
 }
