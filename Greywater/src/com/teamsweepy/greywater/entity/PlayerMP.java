@@ -9,8 +9,8 @@ public class PlayerMP extends Player {
 
 	public final int ID;
 
-	public PlayerMP(String name, float x, float y, int width, int height, float speed, Level level, int ID) {
-		super(name, x, y, 35, 35, 1.75f, level, true);
+	public PlayerMP(float x, float y, int width, int height, float speed, Level level, int ID) {
+		super(x, y, 35, 35, 1.75f, level, true);
 		this.ID = ID;
 		currentDirection = "South";
 		this.walkCycleDuration = .5f;

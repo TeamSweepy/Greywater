@@ -52,7 +52,7 @@ public abstract class Entity {
 	protected Hitbox physicsComponent; // hitbox
 	protected Sprite graphicsComponent; // sprite
 	protected Camera mainCamera;
-	
+
 	protected List<Spell> afflictingSpells;
 
 	public Entity() {
@@ -64,10 +64,10 @@ public abstract class Entity {
 	public void tick(float deltaTime) {
 		physicsComponent.tick(deltaTime); // update components
 		graphicsComponent.tick(deltaTime);
-		for(int i = 0; i < afflictingSpells.size(); i++){
+		for (int i = 0; i < afflictingSpells.size(); i++) {
 			Spell affliction = afflictingSpells.get(i);
 			affliction.tick(deltaTime);
-			if(!affliction.isActive()){
+			if (!affliction.isActive()) {
 				afflictingSpells.remove(i);
 				i--;
 			}
@@ -76,15 +76,15 @@ public abstract class Entity {
 
 	/** Draws the current sprite for this entity. */
 	public void render(SpriteBatch g) {
-		for(int i = 0; i < afflictingSpells.size(); i++){
+		for (int i = 0; i < afflictingSpells.size(); i++) {
 			afflictingSpells.get(i).render(g);
-			
+
 		}
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		graphicsComponent.render(g, p.x, p.y);
 	}
-	
-	public void addSpell(Spell s){
+
+	public void addSpell(Spell s) {
 		afflictingSpells.add(s);
 	}
 
@@ -123,8 +123,20 @@ public abstract class Entity {
 		return new Point2F(getX(), getY());
 	}
 
+	/** Returns location in tile coordinates */
 	public Point getTileLocation() {
 		return Globals.toTileIndices(getLocation());
+	}
+
+	/** Sets location in objective coordinates */
+	public void setLocation(Point2F location) {
+		physicsComponent.setLocation(location.x, location.y);
+	}
+
+	/** Sets location in tile coordinates */
+	public void setTileLocation(Point2F location) {
+		location = Globals.toNormalCoordFromTileIndices(location);
+		physicsComponent.setLocation(location.x, location.y);
 	}
 
 	/** Used for hitbox interaction, meant to indicate if two entities collide in objective coordinate space */

@@ -211,7 +211,7 @@ public class Level {
 		for (int i = 0; i < scheduledPlayers.size(); i++) {
 
 			Point2F spawnPoint = scheduledPlayers.get(i);
-			PlayerMP pMP = new PlayerMP("Tavish", spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, this, scheduledPlayersIDs.get(i));
+			PlayerMP pMP = new PlayerMP(spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, this, scheduledPlayersIDs.get(i));
 
 			if (Player.localPlayerID == -1) {
 				Player.localPlayerID = scheduledPlayersIDs.get(i);

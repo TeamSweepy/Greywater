@@ -48,7 +48,7 @@ public class Player extends Mob {
 	 */
 	public static Player initLocalPlayer(float x, float y, Level level) {
 		if (localPlayer == null)
-			localPlayer = new Player("Tavish", x, y, 35, 35, 1.75f, level, true);
+			localPlayer = new Player(x, y, 35, 35, 1.75f, level, true);
 		return localPlayer;
 	}
 
@@ -58,8 +58,8 @@ public class Player extends Mob {
 	 * @param x - Tile X Position, not objective position
 	 * @param y - Tile Y Position, not objective position
 	 */
-	protected Player(String name, float x, float y, int width, int height, float speed, Level level, boolean isAStar) {
-		super(name, x, y, width, height, speed, level, true);
+	protected Player(float x, float y, int width, int height, float speed, Level level, boolean isAStar) {
+		super("Tavish", x, y, width, height, speed, level, true);
 		currentDirection = "South";
 		this.walkCycleDuration = .5f;
 		killList = new ArrayList<Entity>();
@@ -71,6 +71,8 @@ public class Player extends Mob {
 
 	@Override
 	public void tick(float deltaTime) {
+		System.out.println(getLocation());
+
 		super.tick(deltaTime);
 		Weapon equippedWeapon = null;
 		if (inventory != null)
@@ -88,9 +90,6 @@ public class Player extends Mob {
 			healthBar.setValue(HP);
 			manaBar.setValue(inventory.getCharge());
 		}
-
-
-		//System.out.println(physicsComponent.getHitBox().x + " " + physicsComponent.getHitBox().y);
 	}
 
 	@Override

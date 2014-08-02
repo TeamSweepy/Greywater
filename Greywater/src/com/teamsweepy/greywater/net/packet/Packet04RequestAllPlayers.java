@@ -26,7 +26,6 @@ public class Packet04RequestAllPlayers extends Packet {
 				packet.init(p.ID, Point2F.convertPoint(p1.getTileLocation()));
 			} else
 				packet.init(p.ID, Point2F.convertPoint(p.getTileLocation()));
-			System.out.println("SPAWNING SOMEONE AT :" + Point2F.convertPoint(p.getTileLocation()));
 			System.out.println("[SERVER] Sending client " + con.getID() + " a player already on with ID " + p.ID);
 			con.sendTCP(packet);
 		}
