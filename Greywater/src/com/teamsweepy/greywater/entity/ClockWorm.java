@@ -45,7 +45,6 @@ public class ClockWorm extends Mob {
 				graphicsComponent.setImage(1f, "ATTACK_" + currentDirection, Sprite.STILL_IMAGE);
 			}
 		} else if (state == STATE_LYING_IN_WAIT && focusTarget.getLocation().distance(getLocation()) < 2000 && actionTimer > 8f && !pop) {
-			System.out.println("TELEPORT");
 			Point2F surpriseLoc = Globals.calculateRandomLocation(focusTarget.getLocation(), world, 6);
 			physicsComponent.setLocation(surpriseLoc.x, surpriseLoc.y);
 			graphicsComponent.setImage(.8f, "Pop", Sprite.FORWARD);
@@ -142,7 +141,6 @@ public class ClockWorm extends Mob {
 				graphicsComponent.changeSeriesPosition(3, Sprite.STILL_IMAGE);
 			}
 		} else if (e.action.contains("POP") && e.ending && pop) {
-			System.out.println("ENDING");
 			if (state == STATE_LYING_IN_WAIT) {
 				state = STATE_AGGRESSIVE;
 				graphicsComponent.setImage(1f, "ATTACK_" + currentDirection, Sprite.STILL_IMAGE);
@@ -157,11 +155,9 @@ public class ClockWorm extends Mob {
 
 	/** Finds if given point is within current image's bounding box, meant for Ziga to override for items */
 	protected boolean didPointHitImage(Point2F point) {
-		System.out.println("well did it?");
 		if (state == STATE_LYING_IN_WAIT)
 			return false;
 		Point2F p = Globals.toIsoCoord(getX(), getY());
-		System.out.println(graphicsComponent.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate, p.y + mainCamera.yOffsetAggregate).contains(point.x, point.y));
 		return graphicsComponent.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate, p.y + mainCamera.yOffsetAggregate).contains(point.x, point.y);
 	}
 }
