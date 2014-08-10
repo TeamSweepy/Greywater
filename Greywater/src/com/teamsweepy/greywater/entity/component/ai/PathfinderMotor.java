@@ -53,10 +53,6 @@ public class PathfinderMotor {
         if(from.equals(end)) { // No need to find the same path twice
             return;
         }
-        if(currentMethod == Method.ASTAR) {
-
-        }
-
 		pathIndex = 0;
 
 		if (currentMethod == Method.ASTAR) {

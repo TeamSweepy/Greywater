@@ -11,21 +11,19 @@ import com.teamsweepy.greywater.ui.gui.AIInventory;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamsweepy.greywater.utils.SoundManager;
 
-
 public class ClockWorm extends Mob {
 
 	//WORM STATES
 	private final int STATE_AGGRESSIVE = 0;
 	private final int STATE_FLEEING = 1;
 	private final int STATE_LYING_IN_WAIT = 2;
-	
+
 	boolean pop;
-	boolean recede;
-	float timeSinceAttack;
-	int state = 2;
+	float actionTimer;
+	int state = STATE_LYING_IN_WAIT;
 
 	public ClockWorm(Level level, Mob enemy) {
-		super("clockworm", 5, 5, 50, 50, 4, level, true);
+		super("clockworm", 8, 8, 50, 50, 4, level, true);
 		focusTarget = enemy;
 		graphicsComponent.setImage(1f, "attack_south", Sprite.STILL_IMAGE);
 		inventory = new AIInventory(this);
@@ -33,28 +31,27 @@ public class ClockWorm extends Mob {
 
 	@Override
 	protected void getInput() {
-		if(state == STATE_AGGRESSIVE){
-			if(focusTarget.getLocation().distance(getLocation()) > 50){
-				sendInteract();
-			} else{
-				state = STATE_FLEEING;
-				timeSinceAttack = 0;
+		if(actionTimer > 15f && state != STATE_FLEEING){
+			actionTimer = 0f;
+			pop = true; 
+			state = STATE_FLEEING;
+			graphicsComponent.setImage(.42f, "Pop", Sprite.REVERSED);
+		}
+		
+		if (state == STATE_AGGRESSIVE) {
+			if (focusTarget.getLocation().distance(getLocation()) < 200 && actionTimer > .6f) {
+				actionTimer = 0f;
+			}else if (!pop || actionTimer > 1f){
+				graphicsComponent.setImage(1f, "ATTACK_" + currentDirection, Sprite.STILL_IMAGE);
 			}
-		} else if(state == STATE_FLEEING) {
-			if(timeSinceAttack >= 6f){
-				state = STATE_LYING_IN_WAIT;
-			} else {
-				graphicsComponent.setImage(.6f, "Pop", Sprite.REVERSED);
-				recede = true;
-			}
-		} else {
-			if (focusTarget.getLocation().distance(getLocation()) < 2000 && !pop && !attacking && !recede) {
-
-				Point2F surpriseLoc = Globals.calculateRandomLocation(focusTarget.getLocation(), world, 6);
-				physicsComponent.setLocation(surpriseLoc.x, surpriseLoc.y);
-				pop = true;
-				graphicsComponent.setImage(.7f, "Pop", Sprite.FORWARD);
-			}
+		} else if (state == STATE_LYING_IN_WAIT && focusTarget.getLocation().distance(getLocation()) < 2000 && actionTimer > 8f && !pop) {
+			System.out.println("TELEPORT");
+			Point2F surpriseLoc = Globals.calculateRandomLocation(focusTarget.getLocation(), world, 6);
+			physicsComponent.setLocation(surpriseLoc.x, surpriseLoc.y);
+			graphicsComponent.setImage(.8f, "Pop", Sprite.FORWARD);
+			pop = true;
+		} else if (state == STATE_FLEEING && actionTimer > 2f) {
+			state = STATE_LYING_IN_WAIT;
 		}
 	}
 
@@ -63,14 +60,15 @@ public class ClockWorm extends Mob {
 		for (int i = 0; i < afflictingSpells.size(); i++) {
 			afflictingSpells.get(i).render(g);
 		}
-		if (!pop && !attacking && !recede)
+		if (state == STATE_LYING_IN_WAIT && !pop)//don't render while underground
 			return;
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		graphicsComponent.render(g, p.x - graphicsComponent.getImageWidth() / 2, p.y + Globals.tileImageHeight / 10);
 	}
 
 	public void tick(float deltaTime) {
-		timeSinceAttack += deltaTime;
+		this.currentDirection = Globals.getDirectionString((Mob) this.focusTarget, this);
+		actionTimer += deltaTime;
 		graphicsComponent.tick(deltaTime);
 
 		for (int i = 0; i < afflictingSpells.size(); i++) {
@@ -87,16 +85,12 @@ public class ClockWorm extends Mob {
 			attacking = false;
 		} else { //if alive
 			getInput();
-			if (attacking && !pop)
-				graphicsComponent.setImage(.4f, "Attack_" + currentDirection, Sprite.FORWARD); // TODO if multiple attacks clicked, pingpong
 		}
 	}
 
 	@Override
 	public boolean sendInteract() {
-		if (((Mob) focusTarget).isAlive() && !attacking && !pop && !recede) { //start attack by appearing near target
-			Point2F surpriseLoc = Globals.calculateRandomLocation(focusTarget.getLocation(), world, 1);
-			physicsComponent.setLocation(surpriseLoc.x, surpriseLoc.y);
+		if (((Mob) focusTarget).isAlive() && !attacking && !pop) { //start attack by appearing near target
 			attack((Mob) focusTarget);
 			return true;
 		}
@@ -104,14 +98,13 @@ public class ClockWorm extends Mob {
 	}
 
 	@Override
-	public void receiveInteract(Mob interlocutor) {}
+	public void receiveInteract(Mob interlocutor) {
+	}
 
 	@Override
 	protected void attack(Mob enemy) {
-		this.currentDirection = Globals.getDirectionString(enemy, this);
-		pop = true;
 		attacking = true;
-		graphicsComponent.setImage(.4f, "Pop", Sprite.FORWARD);
+		graphicsComponent.setImage(.4f, "ATTACK_" + currentDirection, Sprite.FORWARD);
 		SoundManager.playSound("worm_roar.wav");
 		int chanceToHit = Globals.D(20) + 4; //20 sided dice, bitch
 		missing = !(chanceToHit > ((Mob) focusTarget).getReflex());
@@ -126,8 +119,9 @@ public class ClockWorm extends Mob {
 	/** Reduce or increase this mob's health by the given amount (+ for damage, - for buffs/healing) */
 	public void changeHP(float damage) {
 		HP -= damage;
+		state = STATE_FLEEING;
+		graphicsComponent.setImage(.42f, "Pop", Sprite.REVERSED);
 		if (HP <= 0) {
-			graphicsComponent.setImage(.42f, "Pop", Sprite.REVERSED);
 			if (inventory != null)
 				inventory.dumpSlots();
 			world.removeFromInteractiveList(this);
@@ -137,30 +131,37 @@ public class ClockWorm extends Mob {
 	/** Generic implementation for walk and attack sounds based on Animation Events */
 	public void handleEvent(AnimEvent e) {
 		if (e.action.contains("ATTACK") && e.ending) {
-			timeSinceAttack = 0f;
-			if (!missing)
-				executeAttack();
-			recede = true;
-			attacking = false;
-			graphicsComponent.setImage(.6f, "POP", Sprite.REVERSED);
+			if (attacking) {
+				actionTimer = 0f;
+				if (!missing)
+					executeAttack();
+				attacking = false;
+				graphicsComponent.setImage(.6f, "ATTACK_" + currentDirection, Sprite.REVERSED);
+			} else {
+				graphicsComponent.setImage(1f, "ATTACK_" + currentDirection, Sprite.STILL_IMAGE);
+				graphicsComponent.changeSeriesPosition(3, Sprite.STILL_IMAGE);
+			}
 		} else if (e.action.contains("POP") && e.ending && pop) {
-			if (!attacking){
-				graphicsComponent.setImage(.6f, "POP", Sprite.REVERSED);
-				recede = true;
+			System.out.println("ENDING");
+			if (state == STATE_LYING_IN_WAIT) {
+				state = STATE_AGGRESSIVE;
+				graphicsComponent.setImage(1f, "ATTACK_" + currentDirection, Sprite.STILL_IMAGE);
+				graphicsComponent.changeSeriesPosition(3, Sprite.STILL_IMAGE);
+			} else {
+				state = STATE_FLEEING;
 			}
 			pop = false;
-		} else if (e.action.contains("POP") && e.ending && recede && !pop) {
-			pop = false;
-			recede = false;
-			graphicsComponent.stopAnimating();
+			attacking = false;
 		}
 	}
 
 	/** Finds if given point is within current image's bounding box, meant for Ziga to override for items */
 	protected boolean didPointHitImage(Point2F point) {
-		if (!attacking && !pop && !recede)
+		System.out.println("well did it?");
+		if (state == STATE_LYING_IN_WAIT)
 			return false;
 		Point2F p = Globals.toIsoCoord(getX(), getY());
+		System.out.println(graphicsComponent.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate, p.y + mainCamera.yOffsetAggregate).contains(point.x, point.y));
 		return graphicsComponent.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate, p.y + mainCamera.yOffsetAggregate).contains(point.x, point.y);
 	}
 }
