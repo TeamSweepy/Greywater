@@ -15,6 +15,7 @@ import com.teamsweepy.greywater.entity.Mob;
 import com.teamsweepy.greywater.entity.Player;
 import com.teamsweepy.greywater.entity.component.Sprite;
 import com.teamsweepy.greywater.entity.level.Level;
+import com.teamsweepy.greywater.entity.level.LevelHandler;
 import com.teamsweepy.greywater.entity.level.Town;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.ui.gui.Cursor;
@@ -34,6 +35,7 @@ public class GameScreen implements Screen {
 
 	//testvar
 	Level currentLevel;
+	LevelHandler levelHandler;
 	HUD playerHUD;
 	Inventory playerInventory;
 	Cursor playerCursor;
@@ -44,16 +46,18 @@ public class GameScreen implements Screen {
 			// do nothing TODO remove later
 		}
 		fog = new Sprite("light", true);
-		Mob TestTavishMob = Player.initLocalPlayer(4f, 90f, null);
+		//Mob TestTavishMob = Player.initLocalPlayer(4f, 90f, null);
 		engine = eng;
-		
-		
-		Level town = new Town("data/map/Greywater.tmx");
+
+		// Initiate all the levels
+		levelHandler = new LevelHandler();
+
+		/*Level town = new Town("data/map/Greywater.tmx");
 		currentLevel = town;
 		Level dungeon = new Level("data/map/Dungeon.tmx");
 		currentLevel.setSwapLevel(dungeon);
-		dungeon.setSwapLevel(town);
-		
+		dungeon.setSwapLevel(town);*/
+
 		playerHUD = new HUD();
 		playerCursor = new Cursor();
 		GUI.addGUIComponent(playerHUD, GUI.TOP_LAYER);
@@ -72,11 +76,15 @@ public class GameScreen implements Screen {
 		engine.gameBatch.setProjectionMatrix(engine.gameBatch.getProjectionMatrix().translate(offsetPoint.x, offsetPoint.y, 0));
 
 		engine.gameBatch.begin();// start render
-		currentLevel.render(engine.gameBatch);
+		{// get the level the local player is on
+			if (Player.localPlayer != null)
+				if (Player.localPlayer.getLevel() != null)
+					Player.localPlayer.getLevel().render(engine.gameBatch);
+		}
 		engine.gameBatch.end();// end render
-		
+
 		engine.guiBatch.begin();
-		fog.render(engine.guiBatch, 0,0);
+		fog.render(engine.guiBatch, 0, 0);
 		GUI.render(engine.guiBatch);
 		engine.guiBatch.end();
 	}
@@ -84,8 +92,9 @@ public class GameScreen implements Screen {
 	public void tick(float delta) {
 		if (!ticking)
 			return;
-		currentLevel = currentLevel.getCurrentLevel();
-		currentLevel.tick(delta);
+		//currentLevel = currentLevel.getCurrentLevel();
+		//currentLevel.tick(delta);
+		levelHandler.tick(delta);
 		GUI.tick(delta);
 	}
 

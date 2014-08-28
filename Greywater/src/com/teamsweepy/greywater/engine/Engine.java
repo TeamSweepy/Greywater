@@ -108,7 +108,7 @@ public class Engine extends Game {
 	@Override
 	public void dispose() {
 		Packet01Disconnect packet = new Packet01Disconnect();
-		packet.init(Player.localPlayerID);
+		packet.init(Player.localPlayerID, Player.localPlayer.getLevel().getID());
 		client.send(packet);
 
 		gameBatch.dispose();

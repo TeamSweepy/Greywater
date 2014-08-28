@@ -1,14 +1,10 @@
 
 package com.teamsweepy.greywater.net.packet;
 
-import java.util.ArrayList;
-
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
-import com.teamsweepy.greywater.entity.Player;
-import com.teamsweepy.greywater.entity.PlayerMP;
-import com.teamsweepy.greywater.entity.level.Level;
+import com.teamsweepy.greywater.entity.level.LevelHandler;
 import com.teamsweepy.greywater.math.Point2F;
 
 
@@ -16,14 +12,16 @@ import com.teamsweepy.greywater.math.Point2F;
 public class Packet00Login extends Packet {
 
 	public int ID = -1;
+	public int levelID;
 
-	public void init(int ID) {
-		this.ID = ID;
+	public void init(int PlayerID, int levelID) {
+		this.ID = PlayerID;
+		this.levelID = levelID;
 	}
 
 	@Override
 	public void processServer(Server server, Connection con) {
-		ID = Level.level.getFreeID();
+		ID = LevelHandler.getLevel(levelID).getFreeID();
 		if (ID == -1) { // didn't work
 			System.out.println("A valid ID wasn't given");
 		}
@@ -31,8 +29,7 @@ public class Packet00Login extends Packet {
 
 	@Override
 	public void processClient(Client client) {
-
-		Level.level.schedulePlayer(new Point2F(4, 9), ID);
-
+		System.out.println("hekslgknsdkg,      " + levelID);
+		LevelHandler.getLevel(levelID).schedulePlayer(new Point2F(4, 9), ID);
 	}
 }

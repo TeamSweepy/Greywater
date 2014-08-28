@@ -36,12 +36,15 @@ public class Vagrant extends Mob {
 
 	@Override
 	protected void getInput() {
+		if (focusTarget == null)
+			return;
+
 		if (attacking || sendInteract())
 			return;
 
 		if (!physicsComponent.isMoving() && !jitter && !pather.hasPath() && !canSeeTarget()) {
 			pather.createPath(getTileLocation(), Globals.calculateRandomTileIndex(this.getTileLocation(), world, 20));
-			if(!pather.hasPath()){
+			if (!pather.hasPath()) {
 				pather.createPath(getTileLocation(), Globals.calculateRandomTileIndex(this.getTileLocation(), world, 10));
 			}
 			jitter = true;
@@ -76,11 +79,11 @@ public class Vagrant extends Mob {
 
 	@Override
 	protected void attack(Mob enemy) {
-		
+
 		if (enemy == null || attacking)
 			return;
-		
-		((Sound)AssetLoader.getAsset(Sound.class, "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1 ) + ".wav")).play();
+
+		((Sound) AssetLoader.getAsset(Sound.class, "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1) + ".wav")).play();
 
 		physicsComponent.stopMovement();
 		pather.reset();

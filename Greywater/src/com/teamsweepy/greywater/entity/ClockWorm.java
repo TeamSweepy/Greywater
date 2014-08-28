@@ -29,6 +29,9 @@ public class ClockWorm extends Mob {
 
 	@Override
 	protected void getInput() {
+		if (focusTarget == null)
+			return;
+		
 		if (timeSinceAttack < 7 || pop || recede || attacking)
 			return;
 
@@ -67,11 +70,11 @@ public class ClockWorm extends Mob {
 	public void tick(float deltaTime) {
 		timeSinceAttack += deltaTime;
 		graphicsComponent.tick(deltaTime);
-		
-		for(int i = 0; i < afflictingSpells.size(); i++){
+
+		for (int i = 0; i < afflictingSpells.size(); i++) {
 			Spell affliction = afflictingSpells.get(i);
 			affliction.tick(deltaTime);
-			if(!affliction.isActive()){
+			if (!affliction.isActive()) {
 				afflictingSpells.remove(i);
 				i--;
 			}
@@ -159,10 +162,10 @@ public class ClockWorm extends Mob {
 			System.out.println("ENDING");
 		}
 	}
-	
+
 	/** Finds if given point is within current image's bounding box, meant for Ziga to override for items */
 	protected boolean didPointHitImage(Point2F point) {
-		if(!attacking && !pop && !recede)
+		if (!attacking && !pop && !recede)
 			return false;
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		return graphicsComponent.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate, p.y + mainCamera.yOffsetAggregate).contains(point.x, point.y);

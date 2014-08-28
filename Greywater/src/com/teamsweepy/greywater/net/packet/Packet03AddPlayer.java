@@ -5,17 +5,19 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 import com.teamsweepy.greywater.entity.Player;
-import com.teamsweepy.greywater.entity.level.Level;
+import com.teamsweepy.greywater.entity.level.LevelHandler;
 import com.teamsweepy.greywater.math.Point2F;
 
 
 public class Packet03AddPlayer extends Packet {
 
 	public int ID = -1;
+	public int levelID;
 	public Point2F position;
 
-	public void init(int ID, Point2F position) {
+	public void init(int ID, Point2F position, int levelID) {
 		this.ID = ID;
+		this.levelID = levelID;
 		this.position = position;
 	}
 
@@ -25,7 +27,7 @@ public class Packet03AddPlayer extends Packet {
 	@Override
 	public void processClient(Client client) {
 		if (ID != Player.localPlayerID)
-			Level.level.schedulePlayer(position, ID);
+			LevelHandler.getLevel(levelID).schedulePlayer(position, ID);
 	}
 
 }

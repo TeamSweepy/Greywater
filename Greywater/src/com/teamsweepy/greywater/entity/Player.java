@@ -118,7 +118,7 @@ public class Player extends Mob {
 			{ // sending data to the server
 				if (this == localPlayer) {
 					Packet02SetPlayerPath movePacket = new Packet02SetPlayerPath();
-					movePacket.init(localPlayerID, Point2F.convertPoint(startTile), Point2F.convertPoint(clickedTile));
+					movePacket.init(localPlayerID, Point2F.convertPoint(startTile), Point2F.convertPoint(clickedTile), getLevel().getID());
 					Engine.engine.getClient().client.sendTCP(movePacket);
 				}
 			}

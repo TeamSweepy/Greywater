@@ -34,11 +34,14 @@ public class Watchman extends Mob {
 
 	@Override
 	protected void getInput() {
+		if (focusTarget == null)
+			return;
+
 		if (attacking || sendInteract())
 			return;
 
 		if (!physicsComponent.isMoving() && canSeeTarget() && Globals.rand.nextBoolean()) {
-			if(Globals.rand.nextBoolean() && Globals.rand.nextBoolean() && Globals.rand.nextBoolean() && Globals.rand.nextBoolean()){
+			if (Globals.rand.nextBoolean() && Globals.rand.nextBoolean() && Globals.rand.nextBoolean() && Globals.rand.nextBoolean()) {
 				pather.createPath(Globals.toTileIndices(getLocation()), ((Mob) focusTarget).getFinalDestination());
 			}
 			pather.createPath(Globals.toTileIndices(getLocation()), Globals.toTileIndices(focusTarget.getLocation()));
@@ -66,8 +69,8 @@ public class Watchman extends Mob {
 
 		if (enemy == null || attacking)
 			return;
-		
-		((Sound)AssetLoader.getAsset(Sound.class, "WATCHMAN_ATTACK_" + (Globals.rand.nextInt(3) + 1)+ ".wav")).play();
+
+		((Sound) AssetLoader.getAsset(Sound.class, "WATCHMAN_ATTACK_" + (Globals.rand.nextInt(3) + 1) + ".wav")).play();
 
 		physicsComponent.stopMovement();
 		pather.reset();
@@ -75,12 +78,14 @@ public class Watchman extends Mob {
 		attacking = true;
 
 		int chanceToHit = Globals.D(20); //20 sided dice, bitch
-		missing = !(chanceToHit > ((Mob)focusTarget).getArmor());
+		missing = !(chanceToHit > ((Mob) focusTarget).getArmor());
 
 	}
 
 	@Override
 	public boolean sendInteract() {
+		if (focusTarget == null)
+			return false;
 		// Point2D p = Globals.getIsoCoords(getX() + spriteXOff, getY() + spriteYOff);
 		if (focusTarget.getLocation().distance(getLocation()) < 60 && ((Mob) focusTarget).isAlive()) {
 			if (!attacking) {
@@ -97,7 +102,7 @@ public class Watchman extends Mob {
 	@Override
 	public void executeAttack() {
 		int damage = Globals.D(3);
-		((Mob)focusTarget).changeHP(damage);
+		((Mob) focusTarget).changeHP(damage);
 		missing = true;
 	}
 

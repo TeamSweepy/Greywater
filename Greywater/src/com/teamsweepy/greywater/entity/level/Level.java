@@ -43,7 +43,8 @@ import com.teamsweepy.greywater.ui.gui.HUD;
 
 public class Level {
 
-	public static Level level;
+	public static final int TOWN_ID = 0x00;
+	public static final int DUNGEON_ID = 0x01;
 
 	protected TiledMap map;
 	protected ArrayList<Entity> depthSortList;
@@ -155,35 +156,41 @@ public class Level {
 	public void tick(float deltaTime) {
 
 		// Spawn scheduled players
-				for (int i = 0; i < scheduledPlayers.size(); i++) {
+		for (int i = 0; i < scheduledPlayers.size(); i++) {
 
-					// create the player
-					Point2F spawnPoint = scheduledPlayers.get(i);
-					PlayerMP pMP = new PlayerMP(spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, this, scheduledPlayersIDs.get(i));
+			// create the player
+			Point2F spawnPoint = scheduledPlayers.get(i);
+			PlayerMP pMP = new PlayerMP(spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, this, scheduledPlayersIDs.get(i));
 
-					if (Player.localPlayerID == -1) {
-						// Adding a local player
-						Player.localPlayerID = scheduledPlayersIDs.get(i);
+			if (Player.localPlayerID == -1) {
+				// Adding a local player
+				Player.localPlayerID = scheduledPlayersIDs.get(i);
+				Player.localPlayer = pMP;
 
-						pMP.initInventory();
-						pMP.setBars(HUD.hpBar, HUD.manaBar);
+				pMP.initInventory();
+				pMP.setBars(HUD.hpBar, HUD.manaBar);
 
-						Packet04RequestAllPlayers requestPacket = new Packet04RequestAllPlayers();
-						Engine.engine.getClient().send(requestPacket);
+				Packet04RequestAllPlayers requestPacket = new Packet04RequestAllPlayers();
+				requestPacket.init(getID());
+				Engine.engine.getClient().send(requestPacket);
 
-						Player.localPlayer = pMP;
-					}
-					mobList.add(pMP); // add to mob list
+				Player.localPlayer = pMP;
+			}
+			mobList.add(pMP); // add to mob list
 
-					players.add(pMP); // add to player list
+			players.add(pMP); // add to player list
 
-					// remove the scheduled event
-					scheduledPlayers.remove(i);
-					scheduledPlayersIDs.remove(i);
+			// remove the scheduled event
+			scheduledPlayers.remove(i);
+			scheduledPlayersIDs.remove(i);
 
-				}
-		
-		
+		}
+
+		// Only go up to here if there is no local player
+		if (Player.localPlayer == null)
+			return;
+
+
 		for (int x = 0; x < tileList.length; x++) {
 			for (int y = 0; y < tileList[x].length; y++) {
 				if (tileList[x][y] != null)
@@ -228,7 +235,7 @@ public class Level {
 
 		}
 
-		
+
 		Camera.getDefault().moveTo(Globals.toIsoCoord(Player.getLocalPlayer().getX(), Player.getLocalPlayer().getY()));
 	}
 
@@ -444,6 +451,7 @@ public class Level {
 
 	public void addMobAtGate(Mob m) {
 		currentLevel = this;
+		m.setLevel(this);
 		Point2F loc = Globals.calculateRandomLocation(exitTiles.get(0).getLocation(), this, 4);
 		m.setLevel(this);
 		m.getPhysics().setLocation(loc.x, loc.y);
@@ -512,5 +520,13 @@ public class Level {
 	public void removePlayer(PlayerMP player) {
 		mobList.remove(player);
 		players.remove(player);
+	}
+
+	public int getID() {
+		if (this instanceof Town) {
+			return TOWN_ID;
+		} else {
+			return DUNGEON_ID;
+		}
 	}
 }
