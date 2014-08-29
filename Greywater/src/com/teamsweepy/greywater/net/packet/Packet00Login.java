@@ -4,6 +4,7 @@ package com.teamsweepy.greywater.net.packet;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
+import com.teamsweepy.greywater.entity.component.events.net.PlayerConnectEvent;
 import com.teamsweepy.greywater.entity.level.LevelHandler;
 import com.teamsweepy.greywater.math.Point2F;
 
@@ -29,7 +30,6 @@ public class Packet00Login extends Packet {
 
 	@Override
 	public void processClient(Client client) {
-		System.out.println("hekslgknsdkg,      " + levelID);
-		LevelHandler.getLevel(levelID).schedulePlayer(new Point2F(4, 9), ID);
+		LevelHandler.getLevel(levelID).fireEvent(new PlayerConnectEvent(levelID, ID, new Point2F(4, 9)));
 	}
 }

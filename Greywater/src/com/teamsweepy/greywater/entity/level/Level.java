@@ -35,6 +35,9 @@ import com.teamsweepy.greywater.entity.Sweepy;
 import com.teamsweepy.greywater.entity.Vagrant;
 import com.teamsweepy.greywater.entity.Watchman;
 import com.teamsweepy.greywater.entity.component.Entity;
+import com.teamsweepy.greywater.entity.component.events.net.NetEvent;
+import com.teamsweepy.greywater.entity.component.events.net.NetEventListener;
+import com.teamsweepy.greywater.entity.component.events.net.PlayerConnectEvent;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.net.packet.Packet04RequestAllPlayers;
@@ -55,9 +58,9 @@ public class Level {
 	protected ArrayList<Item> floorItemsList;
 	protected ArrayList<Entity> interactiveList;
 
-	protected volatile ArrayList<Point2F> scheduledPlayers = new ArrayList<Point2F>();
-	protected volatile ArrayList<Integer> scheduledPlayersIDs = new ArrayList<Integer>();
 	protected volatile ArrayList<PlayerMP> players = new ArrayList<PlayerMP>();
+
+	protected volatile ArrayList<NetEventListener> netListeners = new ArrayList<NetEventListener>();
 
 	Camera mainCamera;
 
@@ -83,27 +86,23 @@ public class Level {
 	public Level() {};
 
 	public Level(String mapPath) {
-
 		map = new TmxMapLoader().load(mapPath);
 		mobList = new ArrayList<Mob>();
 		floorItemsList = new ArrayList<Item>();
 		interactiveList = new ArrayList<Entity>();
 		depthSortList = new ArrayList<Entity>();
-		currentLevel = this;
-		mainCamera = Camera.getDefault();
 		exitTiles = new ArrayList<Tile>();
 		convertTiledMapToEntities();
+
+		mainCamera = Camera.getDefault();
 		mapCostList = new int[tileList.length][tileList[0].length];
 		setUpMapCosts();
 
+		currentLevel = this;
 
-
-		//		mobList.add(new Watchman(20, 70, this, TestTavishMob));
-
-		mobList.add(new Sweepy(30, 5, this));
-		mobList.add(new ClockWorm(this, Player.getLocalPlayer()));
 		interactiveList.addAll(mobList);
-		//Camera.getDefault().moveTo(Globals.toIsoCoord(Player.getLocalPlayer().getX(), Player.getLocalPlayer().getY()));
+
+		netListeners.add(new NetListener());
 
 	}
 
@@ -154,37 +153,6 @@ public class Level {
 
 	/** Tick logic of all components in the world - mobs, doodads, loot, etc */
 	public void tick(float deltaTime) {
-
-		// Spawn scheduled players
-		for (int i = 0; i < scheduledPlayers.size(); i++) {
-
-			// create the player
-			Point2F spawnPoint = scheduledPlayers.get(i);
-			PlayerMP pMP = new PlayerMP(spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, this, scheduledPlayersIDs.get(i));
-
-			if (Player.localPlayerID == -1) {
-				// Adding a local player
-				Player.localPlayerID = scheduledPlayersIDs.get(i);
-				Player.localPlayer = pMP;
-
-				pMP.initInventory();
-				pMP.setBars(HUD.hpBar, HUD.manaBar);
-
-				Packet04RequestAllPlayers requestPacket = new Packet04RequestAllPlayers();
-				requestPacket.init(getID());
-				Engine.engine.getClient().send(requestPacket);
-
-				Player.localPlayer = pMP;
-			}
-			mobList.add(pMP); // add to mob list
-
-			players.add(pMP); // add to player list
-
-			// remove the scheduled event
-			scheduledPlayers.remove(i);
-			scheduledPlayersIDs.remove(i);
-
-		}
 
 		// Only go up to here if there is no local player
 		if (Player.localPlayer == null)
@@ -467,11 +435,6 @@ public class Level {
 		mobList.add(m);
 	}
 
-	public synchronized void schedulePlayer(Point2F p, int ID) {
-		scheduledPlayers.add(p); // doesn't work
-		scheduledPlayersIDs.add(ID); // doesn't work
-	}
-
 	public Level getCurrentLevel() {
 		return currentLevel;
 	}
@@ -502,12 +465,6 @@ public class Level {
 					break;
 				}
 			}
-			for (Integer p : scheduledPlayersIDs) {
-				if (p == x) {
-					free = false;
-					break;
-				}
-			}
 		} while (!free);
 		System.out.println("[SERVER] Gave a client ID : " + x);
 		return x;
@@ -529,4 +486,48 @@ public class Level {
 			return DUNGEON_ID;
 		}
 	}
+
+	public void fireEvent(NetEvent event) {
+		System.out.println("player connect event");
+
+		for (NetEventListener listener : netListeners) {
+			listener.handleEvent(event);
+		}
+	}
+}
+
+
+class NetListener implements NetEventListener {
+
+	public void handleEvent(NetEvent event) {
+		if (event instanceof PlayerConnectEvent) {
+			PlayerConnectEvent connectEvent = (PlayerConnectEvent) event;
+			// Spawn scheduled players
+
+			Level level = LevelHandler.getLevel(connectEvent.levelID);
+
+			// create the player
+			Point2F spawnPoint = connectEvent.position;
+			PlayerMP pMP = new PlayerMP(spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, level, connectEvent.playerID);
+
+			if (Player.localPlayerID == -1) {
+				// Adding a local player
+				Player.localPlayerID = connectEvent.playerID;
+				Player.localPlayer = pMP;
+
+				pMP.initInventory();
+				pMP.setBars(HUD.hpBar, HUD.manaBar);
+
+				Packet04RequestAllPlayers requestPacket = new Packet04RequestAllPlayers();
+				requestPacket.init(connectEvent.levelID);
+				Engine.engine.getClient().send(requestPacket);
+
+				Player.localPlayer = pMP;
+			}
+			level.mobList.add(pMP); // add to mob list
+
+			level.players.add(pMP); // add to player list
+		}
+	}
+
 }

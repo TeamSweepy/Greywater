@@ -26,7 +26,7 @@ public class LevelHandler {
 	private void initAllLevels() {
 		Level town = new Town("data/map/Greywater.tmx");
 		allLevels.add(town);
-		Level dungeon = new Level("data/map/Dungeon.tmx");
+		Level dungeon = new Dungeon("data/map/Dungeon.tmx");
 		allLevels.add(dungeon);
 	}
 

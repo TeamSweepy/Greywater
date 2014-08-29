@@ -55,28 +55,11 @@ public class Town extends Level {
 	};
 
 	public Town(String mapPath) {
-		
-		map = new TmxMapLoader().load(mapPath);
-		while (AssetLoader.tick() < 1f) {
-			// do nothing TODO remove later
-		}
-		mobList = new ArrayList<Mob>();
-		entityList = new ArrayList<Entity>();
-		floorItemsList = new ArrayList<Item>();
-		interactiveList = new ArrayList<Entity>();
-		depthSortList = new ArrayList<Entity>();
-		exitTiles = new ArrayList<Tile>();
-		convertTiledMapToEntities();
-
-		mainCamera = Camera.getDefault();
-		mapCostList = new int[tileList.length][tileList[0].length];
-		setUpMapCosts();
-
-		interactiveList.addAll(mobList);
+		super(mapPath);
 		exitTiles.add(tileList[0][0]);
-		currentLevel = this;
 
 
+		entityList = new ArrayList<Entity>();
 	}
 
 
