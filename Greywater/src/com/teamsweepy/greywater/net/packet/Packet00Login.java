@@ -30,6 +30,6 @@ public class Packet00Login extends Packet {
 
 	@Override
 	public void processClient(Client client) {
-		LevelHandler.getLevel(levelID).fireEvent(new PlayerConnectEvent(levelID, ID, new Point2F(4, 9)));
+		LevelHandler.getLevel(levelID).addNetEvent(new PlayerConnectEvent(levelID, ID, new Point2F(4, 9)));
 	}
 }

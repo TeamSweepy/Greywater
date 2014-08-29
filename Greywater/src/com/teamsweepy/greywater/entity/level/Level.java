@@ -24,24 +24,20 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
-import com.teamsweepy.greywater.engine.Engine;
 import com.teamsweepy.greywater.engine.Camera;
+import com.teamsweepy.greywater.engine.Engine;
 import com.teamsweepy.greywater.engine.Globals;
-import com.teamsweepy.greywater.entity.ClockWorm;
 import com.teamsweepy.greywater.entity.Mob;
 import com.teamsweepy.greywater.entity.Player;
 import com.teamsweepy.greywater.entity.PlayerMP;
-import com.teamsweepy.greywater.entity.Sweepy;
 import com.teamsweepy.greywater.entity.Vagrant;
 import com.teamsweepy.greywater.entity.Watchman;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.component.events.net.NetEvent;
-import com.teamsweepy.greywater.entity.component.events.net.NetEventListener;
 import com.teamsweepy.greywater.entity.component.events.net.PlayerConnectEvent;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.net.packet.Packet04RequestAllPlayers;
-import com.teamsweepy.greywater.ui.gui.GUI;
 import com.teamsweepy.greywater.ui.gui.HUD;
 
 public class Level {
@@ -60,7 +56,7 @@ public class Level {
 
 	protected volatile ArrayList<PlayerMP> players = new ArrayList<PlayerMP>();
 
-	protected volatile ArrayList<NetEventListener> netListeners = new ArrayList<NetEventListener>();
+	protected volatile ArrayList<NetEvent> netEvents = new ArrayList<NetEvent>();
 
 	Camera mainCamera;
 
@@ -101,8 +97,6 @@ public class Level {
 		currentLevel = this;
 
 		interactiveList.addAll(mobList);
-
-		netListeners.add(new NetListener());
 
 	}
 
@@ -153,6 +147,11 @@ public class Level {
 
 	/** Tick logic of all components in the world - mobs, doodads, loot, etc */
 	public void tick(float deltaTime) {
+
+		for (int i = 0; i < netEvents.size();) {
+			handleEvent(netEvents.get(i));
+			netEvents.remove(netEvents.remove(0));
+		}
 
 		// Only go up to here if there is no local player
 		if (Player.localPlayer == null)
@@ -487,17 +486,9 @@ public class Level {
 		}
 	}
 
-	public void fireEvent(NetEvent event) {
-		System.out.println("player connect event");
-
-		for (NetEventListener listener : netListeners) {
-			listener.handleEvent(event);
-		}
+	public void addNetEvent(NetEvent event) {
+		netEvents.add(event);
 	}
-}
-
-
-class NetListener implements NetEventListener {
 
 	public void handleEvent(NetEvent event) {
 		if (event instanceof PlayerConnectEvent) {
@@ -529,5 +520,4 @@ class NetListener implements NetEventListener {
 			level.players.add(pMP); // add to player list
 		}
 	}
-
 }
