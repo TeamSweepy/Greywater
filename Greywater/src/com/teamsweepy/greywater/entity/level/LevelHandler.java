@@ -31,23 +31,36 @@ public class LevelHandler {
 	}
 
 	/**
-	 * Tick all the levels that contain players
+	 * Tick all the levels
 	 * @param delta, time passed betwwen this and the previous tick
 	 * */
 	public void tick(float delta) {
-		// While the local player is being added, only update the town TODO: FIX THIS- change it to a different level
-		if (Player.localPlayer == null) {
-			allLevels.get(Level.TOWN_ID).tick(delta);
-			return;
-		}
-
 		for (Level level : allLevels) {
-
-			if (level.players.size() > 0)
-				level.tick(delta);
+			level.tick(delta);
 		}
-
 	}
+	
+	public static int getFreePlayerID() {
+		int x = 0;
+		boolean free = true;
+		do {
+			x++;
+			free = true;
+			for (Level level : allLevels) {
+				for (Player p : level.players) {
+					if (p.ID == x) {
+						free = false;
+						break;
+					}
+				}
+			}
+
+
+		} while (!free);
+		System.out.println("[SERVER] Gave a client ID : " + x);
+		return x;
+	}
+
 
 	/**
 	 * Return a Level with the ID that was passed
@@ -55,6 +68,13 @@ public class LevelHandler {
 	 * */
 	public static Level getLevel(int ID) {
 		return allLevels.get(ID);
+	}
+
+	/**
+	 * Returns all levels
+	 * */
+	public static ArrayList<Level> getAllLevels() {
+		return allLevels;
 	}
 
 }

@@ -30,7 +30,8 @@ public class Player extends Mob {
 	private static Point2F mouseLocation;
 	private static boolean mouseClicked;
 	public static Player localPlayer;
-	public static int localPlayerID = -1;
+	public static int localPlayerID = -1; // only used at the start
+	public final int ID;
 
 	private ProgressBarCircular healthBar;
 	private ProgressBarCircular manaBar;
@@ -48,20 +49,10 @@ public class Player extends Mob {
 	 * @param x - Tile X Position, not objective position
 	 * @param y - Tile Y Position, not objective position
 	 */
-	public static Player initLocalPlayer(float x, float y, Level level) {
-		if (localPlayer == null)
-			localPlayer = new Player(x, y, 35, 35, 1.75f, level, true);
-		return localPlayer;
-	}
-
-	/**
-	 * Creates a new player standing in the center of the tile specified.
-	 * 
-	 * @param x - Tile X Position, not objective position
-	 * @param y - Tile Y Position, not objective position
-	 */
-	protected Player(float x, float y, int width, int height, float speed, Level level, boolean isAStar) {
+	protected Player(float x, float y, int width, int height, float speed, Level level, boolean isAStar, int ID) {
 		super("Tavish", x, y, width, height, speed, level, true);
+		this.ID = ID;
+
 		currentDirection = "South";
 		this.walkCycleDuration = .5f;
 		killList = new ArrayList<Entity>();
@@ -80,6 +71,7 @@ public class Player extends Mob {
 
 	@Override
 	public void tick(float deltaTime) {
+		//System.out.println(Player.localPlayer);
 		super.tick(deltaTime);
 		Weapon equippedWeapon = null;
 		if (inventory != null)
@@ -115,10 +107,14 @@ public class Player extends Mob {
 			Point2F objectiveClick = Globals.toNormalCoord(mouseLocation.x, mouseLocation.y);
 			Point clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
 
+			System.out.println("moving the player " + ID + " " + localPlayer.ID + " ");
+			System.out.println("local " + ID + " " + this);
+			System.out.println("this  " + localPlayer.ID + " " + localPlayer);
+
 			{ // sending data to the server
 				if (this == localPlayer) {
 					Packet02SetPlayerPath movePacket = new Packet02SetPlayerPath();
-					movePacket.init(localPlayerID, Point2F.convertPoint(startTile), Point2F.convertPoint(clickedTile), getLevel().getID());
+					movePacket.init(ID, Point2F.convertPoint(startTile), Point2F.convertPoint(clickedTile), getLevel().getID());
 					Engine.engine.getClient().client.sendTCP(movePacket);
 				}
 			}

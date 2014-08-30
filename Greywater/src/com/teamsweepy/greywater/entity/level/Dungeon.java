@@ -19,4 +19,10 @@ public class Dungeon extends Level {
 		interactiveList.add(sweepy);
 		interactiveList.add(clockWorm);
 	}
+
+	@Override
+	public void tick(float deltaTime) {
+		super.tick(deltaTime);
+	}
+
 }

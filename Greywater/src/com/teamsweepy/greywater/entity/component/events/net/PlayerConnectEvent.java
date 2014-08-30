@@ -3,7 +3,9 @@ package com.teamsweepy.greywater.entity.component.events.net;
 
 import com.teamsweepy.greywater.math.Point2F;
 
-
+/**
+ * Contains data for player connecting
+ * */
 public class PlayerConnectEvent extends NetEvent {
 
 	public int levelID;

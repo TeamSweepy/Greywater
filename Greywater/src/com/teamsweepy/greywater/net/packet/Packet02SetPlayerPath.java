@@ -31,7 +31,7 @@ public class Packet02SetPlayerPath extends Packet {
 
 	@Override
 	public void processClient(Client client) {
-		System.out.println("[CLIENT] Setting path to player " + ID + ", from " + start + " to " + end);
+		//System.out.println("[CLIENT] Setting path to player " + ID + ", from " + start + " to " + end);
 		Player player = LevelHandler.getLevel(levelID).getPlayerByID(ID);
 		if (player == null)
 			return;

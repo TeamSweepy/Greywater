@@ -14,6 +14,7 @@ import com.teamsweepy.greywater.net.packet.Packet01Disconnect;
 import com.teamsweepy.greywater.net.packet.Packet02SetPlayerPath;
 import com.teamsweepy.greywater.net.packet.Packet03AddPlayer;
 import com.teamsweepy.greywater.net.packet.Packet04RequestAllPlayers;
+import com.teamsweepy.greywater.net.packet.Packet05PlayerSwitchLevel;
 
 
 public class GameServer {
@@ -40,6 +41,7 @@ public class GameServer {
 		kryo.register(Packet02SetPlayerPath.class);
 		kryo.register(Packet03AddPlayer.class);
 		kryo.register(Packet04RequestAllPlayers.class);
+		kryo.register(Packet05PlayerSwitchLevel.class);
 	}
 
 	public void sendToAll(Object o) {

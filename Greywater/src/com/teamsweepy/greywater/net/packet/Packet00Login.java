@@ -22,7 +22,7 @@ public class Packet00Login extends Packet {
 
 	@Override
 	public void processServer(Server server, Connection con) {
-		ID = LevelHandler.getLevel(levelID).getFreeID();
+		ID = LevelHandler.getFreePlayerID();
 		if (ID == -1) { // didn't work
 			System.out.println("A valid ID wasn't given");
 		}
@@ -30,6 +30,6 @@ public class Packet00Login extends Packet {
 
 	@Override
 	public void processClient(Client client) {
-		LevelHandler.getLevel(levelID).addNetEvent(new PlayerConnectEvent(levelID, ID, new Point2F(4, 9)));
+		LevelHandler.getLevel(levelID).addNetEvent(new PlayerConnectEvent(levelID, ID, new Point2F(40, 53)));
 	}
 }

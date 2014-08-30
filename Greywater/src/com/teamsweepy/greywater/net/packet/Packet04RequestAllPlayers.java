@@ -25,10 +25,10 @@ public class Packet04RequestAllPlayers extends Packet {
 
 	@Override
 	public void processServer(Server server, Connection con) {
-		ArrayList<PlayerMP> players = LevelHandler.getLevel(levelID).getAllPlayers();
-		for (PlayerMP p : players) {
+		ArrayList<Player> players = LevelHandler.getLevel(levelID).getAllPlayers();
+		for (Player p : players) {
 			Packet03AddPlayer packet = new Packet03AddPlayer();
-			if (p.ID == Player.localPlayerID) {
+			if (p.ID == Player.localPlayer.ID) {
 				Player p1 = PlayerMP.getLocalPlayer();
 				packet.init(p.ID, Point2F.convertPoint(p1.getTileLocation()), p.getLevel().getID());
 			} else

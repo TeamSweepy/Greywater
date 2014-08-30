@@ -27,7 +27,7 @@ public class Packet03AddPlayer extends Packet {
 
 	@Override
 	public void processClient(Client client) {
-		if (ID != Player.localPlayerID)
+		if (ID != Player.localPlayer.ID)
 			LevelHandler.getLevel(levelID).addNetEvent(new PlayerConnectEvent(levelID, ID, position));
 	}
 

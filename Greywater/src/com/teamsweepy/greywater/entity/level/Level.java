@@ -35,15 +35,20 @@ import com.teamsweepy.greywater.entity.Watchman;
 import com.teamsweepy.greywater.entity.component.Entity;
 import com.teamsweepy.greywater.entity.component.events.net.NetEvent;
 import com.teamsweepy.greywater.entity.component.events.net.PlayerConnectEvent;
+import com.teamsweepy.greywater.entity.component.events.net.PlayerSwitchLevelEvent;
+import com.teamsweepy.greywater.entity.component.events.net.RequestPlayersEvent;
 import com.teamsweepy.greywater.entity.item.Item;
 import com.teamsweepy.greywater.math.Point2F;
 import com.teamsweepy.greywater.net.packet.Packet04RequestAllPlayers;
+import com.teamsweepy.greywater.net.packet.Packet05PlayerSwitchLevel;
 import com.teamsweepy.greywater.ui.gui.HUD;
 
 public class Level {
 
 	public static final int TOWN_ID = 0x00;
 	public static final int DUNGEON_ID = 0x01;
+
+	public static Player[] allPlayers = new Player[64];
 
 	protected TiledMap map;
 	protected ArrayList<Entity> depthSortList;
@@ -54,7 +59,7 @@ public class Level {
 	protected ArrayList<Item> floorItemsList;
 	protected ArrayList<Entity> interactiveList;
 
-	protected volatile ArrayList<PlayerMP> players = new ArrayList<PlayerMP>();
+	protected volatile ArrayList<Player> players = new ArrayList<Player>();
 
 	protected volatile ArrayList<NetEvent> netEvents = new ArrayList<NetEvent>();
 
@@ -147,17 +152,20 @@ public class Level {
 
 	/** Tick logic of all components in the world - mobs, doodads, loot, etc */
 	public void tick(float deltaTime) {
-
-		for (int i = 0; i < netEvents.size();) {
-			handleEvent(netEvents.get(i));
+		/*if (Player.localPlayer != null)
+			System.out.println(Player.localPlayer.ID);
+		*/
+		while (netEvents.size() >= 1) {
+			handleEvent(netEvents.get(0));
 			netEvents.remove(netEvents.remove(0));
 		}
 
 		// Only go up to here if there is no local player
-		if (Player.localPlayer == null)
+		// Only continue if there are any players connected
+		if (Player.localPlayer == null || players.size() == 0)
 			return;
 
-
+		// Tick the tiles
 		for (int x = 0; x < tileList.length; x++) {
 			for (int y = 0; y < tileList[x].length; y++) {
 				if (tileList[x][y] != null)
@@ -173,24 +181,34 @@ public class Level {
 		}
 
 
+		// Check for player level switching
+		// TODO: better level switching
 		for (Tile exit : exitTiles) {
 			if (Player.getLocalPlayer().getTileLocation().distance(exit.getTileLocation()) < 2) {
 				for (Mob m : Player.getLocalPlayer().getFollowers()) {
 					mobList.remove(m);
 					swapLevel.addMobAtGate(m);
 				}
+
+				Packet05PlayerSwitchLevel packet = new Packet05PlayerSwitchLevel();
+				packet.init(Player.getLocalPlayer().ID, getID(), getID() == TOWN_ID ? DUNGEON_ID : TOWN_ID);
+				System.out.println(Player.getLocalPlayer().ID);
+				Engine.engine.getClient().send(packet);
+
 				Player.getLocalPlayer().getPhysics().stopMovement();
-				mobList.remove(Player.getLocalPlayer());
-				swapLevel.addMobAtGate(Player.getLocalPlayer());
-				currentLevel = swapLevel;
+				//mobList.remove(Player.getLocalPlayer());
+				//swapLevel.addMobAtGate(Player.getLocalPlayer());
+				//currentLevel = swapLevel;
 				return;
 			}
 		}
 
+		// Tick mobs
 		for (Mob mob : mobList) {
 			mob.tick(deltaTime);
 		}
 
+		// Tick items
 		for (int i = 0; i < floorItemsList.size(); i++) {
 			Item it = floorItemsList.get(i);
 			it.tick(deltaTime);
@@ -202,7 +220,7 @@ public class Level {
 
 		}
 
-
+		// Update the camera's position
 		Camera.getDefault().moveTo(Globals.toIsoCoord(Player.getLocalPlayer().getX(), Player.getLocalPlayer().getY()));
 	}
 
@@ -417,10 +435,8 @@ public class Level {
 	}
 
 	public void addMobAtGate(Mob m) {
-		currentLevel = this;
-		m.setLevel(this);
+		//m.setLevel(this);
 		Point2F loc = Globals.calculateRandomLocation(exitTiles.get(0).getLocation(), this, 4);
-		m.setLevel(this);
 		m.getPhysics().setLocation(loc.x, loc.y);
 		m.getPhysics().stopMovement();
 		mobList.add(m);
@@ -442,8 +458,8 @@ public class Level {
 		swapLevel = swap;
 	}
 
-	public PlayerMP getPlayerByID(int ID) {
-		for (PlayerMP p : players) {
+	public Player getPlayerByID(int ID) {
+		for (Player p : players) {
 			if (ID == p.ID) {
 				return p;
 			}
@@ -452,28 +468,11 @@ public class Level {
 		return null;
 	}
 
-	public int getFreeID() {
-		int x = 0;
-		boolean free = true;
-		do {
-			x++;
-			free = true;
-			for (PlayerMP p : players) {
-				if (p.ID == x) {
-					free = false;
-					break;
-				}
-			}
-		} while (!free);
-		System.out.println("[SERVER] Gave a client ID : " + x);
-		return x;
-	}
-
-	public ArrayList<PlayerMP> getAllPlayers() {
+	public ArrayList<Player> getAllPlayers() {
 		return players;
 	}
 
-	public void removePlayer(PlayerMP player) {
+	public void removePlayer(Player player) {
 		mobList.remove(player);
 		players.remove(player);
 	}
@@ -493,15 +492,16 @@ public class Level {
 	public void handleEvent(NetEvent event) {
 		if (event instanceof PlayerConnectEvent) {
 			PlayerConnectEvent connectEvent = (PlayerConnectEvent) event;
-			// Spawn scheduled players
 
 			Level level = LevelHandler.getLevel(connectEvent.levelID);
 
 			// create the player
 			Point2F spawnPoint = connectEvent.position;
 			PlayerMP pMP = new PlayerMP(spawnPoint.x, spawnPoint.y, 35, 35, 1.75f, level, connectEvent.playerID);
+			allPlayers[connectEvent.playerID] = pMP;
 
 			if (Player.localPlayerID == -1) {
+				System.err.println("A new local player was created. Ignore the first message of this kind. " + connectEvent.playerID);
 				// Adding a local player
 				Player.localPlayerID = connectEvent.playerID;
 				Player.localPlayer = pMP;
@@ -509,15 +509,45 @@ public class Level {
 				pMP.initInventory();
 				pMP.setBars(HUD.hpBar, HUD.manaBar);
 
-				Packet04RequestAllPlayers requestPacket = new Packet04RequestAllPlayers();
-				requestPacket.init(connectEvent.levelID);
-				Engine.engine.getClient().send(requestPacket);
-
-				Player.localPlayer = pMP;
+				Player.localPlayer = allPlayers[connectEvent.playerID];
+				netEvents.add(new RequestPlayersEvent());
 			}
 			level.mobList.add(pMP); // add to mob list
-
 			level.players.add(pMP); // add to player list
+
+
+		} else if (event instanceof PlayerSwitchLevelEvent) {
+
+			PlayerSwitchLevelEvent switchEvent = (PlayerSwitchLevelEvent) event;
+
+			System.out.println("SWITCHING THE PLAYER WITH ID   " + switchEvent.playerID + " " + Player.localPlayer.ID);
+
+			Player local = Player.localPlayer;
+			Player player = allPlayers[switchEvent.playerID];
+			Level from = LevelHandler.getLevel(switchEvent.fromLevelID);
+			Level to = LevelHandler.getLevel(switchEvent.toLevelID);
+
+			if(local == player){
+				System.err.println("LOCAL EQUALS PLAYER BEFORE LEVLE SWITCH");
+			}
+			
+			player.setLevel(to);
+			from.players.remove(player);
+			from.mobList.remove(player);
+			to.players.add(player);
+			to.addMobAtGate(player);
+			
+			
+			if(local == player){
+				System.err.println("LOCAL EQUALS PLAYER AFTER LEVLE SWITCH");
+			}
+
+
+		} else if (event instanceof RequestPlayersEvent) {
+			Packet04RequestAllPlayers requestPacket = new Packet04RequestAllPlayers();
+			requestPacket.init(TOWN_ID);
+			Engine.engine.getClient().send(requestPacket);
+
 		}
 	}
 }
