@@ -150,6 +150,7 @@ public class ClockWorm extends Mob {
 			}
 			pop = false;
 			attacking = false;
+			
 		}
 	}
 

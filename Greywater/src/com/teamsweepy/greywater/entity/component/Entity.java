@@ -143,8 +143,6 @@ public abstract class Entity {
 		return graphicsComponent.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate, p.y + mainCamera.yOffsetAggregate).contains(point.x, point.y);
 	}
 
-
-
 	/** @return The approximate depth in Z space of the entity. Used for render sorting. */
 	public float getDepth() {
 		float x = physicsComponent.getHitBox().width * .5f + getX();

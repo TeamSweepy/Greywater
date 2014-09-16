@@ -144,7 +144,7 @@ public class Town extends Level {
 			if ((mob instanceof Player))
 				continue;
 			p = Globals.toTileIndices(mob.getLocation());
-			mapCostList[p.x][p.y] = 1;
+//			mapCostList[p.x][p.y] = 1;
 		}
 
 		for (Mob mob : mobList) {

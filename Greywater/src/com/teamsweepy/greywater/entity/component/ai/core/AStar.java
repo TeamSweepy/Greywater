@@ -36,28 +36,28 @@ public class AStar {
 		int x = node.x;
 		int y = node.y;
 		int mx, my;
-		if (y < map[0].length - 1 && map[x][y + 1] != 1)
+		if (y <= map[0].length - 1 && map[x][y + 1] != 1)
 			ret.add(new Point2I(x, y + 1)); // Up
-		if (y > 0 && map[x][y - 1] != 1)
+		if (y >= 0 && map[x][y - 1] != 1)
 			ret.add(new Point2I(x, y - 1)); // Down
-		if (x > 0 && map[x - 1][y] != 1)
+		if (x >= 0 && map[x - 1][y] != 1)
 			ret.add(new Point2I(x - 1, y)); // Left
-		if (x < map.length - 1 && map[x + 1][y] != 1)
+		if (x <= map.length - 1 && map[x + 1][y] != 1)
 			ret.add(new Point2I(x + 1, y)); // Right
 
-		if (x < map.length - 1 && y < map[0].length - 1 && map[x + 1][y + 1] != 1) {
+		if (x <= map.length - 1 && y <= map[0].length - 1 && map[x + 1][y + 1] != 1) {
 			mx = map[x + 1][y];
 			my = map[x][y + 1];
 			if ((mx | my) != 1 || (mx != 1 ^ my != 1))
 				ret.add(new Point2I(x + 1, y + 1)); // Up-Right
 		}
-		if (x < map.length - 1 && y > 0 && map[x + 1][y - 1] != 1) {
+		if (x <= map.length - 1 && y >= 0 && map[x + 1][y - 1] != 1) {
 			mx = map[x + 1][y];
 			my = map[x][y - 1];
 			if ((mx | my) != 1 || (mx != 1 ^ my != 1))
 				ret.add(new Point2I(x + 1, y - 1)); // Down-Right
 		}
-		if (x > 0 && y < map[0].length - 1 && map[x - 1][y + 1] != 1) {
+		if (x >= 0 && y <= map[0].length - 1 && map[x - 1][y + 1] != 1) {
 			mx = map[x - 1][y];
 			my = map[x][y + 1];
 			if ((mx | my) != 1 || (mx != 1 ^ my != 1))
