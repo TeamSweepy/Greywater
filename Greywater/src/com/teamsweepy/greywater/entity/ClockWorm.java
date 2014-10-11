@@ -39,9 +39,10 @@ public class ClockWorm extends Mob {
 		}
 		
 		if (state == STATE_AGGRESSIVE) {
-			if (focusTarget.getLocation().distance(getLocation()) < 200 && actionTimer > .6f) {
+			if (focusTarget.getLocation().distance(getLocation()) < 200 && actionTimer > .4f) {
+				sendInteract();
 				actionTimer = 0f;
-			}else if (!pop || actionTimer > 1f){
+			}else if ((!pop && actionTimer > 1.2f) && !attacking){
 				graphicsComponent.setImage(1f, "ATTACK_" + currentDirection, Sprite.STILL_IMAGE);
 			}
 		} else if (state == STATE_LYING_IN_WAIT && focusTarget.getLocation().distance(getLocation()) < 2000 && actionTimer > 8f && !pop) {
@@ -136,10 +137,7 @@ public class ClockWorm extends Mob {
 					executeAttack();
 				attacking = false;
 				graphicsComponent.setImage(.6f, "ATTACK_" + currentDirection, Sprite.REVERSED);
-			} else {
-				graphicsComponent.setImage(1f, "ATTACK_" + currentDirection, Sprite.STILL_IMAGE);
-				graphicsComponent.changeSeriesPosition(3, Sprite.STILL_IMAGE);
-			}
+			} 
 		} else if (e.action.contains("POP") && e.ending && pop) {
 			if (state == STATE_LYING_IN_WAIT) {
 				state = STATE_AGGRESSIVE;

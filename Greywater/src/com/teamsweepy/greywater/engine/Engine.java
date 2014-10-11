@@ -37,8 +37,8 @@ public class Engine extends Game {
 	public static final int ANIMATION_PERIOD_NANOSEC = 16666666; // 60 FPS
 	public static final byte MAX_FRAME_SKIPS = 40; //not more than 40 frames can be skipped due to lag.
 
-	public static final String WINDOW_TITLE = "Greywater";
-	public final boolean SHOW_FPS_IN_TITLE = true;
+    public static final String WINDOW_TITLE = "Greywater";
+    public final boolean SHOW_FPS_IN_TITLE = true;
 
 	/* ********************* STATISTICS AND TIMEKEEPING VARIABLES ************************ */
 	private double secondsElapsed = 0.0;
@@ -57,25 +57,25 @@ public class Engine extends Game {
 	private GameScreen gs;
 	private MainMenuScreen ms;
 
-	private boolean inGame = false;
+	public static boolean inGame = false;
 
 	/**
 	 * Initialize core assets, automatically called by LibGDX
 	 */
 	@Override
 	public void create() {
-		Preferences preferences = Preferences.getDefault();
-		preferences.create("Greywater");
+        Preferences preferences = Preferences.getDefault();
+        preferences.create("Greywater");
 
 		AssetLoader.init();
 		Camera.getDefault().setViewPort(NATIVE_WIDTH, NATIVE_HEIGHT);
 
-		//        fbo = new FrameBuffer(
-		//                Pixmap.Format.RGBA8888,
-		//                Gdx.graphics.getWidth(),
-		//                Gdx.graphics.getHeight(),
-		//                false
-		//        );
+//        fbo = new FrameBuffer(
+//                Pixmap.Format.RGBA8888,
+//                Gdx.graphics.getWidth(),
+//                Gdx.graphics.getHeight(),
+//                false
+//        );
 
 		gameBatch = new SpriteBatch();
 		gameBatch.setProjectionMatrix(Camera.getDefault().getProjectionMatrix());
@@ -92,9 +92,7 @@ public class Engine extends Game {
 	/** Initialize input as a multiplex. Multiple listeners are added (one for GUI and one for the gameView) */
 	private void initInput() {
 		inputs = new InputMultiplexer();
-        // We pass the Engine so it's easier to check if an inventory or any GUI component is still open
-        // TODO: Create a varaible(?) in the GUI which can change the pause behaviour
-		inputHandlerGUI = new InputGUI(this);
+		inputHandlerGUI = new InputGUI();
 		inputHandlerGame = new InputGame();
 		// The event first goes to the GUI input and if needed to the Game input
 		inputs.addProcessor(inputHandlerGUI);
@@ -142,7 +140,7 @@ public class Engine extends Game {
 		}
 
 		if (secondsElapsed > 10.0) {
-			//printStats();
+			printStats();
 			tickCount = 0;
 			secondsElapsed = 0;
 			frameCount = 0;
@@ -152,13 +150,13 @@ public class Engine extends Game {
 
 	/** Called by libGDX's render method - update physics and logic components */
 	public void tick(float deltaTime) {
-		if (SHOW_FPS_IN_TITLE) {
-			Gdx.graphics.setTitle(WINDOW_TITLE + ", FPS: " + Gdx.graphics.getFramesPerSecond());
-		} else {
-			Gdx.graphics.setTitle(WINDOW_TITLE);
-		}
+        if(SHOW_FPS_IN_TITLE) {
+            Gdx.graphics.setTitle(WINDOW_TITLE+", FPS: "+Gdx.graphics.getFramesPerSecond());
+        } else {
+            Gdx.graphics.setTitle(WINDOW_TITLE);
+        }
 
-		((EngineScreen) getScreen()).tick(deltaTime);
+        ((EngineScreen) getScreen()).tick(deltaTime);
 	}
 
 	@Override
@@ -186,22 +184,4 @@ public class Engine extends Game {
 		System.out.println();
 	}
 
-    public boolean getInGame() {
-        return inGame;
-    }
-
-    public void pause(boolean pause) {
-        if(pause) {
-//            System.out.println("Can close: "+gs.canClose());
-            if(gs.canClose()) {
-                this.setScreen(ms);
-                inGame = false;
-            } else {
-                gs.closeGUI();
-            }
-        } else {
-            this.setScreen(gs);
-            inGame = true;
-        }
-    }
 }

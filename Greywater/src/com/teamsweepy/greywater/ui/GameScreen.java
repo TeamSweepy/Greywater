@@ -8,7 +8,6 @@
 
 package com.teamsweepy.greywater.ui;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.teamsweepy.greywater.engine.AssetLoader;
 import com.teamsweepy.greywater.engine.Camera;
@@ -53,7 +52,6 @@ public class GameScreen extends EngineScreen {
 //        System.out.println(ShaderProgram.COLOR_ATTRIBUTE);
 //        System.out.println(ShaderProgram.TEXCOORD_ATTRIBUTE);
 
-        // TODO: Uhmmmm, what....?
 		while (AssetLoader.tick() < 1f) {
 			// do nothing TODO remove later
 		}
@@ -62,7 +60,6 @@ public class GameScreen extends EngineScreen {
 
 
 		Level town = new Town("data/map/Greywater.tmx");
-//		town.addMobAtLoc(TestTavishMob, new Point2I(4, 9));
 		town.addMobAtLoc(TestTavishMob, new Point2I(9, 13));
 		currentLevel = town;
 		Level dungeon = new Level("data/map/Dungeon.tmx");
@@ -116,13 +113,6 @@ public class GameScreen extends EngineScreen {
 		currentLevel = currentLevel.getCurrentLevel();
 		currentLevel.tick(delta);
 		GUI.tick(delta);
-
-        // Check if the ESC key is pressed
-//        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-//            Engine.inGame ^= true;
-//        }
-
-
 	}
 
 	@Override
@@ -165,13 +155,4 @@ public class GameScreen extends EngineScreen {
 	@Override
 	public void dispose() {}
 
-
-    // TODO: Check for more GUI components
-    public void closeGUI() {
-        Player.getLocalPlayer().getInventory().setVisible(false);
-    }
-
-    public boolean canClose() {
-        return !Player.getLocalPlayer().getInventory().isVisible();
-    }
 }

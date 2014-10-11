@@ -14,8 +14,6 @@ package com.teamsweepy.greywater.engine.input;
 import com.teamsweepy.greywater.math.Point2F;
 
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.badlogic.gdx.InputProcessor;
 
@@ -32,12 +30,6 @@ public abstract class InputHandler implements InputProcessor {
 	/* ********************* MOUSE INPUT VARIABLES ************************ */
 	protected static Point2F mousePosition;
 	protected static boolean isDown;
-
-    protected List<Integer> keyMap;
-
-    public InputHandler() {
-        keyMap = new ArrayList<Integer>();
-    }
 
 	// ******** Abstract methods ******** //
 	@Override

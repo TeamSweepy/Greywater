@@ -21,8 +21,8 @@ public class Main {
 		cfg.title = "Greywater";
 		cfg.useGL20 = false;
 		cfg.resizable = false;
-        cfg.width = 1600/2;
-        cfg.height = 900/2;
+        cfg.width = 1600;
+        cfg.height = 900;
 
 		//set fullscreen and match current resolution
 //		cfg.setFromDisplayMode(LwjglApplicationConfiguration.getDesktopDisplayMode());
