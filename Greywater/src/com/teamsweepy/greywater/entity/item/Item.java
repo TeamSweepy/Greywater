@@ -2,6 +2,7 @@
 package com.teamsweepy.greywater.entity.item;
 
 import com.badlogic.gdx.graphics.Color;
+
 import com.teamsweepy.greywater.engine.Globals;
 import com.teamsweepy.greywater.entity.Mob;
 import com.teamsweepy.greywater.entity.component.Entity;
@@ -53,8 +54,6 @@ public abstract class Item extends Entity {
             drawColor = Color.WHITE;
         }
     }
-
-
 
 	public void throwOnGround(Point2F destination, Mob thrower) {
 		dropped = true;
@@ -178,6 +177,7 @@ public abstract class Item extends Entity {
 	}
 
 	/** Finds if given point is within current image's bounding box, meant for Ziga to override for items */
+	@Override
 	protected boolean didPointHitImage(Point2F point) {
 		Point2F p = Globals.toIsoCoord(getX(), getY());
 		return groundSprite.getImageRectangleAtOrigin(p.x + mainCamera.xOffsetAggregate, p.y + mainCamera.yOffsetAggregate).contains(point.x, point.y);
