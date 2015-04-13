@@ -70,7 +70,7 @@ public class Town extends Level {
 		mainCamera = Camera.getDefault();
 		mapCostList = new int[tileList.length][tileList[0].length];
 		setUpMapCosts();
-		mobList.add(new ClockWorm(this, Player.getLocalPlayer()));
+		//mobList.add(new ClockWorm(this, Player.getLocalPlayer()));
 
 		interactiveList.addAll(mobList);
 		exitTiles.add(tileList[0][0]);

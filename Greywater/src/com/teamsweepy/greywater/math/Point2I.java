@@ -52,6 +52,12 @@ public class Point2I extends Object {
 		this.x = p.x;
 		this.y = p.y;
 	}
+	
+	@Override
+	public boolean equals(Object o){
+		return equals((Point2I) o);
+	}
+
 
     public boolean equals(Point2I p) {
         return equals(p.x, p.y);

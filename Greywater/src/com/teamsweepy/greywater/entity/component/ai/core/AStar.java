@@ -6,6 +6,8 @@
 package com.teamsweepy.greywater.entity.component.ai.core;
 
 import com.teamsweepy.greywater.math.Point2I;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -13,25 +15,27 @@ import java.util.PriorityQueue;
 
 
 public class AStar {
-    private static final int MAX_ITERATIONS = 2000;
+
+	private static final int MAX_ITERATIONS = 2000;
 
 	private static float g(int x, int y) {
 		int posX = Math.abs(x);
 		int posY = Math.abs(y);
 		if ((posX > 1 && posY == 0) || (posY > 1 && posX == 0)) {
-			return 10.0f; // Straight
+			return 14.0f; // Straight
 		} else {
-			return 14.0f; // Diagonal
+			return 10.0f; // Diagonal
 		}
 	}
 
 	private static float h(Point2I from, Point2I to) {
-        float dx = from.x - to.x;
-        float dy = from.y - to.y;
+		float dx = from.x - to.x;
+		float dy = from.y - to.y;
 		return 10.0f * (Math.abs(dx) + Math.abs(dy));
 	}
 
 	private static java.util.List<Point2I> generateSuccesor(Point2I node, int[][] map) {
+
 		java.util.List<Point2I> ret = new LinkedList<Point2I>();
 		int x = node.x;
 		int y = node.y;
@@ -74,7 +78,7 @@ public class AStar {
 	}
 
 	private static float f(AStarPath p, Point2I from, Point2I to) {
-        float g;
+		float g;
 		if (p.parent != null) {
 			Point2I parent = (Point2I) p.parent.point;
 			g = g(parent.x - from.x, parent.y - from.y) + p.parent.g;
@@ -106,30 +110,29 @@ public class AStar {
 			AStarPath newPath = new AStarPath(path);
 			newPath.point = t;
 			f(newPath, (Point2I) newPath.point, end);
-			paths.offer(newPath);
+			if(!path.contains(t)){
+				paths.offer(newPath);
+			}
 		}
 	}
 
 	public static java.util.List<Point2I> create(Point2I start, Point2I end, int[][] map) {
-        PriorityQueue<AStarPath<Point2I>> paths = new PriorityQueue<AStarPath<Point2I>>();
-        Map<Point2I, Float> mindists = new HashMap<Point2I, Float>(); // Map<K, V> needs two objects
-
+		PriorityQueue<AStarPath<Point2I>> paths = new PriorityQueue<AStarPath<Point2I>>();
+		Map<Point2I, Float> mindists = new HashMap<Point2I, Float>(); // Map<K, V> needs two objects
+		ArrayList<Point2I> examined = new ArrayList<Point2I>();
 		try {
 			AStarPath root = new AStarPath<Point2I>();
 			root.point = start;
-
 			f(root, start, end);
 			expand(mindists, paths, root, end, map);
 
-		
+
 			for (int iterations = 0; iterations < MAX_ITERATIONS; iterations++) {
-
 				AStarPath<Point2I> p = paths.poll();
-
-				if (p == null) {
-					return null;
+				if(examined.contains(p.point)){
+					continue;
 				}
-
+				examined.add(p.point);
 				Point2I last = p.point;
 				if (last.equals(end)) {
 					LinkedList<Point2I> retPath = new LinkedList<Point2I>();
@@ -153,11 +156,11 @@ public class AStar {
 }
 
 // The AStarPath will only be used in this class,
-// So whe define a private class
+// So we define a private class
 class AStarPath<T> implements Comparable {
 
 	public T point;
-	public float f; // Objects are faster
+	public float f;
 	public float g;
 	public AStarPath parent;
 
@@ -177,5 +180,15 @@ class AStarPath<T> implements Comparable {
 	public int compareTo(Object o) {
 		AStarPath<T> p = (AStarPath<T>) o;
 		return (int) (f - p.f);
+	}
+	
+	public boolean contains(Point2I p){
+		if(((Point2I)point).equals(p)){
+			return true;
+		} else if(parent != null) {
+			return parent.contains(p);
+		} else {
+			return false;
+		}
 	}
 }

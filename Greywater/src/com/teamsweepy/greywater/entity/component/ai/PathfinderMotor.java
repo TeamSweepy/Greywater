@@ -33,12 +33,6 @@ public class PathfinderMotor {
 	public PathfinderMotor(Method method) {
 		currentMethod = method;
 		pathIndex = 0;
-
-//		if (method == Method.ASTAR) {
-//			pathfinder = new AStar();
-//		} else if (method == Method.POTENTIAL_FIELD) {
-//			pathfinder = new PotentialField();
-//		}
 	}
 
 	public void reset() {
@@ -57,15 +51,6 @@ public class PathfinderMotor {
 
 		if (currentMethod == Method.ASTAR) {
             aStarMap = AStar.create(from, end, level.getMapAsCosts());
-
-//            System.out.println("Created map: "+aStarMap.size());
-//			aStarMap = (java.util.List<Point2I>) pathfinder.create();
-			if (aStarMap != null)
-				for (Point2I p : aStarMap) {
-					level.getMapAsCosts()[p.x][p.y] = 1;
-				}
-		} else if (currentMethod == Method.POTENTIAL_FIELD) {
-//			pfMap = (double[][]) pathfinder.create();
 		}
 	}
 
@@ -88,13 +73,7 @@ public class PathfinderMotor {
 				pathIndex++;
 				return aStarMap.get(pathIndex - 1);
 			}
-		} else if (currentMethod == Method.POTENTIAL_FIELD) {
-//			if (!pathfinder.isGoal(curPos)) {
-//				curPos = getBestNode(curPos, nodesDirections, pfMap);
-//				return curPos;
-//			}
 		}
-
 		return null;
 	}
 
