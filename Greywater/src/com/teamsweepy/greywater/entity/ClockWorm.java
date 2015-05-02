@@ -119,8 +119,11 @@ public class ClockWorm extends Mob {
 	/** Reduce or increase this mob's health by the given amount (+ for damage, - for buffs/healing) */
 	public void changeHP(float damage) {
 		HP -= damage;
-		state = STATE_FLEEING;
-		graphicsComponent.setImage(.42f, "Pop", Sprite.REVERSED);
+		if(state == STATE_AGGRESSIVE){
+			state = STATE_FLEEING;
+			pop = true;
+			graphicsComponent.setImage(.7f, "Pop", Sprite.REVERSED);
+		}
 		if (HP <= 0) {
 			if (inventory != null)
 				inventory.dumpSlots();
@@ -144,11 +147,10 @@ public class ClockWorm extends Mob {
 				graphicsComponent.setImage(1f, "ATTACK_" + currentDirection, Sprite.STILL_IMAGE);
 				graphicsComponent.changeSeriesPosition(3, Sprite.STILL_IMAGE);
 			} else {
-				state = STATE_FLEEING;
+				state = STATE_LYING_IN_WAIT;
 			}
 			pop = false;
 			attacking = false;
-			
 		}
 	}
 
