@@ -114,21 +114,7 @@ public class Player extends Mob {
 			mouseClicked = false;
 			if (attacking || sendInteract()) // no need to walk if you're fighting/talking
 				return;
-            Point2I startTile;
-			if (!physicsComponent.isMoving())
-				startTile = Globals.toTileIndices(getLocation().x, getLocation().y);
-			else
-				startTile = Globals.toTileIndices(physicsComponent.destination);
-
-			Point2F objectiveClick = Globals.toNormalCoord(mouseLocation.x, mouseLocation.y);
-			Point2I clickedTile = Globals.toTileIndices(objectiveClick.x, objectiveClick.y);
-
-			pather.createPath(startTile, clickedTile);
-            Point2I newPoint = pather.getNextStep();
-			if (newPoint != null) {
-				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
-				physicsComponent.moveTo(newLoc.x, newLoc.y);
-			}
+			handlePathing(Globals.toNormalCoord(mouseLocation));
 		} else if (!physicsComponent.isMoving()) {  // if no recent click, continue along pre-established path
             Point2I newPoint = pather.getNextStep();
 
@@ -145,10 +131,8 @@ public class Player extends Mob {
 		}
 	} // END PATHFINDING CODE
 
-
 	@Override
 	public boolean sendInteract() {
-
 		Entity interacted = world.getClickedEntity(mouseLocation, this);
 		focusTarget = null;
 		if (interacted == null)
@@ -160,9 +144,10 @@ public class Player extends Mob {
 				focusTarget = interactedMob;
 				attack(interactedMob);
 			} else if (interactedMob.friendly) { // interact with friends
-				if (interactedMob.getLocation().distance(getLocation()) > getWidth() * 3.5)
-					return false;
-
+				if (interactedMob.getLocation().distance(getLocation()) > getWidth() * 3.5){ //too far, pathfind closer
+					handlePathing(interactedMob.getLocation());
+					return true;
+				}
 				physicsComponent.stopMovement();
 				pather.reset();
 				this.currentDirection = Globals.getDirectionString(interactedMob, this); // face target
@@ -219,15 +204,9 @@ public class Player extends Mob {
 		}
 
 		if (enemy.getLocation().distance(getLocation()) > equippedWeapon.getRange() && visible) { // if cant reach
-			pather.createPath(Globals.toTileIndices(this.getLocation()), Globals.toTileIndices(enemy.getLocation()));
-            Point2I newPoint = pather.getNextStep();
-			if (newPoint != null) {
-				Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
-				physicsComponent.moveTo(newLoc.x, newLoc.y);
-			}
+			handlePathing(enemy.getLocation());
 			return;
 		}
-//		((Sound)AssetLoader.getAsset(Sound.class, )).play();
 
         String sound_file = "TAVISH_ATTACK_" + (Globals.rand.nextInt(3) + 1)+ ".wav";
         SoundManager.playSound(sound_file);
@@ -264,8 +243,24 @@ public class Player extends Mob {
 		missing = true;
 	}
 	
-
 	@Override
 	public void receiveInteract(Mob interlocutor) {}
 
+	public void handlePathing(Point2F objectiveLoc){
+		Point2I startTile;
+		if (!physicsComponent.isMoving())
+			startTile = Globals.toTileIndices(getLocation().x, getLocation().y);
+		else
+			startTile = Globals.toTileIndices(physicsComponent.destination);
+
+		
+		Point2I clickedTile = Globals.toTileIndices(objectiveLoc.x, objectiveLoc.y);
+
+		pather.createPath(startTile, clickedTile);
+        Point2I newPoint = pather.getNextStep();
+		if (newPoint != null) {
+			Point2F newLoc = Globals.toNormalCoordFromTileIndices(newPoint.x, newPoint.y);
+			physicsComponent.moveTo(newLoc.x, newLoc.y);
+		}
+	}
 }

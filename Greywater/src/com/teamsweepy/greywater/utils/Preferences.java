@@ -27,7 +27,6 @@ import java.io.*;
  *    Greywater file.
  */
 
-
 public class Preferences {
     private static Preferences preferences = new Preferences();
     private Properties properties;

@@ -86,14 +86,11 @@ public class Level {
 		mapCostList = new int[tileList.length][tileList[0].length];
 		setUpMapCosts();
 
-		
 		mobList.add(new Sweepy(30, 5, this));
 		mobList.add(new ClockWorm(this, Player.getLocalPlayer()));
 		interactiveList.addAll(mobList);
 		Camera.getDefault().moveTo(Globals.toIsoCoord(Player.getLocalPlayer().getX(), Player.getLocalPlayer().getY()));
-
 	}
-
 
 	/** Adds an item to the ground */
 	public void addNewFloorItem(Item e) {
@@ -348,7 +345,7 @@ public class Level {
 			if(mo.getProperties().containsKey("WATCHMAN")){
 				float xLoc = Float.parseFloat(mo.getProperties().get("x").toString())/56;
 				float yLoc = Float.parseFloat(mo.getProperties().get("y").toString())/56;
-//				mobList.add(new Watchman(xLoc, yLoc, this, Player.getLocalPlayer()));
+				mobList.add(new Watchman(xLoc, yLoc, this, Player.getLocalPlayer()));
 			}
 			
 			if(mo.getProperties().containsKey("VAGRANT")){

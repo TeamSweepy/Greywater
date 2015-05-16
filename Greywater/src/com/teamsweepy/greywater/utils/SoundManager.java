@@ -130,7 +130,4 @@ public class SoundManager {
             return volume;
         }
     }
-
-
-    // </editor-fold>
 }

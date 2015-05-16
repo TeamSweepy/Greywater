@@ -134,7 +134,7 @@ public class AStar {
 				}
 				examined.add(p.point);
 				Point2I last = p.point;
-				if (last.equals(end)) {
+				if (last.equals(end) || last.distance(end) < 2) {
 					LinkedList<Point2I> retPath = new LinkedList<Point2I>();
 
 					for (AStarPath<Point2I> i = p; i != null; i = i.parent) {

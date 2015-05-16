@@ -24,10 +24,6 @@ public class PathfinderMotor {
 	private java.util.List<Point2I> aStarMap;
 	private int pathIndex;
 
-	// PF specific
-	private double[][] pfMap;
-	private Point2I curPos;
-	private Point2I[] nodesDirections;
 	private Level level;
 
 	public PathfinderMotor(Method method) {
@@ -38,8 +34,6 @@ public class PathfinderMotor {
 	public void reset() {
 		if (aStarMap != null)
 			aStarMap.clear();
-		pathIndex = 0;
-		curPos = null;
 		pathIndex = 0;
 	}
 
@@ -53,19 +47,6 @@ public class PathfinderMotor {
             aStarMap = AStar.create(from, end, level.getMapAsCosts());
 		}
 	}
-
-    public boolean finished() {
-        if (currentMethod == Method.ASTAR) {
-            if(aStarMap != null) {
-                return (pathIndex >= aStarMap.size() - 1);
-            } else {
-                return true;
-            }
-        }
-
-        // TODO: implement this for the PF
-        return false;
-    }
 
 	public Point2I getNextStep() {
 		if (currentMethod == Method.ASTAR) {

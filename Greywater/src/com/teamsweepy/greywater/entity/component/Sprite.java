@@ -159,7 +159,7 @@ public class Sprite {
 
 	/** Returns the current sprite's bounding box with its lower left corner at x,y */
 	public Rectangle getImageRectangleAtOrigin(float x, float y) {
-		return new Rectangle(x, y, getImageWidth(), getImageWidth());
+		return new Rectangle(x, y, getImageWidth(), getImageHeight());
 	}
 
 	/**
