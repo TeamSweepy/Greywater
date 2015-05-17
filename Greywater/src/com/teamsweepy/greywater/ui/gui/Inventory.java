@@ -10,7 +10,6 @@ import com.teamsweepy.greywater.entity.item.crafting.Crafting;
 import com.teamsweepy.greywater.entity.item.misc.VoltCell;
 import com.teamsweepy.greywater.entity.item.potions.HealthPotion;
 import com.teamsweepy.greywater.entity.item.potions.Mercury;
-import com.teamsweepy.greywater.entity.item.weapons.Bomb;
 import com.teamsweepy.greywater.entity.item.weapons.Weapon;
 import com.teamsweepy.greywater.entity.item.weapons.Wrench;
 import com.teamsweepy.greywater.math.Point2F;
@@ -20,6 +19,7 @@ import com.teamsweepy.greywater.ui.gui.subgui.OutputSlot;
 import com.teamsweepy.greywater.ui.gui.subgui.WeaponSlot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class Inventory extends GUIComponent {
@@ -44,14 +44,14 @@ public class Inventory extends GUIComponent {
 		initSubComponents();
 
 		{// Adding some items in the inventory for testing purposes
- 			int i = 0;
- 			itemSlots.get(0).setItem(new HealthPotion());
- 			itemSlots.get(1).setItem(new Mercury());
- 			itemSlots.get(1).setItem(new Mercury());
- 			itemSlots.get(2).setItem(new Wrench());
- 			itemSlots.get(3).setItem(new VoltCell());
- 		}
-		
+			int i = 0;
+			itemSlots.get(0).setItem(new HealthPotion());
+			itemSlots.get(1).setItem(new Mercury());
+			itemSlots.get(1).setItem(new Mercury());
+			itemSlots.get(2).setItem(new Wrench());
+			itemSlots.get(3).setItem(new VoltCell());
+		}
+
 		visible = true;
 	}
 
@@ -177,13 +177,36 @@ public class Inventory extends GUIComponent {
 		}
 		return -1;
 	}
-	
-	public WeaponSlot getWeaponSlot(){
+
+	public WeaponSlot getWeaponSlot() {
 		return weaponSlots.get(0);
 	}
-	
-	public Mob getOwner(){
+
+	public Mob getOwner() {
 		return owner;
 	}
 
+	public boolean contains(Item i) {
+		String name = i.getName();
+		for (ItemSlot itemSlot : itemSlots) {
+			if (itemSlot.getItem() != null && itemSlot.getItem().getName().equals(name))
+				return true;
+		}
+		return false;
+	}
+
+	public HashMap<Class<? extends Item>, Integer> updateItemCount(HashMap<Class<? extends Item>, Integer> currentConditions, HashMap<Class<? extends Item>, Integer> winConditions) {
+		for (ItemSlot itemSlot : itemSlots) {
+			if (itemSlot.getItem() != null && winConditions.get(itemSlot.getItem().getClass()) != null) {
+				int charge = itemSlot.getCharge();
+				int count = charge > 0 ? charge : 1;
+				if (currentConditions.containsKey(itemSlot.getItem().getClass())) {
+					currentConditions.put(itemSlot.getItem().getClass(), currentConditions.get(itemSlot.getItem().getClass()) + count);
+				} else {
+					currentConditions.put(itemSlot.getItem().getClass(), 1);
+				}
+			}
+		}
+		return currentConditions;
+	}
 }

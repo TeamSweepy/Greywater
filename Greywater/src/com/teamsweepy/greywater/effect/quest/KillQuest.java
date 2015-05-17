@@ -54,6 +54,11 @@ public class KillQuest extends Quest {
 		return finished;
 	}
 
+	@Override
+	public boolean isQuestActionOverAlready() {
+		return false; //if I say go kill a thing, go kill the things.
+	}
+
 
 
 }

@@ -15,7 +15,7 @@ public abstract class Quest implements GameEventListener {
 	public static final int ASSIGNEE_STATUS_TURNIN = 2;
 	public static final int ASSIGNEE_STATUS_COMPLETED = 3;
 
-	private HashMap<Mob, Integer> assignees;
+	protected HashMap<Mob, Integer> assignees;
 	private ArrayList<Quest> prereqs;
 	//	private ArrayList<Quest> objectives;
 
@@ -86,6 +86,9 @@ public abstract class Quest implements GameEventListener {
 		if (!assignees.keySet().contains(assignee) && isAvailableForStarting(assignee)) {
 			assignee.addGameListener(this);
 			assignees.put(assignee, ASSIGNEE_STATUS_INPROGRESS);
+			if(isQuestActionOverAlready()){
+				completeObjective();
+			}
 			//TODO assignee.questlog.add(this);
 		}
 	}
@@ -121,6 +124,7 @@ public abstract class Quest implements GameEventListener {
 	}
 
 	public abstract boolean isQuestActionOver();
+	public abstract boolean isQuestActionOverAlready();
 
 
 

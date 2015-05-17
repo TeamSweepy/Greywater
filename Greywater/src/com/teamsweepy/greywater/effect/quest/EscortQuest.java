@@ -44,5 +44,11 @@ public class EscortQuest extends Quest {
 		winConditions.put(objective, goalTile);
 	}
 
+	@Override
+	public boolean isQuestActionOverAlready() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 }

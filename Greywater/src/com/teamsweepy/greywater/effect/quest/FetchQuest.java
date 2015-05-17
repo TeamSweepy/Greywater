@@ -1,24 +1,26 @@
 
 package com.teamsweepy.greywater.effect.quest;
 
+import com.teamsweepy.greywater.entity.Mob;
 import com.teamsweepy.greywater.entity.component.events.FetchEvent;
 import com.teamsweepy.greywater.entity.component.events.GameEvent;
 import com.teamsweepy.greywater.entity.item.Item;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 
 public class FetchQuest extends Quest {
 
-	public HashMap<Class, Integer> winConditions;
-	public HashMap<Class, Integer> currentConditions;
-	
-	public FetchQuest(String intro, String wait, String complete, String title){
+	public HashMap<Class<? extends Item>, Integer> winConditions;
+	public HashMap<Class<? extends Item>, Integer> currentConditions;
+
+	public FetchQuest(String intro, String wait, String complete, String title) {
 		super(intro, wait, complete, title);
-		winConditions = new HashMap<Class, Integer>();
-		currentConditions = new HashMap<Class, Integer>();
+		winConditions = new HashMap<Class<? extends Item>, Integer>();
+		currentConditions = new HashMap<Class<? extends Item>, Integer>();
 	}
-	
+
 	@Override
 	public void handleGameEvent(GameEvent ge) {
 		if (ge.getClass() == FetchEvent.class && winConditions.containsKey(((FetchEvent) ge).acquired.getClass())) {
@@ -32,20 +34,29 @@ public class FetchQuest extends Quest {
 		}
 	}
 
-	public void addWinCondition( Class<? extends Item> c, int count) {
+	public void addWinCondition(Class<? extends Item> c, int count) {
 		winConditions.put(c, count);
 	}
 
 	@Override
 	public boolean isQuestActionOver() {
 		boolean finished = true;
-		for (Class condition : winConditions.keySet()) {
-			if (currentConditions.get(condition) != winConditions.get(condition)) {
+		for (Entry<Class<? extends Item>, Integer> condition : winConditions.entrySet()) {
+			Integer count = currentConditions.get(condition);
+			if (count != null && count < winConditions.get(condition)) {
 				finished = false;
 			}
 		}
-		System.out.println("This quest is done = " + finished );
+		System.out.println("This quest is done = " + finished);
 		return finished;
+	}
+
+	@Override
+	public boolean isQuestActionOverAlready() {
+		for (Mob quester : assignees.keySet()) {
+			currentConditions = quester.getInventory().updateItemCount(currentConditions, winConditions);
+		}
+		return isQuestActionOver();
 	}
 
 
