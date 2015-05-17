@@ -109,13 +109,10 @@ public class Text extends GUIComponent {
 	public void render(SpriteBatch batch) {
 		if (cache == null)
 			return;
-		batch.end();
-		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
-		Gdx.gl.glScissor((int) (pos.x), (int) (pos.y), (int) (size.x), (int) (size.y));
-		batch.begin();
+
 		cache.draw(batch);
 
-		batch.flush(); // Save the data
+		batch.flush();
 		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 	}
 

@@ -24,6 +24,9 @@ public class Main {
         cfg.width = 1600;
         cfg.height = 900;
 
+        cfg.width = 1920;
+        cfg.height = 1080;
+        
 		//set fullscreen and match current resolution
 //		cfg.setFromDisplayMode(LwjglApplicationConfiguration.getDesktopDisplayMode());
 		new LwjglApplication(new Engine(), cfg);

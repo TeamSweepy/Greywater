@@ -26,8 +26,6 @@ public class GUIComponent {
 
 	protected ArrayList<GUIComponent> subComponents = new ArrayList<GUIComponent>();
 
-	// add a plane in order to get inputs
-
 	public GUIComponent() {
 		pos = new Point2F();
 		size = new Point2F();
@@ -54,7 +52,6 @@ public class GUIComponent {
 		hitbox = new Hitbox((int) x, (int) y, (int) w, (int) h, 0f, true);
 		visible = false; // no need for empty render method, just flag imageless components
 	}
-
 
 	protected void initSubComponents() {}
 
